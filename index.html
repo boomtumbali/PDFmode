@@ -26,7 +26,7 @@
 <meta name="twitter:title" content="PDFmode — one PDF, made for reading">
 <meta name="twitter:description" content="Merge notes, slides and handouts into one PDF, or one continuous page for reading. Free and private: it runs in your browser. By @boomtumbali.">
 <meta name="twitter:image" content="https://pdfmode.vercel.app/og-image.png?v=2">
-<script>try { const o = JSON.parse(localStorage.getItem('pdfcraft.v1') || 'null'); let ui = o && o.ui; if (!o || (o.v !== 4 && o.v !== 5)) ui = (!ui || ui === 'system') ? 'dark' : ui; if (ui === 'light' || ui === 'dark') document.documentElement.dataset.theme = ui; } catch (e) { document.documentElement.dataset.theme = 'dark'; }</script>
+<script>try { const o = JSON.parse(localStorage.getItem('pdfcraft.v1') || 'null'); let ui = o && o.ui; if (!o || (o.v !== 4 && o.v !== 5 && o.v !== 6)) ui = (!ui || ui === 'system') ? 'dark' : ui; if (ui === 'light' || ui === 'dark') document.documentElement.dataset.theme = ui; } catch (e) { document.documentElement.dataset.theme = 'dark'; }</script>
 <style>
 :root {
   --tbh: 52px;
@@ -132,6 +132,7 @@ svg.i { width: 19px; height: 19px; fill: none; stroke: currentColor; stroke-widt
 .seg button[aria-checked="true"] { color: var(--text); font-weight: 590; }
 .seg button.serif { font-family: "PC Serif", Georgia, serif; font-size: 13.5px; }
 .seg[data-key="width"] button { padding: 0 2px; font-size: 11.5px; letter-spacing: -0.01em; }
+.seg button[hidden] { display: none; }
 .seg button.slab { font-family: "PC Slab", Rockwell, serif; font-size: 12.5px; }
 .seg button.sans { font-family: "PC Sans", var(--ui); font-size: 13px; }
 
@@ -417,7 +418,7 @@ body.landing .insp, body.landing #setBtn, body.landing #exportBtn { display: non
 
       <ol class="steps" aria-label="How it works">
         <li><span class="sn">1</span><div><strong>Add files in any mix</strong><p>Open several at once; they merge in the order shown. Drag to reorder.</p></div></li>
-        <li><span class="sn">2</span><div><strong>Pick how it reads</strong><p><b>Continuous</b> (the default) flows everything into one long page sized for the screen you’re on. <b>Auto</b> keeps Word, PowerPoint and PDF pages; <b>Pages</b> uses regular pages.</p></div></li>
+        <li><span class="sn">2</span><div><strong>Pick how it reads</strong><p><b>Auto</b> (the default) keeps Word, PowerPoint and PDF pages and runs Markdown and text as one long page. Or choose <b>Continuous</b> or <b>Pages</b> for everything.</p></div></li>
         <li><span class="sn">3</span><div><strong>Export one PDF</strong><p>Every file and heading becomes a bookmark, so you can jump straight to a topic.</p></div></li>
       </ol>
 
@@ -449,8 +450,8 @@ body.landing .insp, body.landing #setBtn, body.landing #exportBtn { display: non
       <div class="grp"><div class="lbl" id="l-layout">Layout</div>
         <div class="seg" role="radiogroup" aria-labelledby="l-layout" data-key="layout">
           <span class="th"></span>
-          <button type="button" role="radio" data-v="continuous">Continuous</button>
           <button type="button" role="radio" data-v="auto" title="Files with their own page size keep their pages; Markdown and text run continuous">Auto</button>
+          <button type="button" role="radio" data-v="continuous">Continuous</button>
           <button type="button" role="radio" data-v="pages">Pages</button>
         </div>
         <div class="hint" id="layoutHint"></div>
@@ -1977,16 +1978,17 @@ const FONTS = {"CalB": "AAEAAAAOAIAAAwBgR0RFRg2VDe0AAIGYAAAAuEdQT1OVtZTJAACCUAAA
   const WIDTHS = { letter: 612, legal: 612, a4: 595.28, tablet: 432, phone: 324 };
   const MARGINS = { letter: [36, 54, 72], legal: [36, 54, 72], a4: [36, 54, 72], tablet: [26, 36, 50], phone: [16, 22, 30] };
   const SIZES = [9, 10, 11, 12, 13, 14, 16, 18];
-  const DEFAULTS = { v: 5, officeStyle: 'original', width: 'auto', margin: 'normal', font: 'Slab', officeFont: 'Original', size: 11, theme: 'light', bookmarks: true, split: false, panel: true, ui: 'dark', layout: 'continuous' };
+  const DEFAULTS = { v: 6, officeStyle: 'original', width: 'auto', margin: 'normal', font: 'Slab', officeFont: 'Original', size: 11, theme: 'light', bookmarks: true, split: false, panel: true, ui: 'dark', layout: 'auto' };
   const HEIGHTS = { letter: 792, legal: 936, a4: 841.89, tablet: 576, phone: 576 }; // page height in Pages layout: Letter 11 in, Legal 13 in (PH long bond)
   let opts = Object.assign({}, DEFAULTS);
   let saved = null;
   try { saved = JSON.parse(localStorage.getItem('pdfcraft.v1') || 'null'); } catch (e) {}
   if (saved && typeof saved === 'object') {
     opts = Object.assign(opts, saved);
-    if (saved.v !== 4 && saved.v !== 5 && (!saved.ui || saved.ui === 'system')) opts.ui = 'dark';
+    if (saved.v !== 4 && saved.v !== 5 && saved.v !== 6 && (!saved.ui || saved.ui === 'system')) opts.ui = 'dark';
     // v5 defaults: continuous layout, width fitted to the device, Arvo slab.
-    if (saved.v !== 5) { opts.layout = 'continuous'; opts.width = 'auto'; if (!saved.font || saved.font === 'Serif') opts.font = 'Slab'; opts.v = 5; }
+    if (saved.v !== 5 && saved.v !== 6) { opts.width = 'auto'; if (!saved.font || saved.font === 'Serif') opts.font = 'Slab'; }
+    if (saved.v !== 6) { opts.layout = 'auto'; opts.officeStyle = 'original'; opts.v = 6; }
   }
   if (opts.width !== 'auto' && !WIDTHS[wk()]) opts.width = 'auto';
   opts.bookmarks = true; opts.split = false; // bookmarks are always added; long pages are never split
@@ -2021,11 +2023,20 @@ const FONTS = {"CalB": "AAEAAAAOAIAAAwBgR0RFRg2VDe0AAIGYAAAAuEdQT1OVtZTJAACCUAAA
   const floating = () => window.matchMedia('(max-width: 1100px)').matches; // sheet on phones, popover on tablets
 
   // ---------- controls ----------
+  // True when everything on screen is one continuous page (no page height to choose).
+  const continuousView = () => opts.layout === 'continuous' || (opts.layout === 'auto' && items.length > 0 && items.every(i => !pagedFor(i)));
   function syncControls() {
     $('origBtn').disabled = !items.some(i => i.fonts) && !doc.fonts;
+    const cont = continuousView();
+    const letterBtn = document.querySelector('.seg[data-key="width"] button[data-v="letter"]');
+    const legalBtn = document.querySelector('.seg[data-key="width"] button[data-v="legal"]');
+    legalBtn.hidden = cont;
+    letterBtn.textContent = cont ? '8.5 in' : 'Letter';
+    letterBtn.title = cont ? '8.5 in wide' : 'Letter, 8.5 × 11 in (short bond)';
     document.querySelectorAll('[data-key]').forEach(g => {
-      const key = g.dataset.key, btns = Array.from(g.querySelectorAll('button[role="radio"]'));
-      const val = key === 'font' ? fontChoice() : String(opts[key]);
+      const key = g.dataset.key, btns = Array.from(g.querySelectorAll('button[role="radio"]')).filter(b => !b.hidden);
+      let val = key === 'font' ? fontChoice() : String(opts[key]);
+      if (key === 'width' && cont && val === 'legal') val = 'letter';
       const idx = Math.max(0, btns.findIndex(b => b.dataset.v === val));
       btns.forEach((b, i) => { b.setAttribute('aria-checked', String(i === idx)); b.tabIndex = i === idx ? 0 : -1; });
       g.style.setProperty('--n', btns.length); g.style.setProperty('--i', idx);
@@ -2055,7 +2066,7 @@ const FONTS = {"CalB": "AAEAAAAOAIAAAwBgR0RFRg2VDe0AAIGYAAAAuEdQT1OVtZTJAACCUAAA
     const pick = b => {
       if (b.disabled) return;
       const k = key === 'font' && doc.fonts ? 'officeFont' : key;
-      if (String(opts[k]) === b.dataset.v) return;
+      if (String(opts[k]) === b.dataset.v || (k === 'width' && b.dataset.v === 'letter' && opts.width === 'legal' && continuousView())) return;
       opts[k] = b.dataset.v; persist(); syncControls();
       if (key === 'ui') { applyUi(); return; }
       changed(key === 'theme' || key === 'font' ? true : key === 'layout' || key === 'officeStyle' ? 'layout' : false);
@@ -2066,7 +2077,7 @@ const FONTS = {"CalB": "AAEAAAAOAIAAAwBgR0RFRg2VDe0AAIGYAAAAuEdQT1OVtZTJAACCUAAA
         const d = { ArrowRight: 1, ArrowDown: 1, ArrowLeft: -1, ArrowUp: -1 }[e.key];
         if (!d) return; e.preventDefault();
         let j = i, n;
-        do { j = (j + d + btns.length) % btns.length; n = btns[j]; } while (n.disabled && j !== i);
+        do { j = (j + d + btns.length) % btns.length; n = btns[j]; } while ((n.disabled || n.hidden) && j !== i);
         n.focus(); pick(n);
       });
     });
@@ -2127,6 +2138,7 @@ const FONTS = {"CalB": "AAEAAAAOAIAAAwBgR0RFRg2VDe0AAIGYAAAAuEdQT1OVtZTJAACCUAAA
   }
   function fit() { document.querySelectorAll('.page').forEach(p => p.style.setProperty('--k', scale())); }
 
+  let blocksFor = null; // which document the HTML preview blocks belong to
   function buildBlocks() {
     const tokens = C.lex(doc.md, marked, { breaks: doc.breaks });
     blocksHtml = tokens.map(t => {
@@ -2155,6 +2167,8 @@ const FONTS = {"CalB": "AAEAAAAOAIAAAwBgR0RFRg2VDe0AAIGYAAAAuEdQT1OVtZTJAACCUAAA
       else if (!host.querySelector('.pdfp')) { const ph = document.createElement('div'); ph.className = 'page pending'; ph.style.width = Math.min(760, $('canvas').clientWidth - 40) + 'px'; ph.style.height = '420px'; ph.textContent = 'Preparing preview…'; host.replaceChildren(ph); }
       return;
     }
+    if (blocksFor !== doc.uid) { buildBlocks(); blocksFor = doc.uid; }
+    if (!blocksHtml.length) { host.innerHTML = ''; return; }
     const fresh = result && resultKey === keyOf();
     let cuts = fresh ? result.segments.map(s => s.firstBlock) : [0];
     const paged = fresh && result.paged;
@@ -2165,7 +2179,7 @@ const FONTS = {"CalB": "AAEAAAAOAIAAAwBgR0RFRg2VDe0AAIGYAAAAuEdQT1OVtZTJAACCUAAA
       const page = document.createElement('article');
       page.className = 'page'; page.setAttribute('aria-label', cuts.length > 1 ? 'Page ' + (i + 1) : 'Preview');
       let html = '';
-      for (let b = start; b < end; b++) html += '<div class="blk">' + blocksHtml[b] + '</div>';
+      for (let b = start; b < end; b++) if (blocksHtml[b] != null) html += '<div class="blk">' + blocksHtml[b] + '</div>';
       if (paged) { page.classList.add('fixed'); html += '<div class="pno">' + result.blockPages[start] + ' / ' + result.pages.length + '</div>'; }
       else if (i + 1 < cuts.length) html += '<div class="cont">Continued on the next page ↓</div>';
       page.innerHTML = html; pageVars(page); tone(page); frag.appendChild(page);
@@ -2305,8 +2319,8 @@ const FONTS = {"CalB": "AAEAAAAOAIAAAwBgR0RFRg2VDe0AAIGYAAAAuEdQT1OVtZTJAACCUAAA
     doc = items[0] || { md: '', name: '' };
     result = null; resultKey = ''; previewSeq++;
     for (const it of items) if (it.md && !it.imagesReady) it.imagesReady = prepareImages(it);
-    blocksHtml = [];
-    if (items.length === 1 && !pdfPreview() && doc.md) buildBlocks();
+    blocksHtml = []; blocksFor = null;
+    if (items.length === 1 && !pdfPreview() && doc.md) { buildBlocks(); blocksFor = doc.uid; }
     syncControls(); show(); renderPages(); window.scrollTo(0, 0);
     if (!hasDoc()) { document.title = 'PDFmode'; return; }
     if (items.length === 1 && !pdfPreview() && !blocksHtml.length) { meta('Nothing to show in this file'); return; }
@@ -2577,6 +2591,7 @@ const FONTS = {"CalB": "AAEAAAAOAIAAAwBgR0RFRg2VDe0AAIGYAAAAuEdQT1OVtZTJAACCUAAA
       try { got.push(await parseFile(files[i])); } catch (e) { console.error(e); hud(whyFailed(e, files[i].name), false); }
     }
     if (!got.length) { meta(result && resultKey === keyOf() ? describe(result) : ''); return; }
+    if (!append) { opts.layout = 'auto'; opts.officeStyle = 'original'; persist(); }
     setItems(append ? items.concat(got) : got);
   }
   const readFile = f => openFiles([f]);
