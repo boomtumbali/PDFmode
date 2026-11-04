@@ -17,7 +17,7 @@
 <meta property="og:title" content="PDFmode — one PDF, made for reading">
 <meta property="og:description" content="Merge notes, slides and handouts into one PDF, or one continuous page for reading. Free and private: it runs in your browser. By @boomtumbali.">
 <meta property="og:url" content="https://pdfmode.vercel.app/">
-<meta property="og:image" content="https://pdfmode.vercel.app/og-image.png">
+<meta property="og:image" content="https://pdfmode.vercel.app/og-image.png?v=2">
 <meta property="og:image:type" content="image/png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
@@ -25,7 +25,7 @@
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="PDFmode — one PDF, made for reading">
 <meta name="twitter:description" content="Merge notes, slides and handouts into one PDF, or one continuous page for reading. Free and private: it runs in your browser. By @boomtumbali.">
-<meta name="twitter:image" content="https://pdfmode.vercel.app/og-image.png">
+<meta name="twitter:image" content="https://pdfmode.vercel.app/og-image.png?v=2">
 <script>try { const o = JSON.parse(localStorage.getItem('pdfcraft.v1') || 'null'); let ui = o && o.ui; if (!o || (o.v !== 4 && o.v !== 5)) ui = (!ui || ui === 'system') ? 'dark' : ui; if (ui === 'light' || ui === 'dark') document.documentElement.dataset.theme = ui; } catch (e) { document.documentElement.dataset.theme = 'dark'; }</script>
 <style>
 :root {
@@ -131,6 +131,7 @@ svg.i { width: 19px; height: 19px; fill: none; stroke: currentColor; stroke-widt
 .seg button { position: relative; z-index: 1; height: 28px; padding: 0 6px; border-radius: 7px; font-size: 12.5px; font-weight: 500; color: var(--text2); white-space: nowrap; transition: color 0.2s; }
 .seg button[aria-checked="true"] { color: var(--text); font-weight: 590; }
 .seg button.serif { font-family: "PC Serif", Georgia, serif; font-size: 13.5px; }
+.seg[data-key="width"] button { padding: 0 2px; font-size: 11.5px; letter-spacing: -0.01em; }
 .seg button.slab { font-family: "PC Slab", Rockwell, serif; font-size: 12.5px; }
 .seg button.sans { font-family: "PC Sans", var(--ui); font-size: 13px; }
 
@@ -458,7 +459,8 @@ body.landing .insp, body.landing #setBtn, body.landing #exportBtn { display: non
         <div class="seg" role="radiogroup" aria-labelledby="l-width" data-key="width">
           <span class="th"></span>
           <button type="button" role="radio" data-v="auto" title="Fit the page to this device">Auto</button>
-          <button type="button" role="radio" data-v="legal" title="8.5 in, same as Letter">Legal</button>
+          <button type="button" role="radio" data-v="letter" title="Letter, 8.5 × 11 in (short bond)">Letter</button>
+          <button type="button" role="radio" data-v="legal" title="Legal, 8.5 × 13 in (long bond, Philippine standard)">Legal</button>
           <button type="button" role="radio" data-v="a4" title="8.27 in">A4</button>
           <button type="button" role="radio" data-v="tablet" title="6 in">Tablet</button>
           <button type="button" role="radio" data-v="phone" title="4.5 in">Phone</button>
@@ -507,10 +509,6 @@ body.landing .insp, body.landing #setBtn, body.landing #exportBtn { display: non
           <button type="button" role="radio" data-v="dark">Dark</button>
         </div>
       </div>
-      <div class="row"><div><div class="rt" id="l-bm">Bookmarks</div><div class="rs">Jump to headings in your PDF reader</div></div>
-        <button type="button" class="sw-t" role="switch" id="bmSw" aria-labelledby="l-bm"></button></div>
-      <div class="row ro" id="splitRow"><div><div class="rt" id="l-split">Split at 200 in</div><div class="rs">Only needed for Adobe Reader</div></div>
-        <button type="button" class="sw-t" role="switch" id="splitSw" aria-labelledby="l-split"></button></div>
     </div>
   </aside>
 </div>
@@ -1976,11 +1974,11 @@ const FONTS = {"CalB": "AAEAAAAOAIAAAwBgR0RFRg2VDe0AAIGYAAAAuEdQT1OVtZTJAACCUAAA
   const env = { marked: window.marked, PDFLib: window.PDFLib, render: renderPdf };
 
   // ---------- settings ----------
-  const WIDTHS = { legal: 612, a4: 595.28, tablet: 432, phone: 324 };
-  const MARGINS = { legal: [36, 54, 72], a4: [36, 54, 72], tablet: [26, 36, 50], phone: [16, 22, 30] };
+  const WIDTHS = { letter: 612, legal: 612, a4: 595.28, tablet: 432, phone: 324 };
+  const MARGINS = { letter: [36, 54, 72], legal: [36, 54, 72], a4: [36, 54, 72], tablet: [26, 36, 50], phone: [16, 22, 30] };
   const SIZES = [9, 10, 11, 12, 13, 14, 16, 18];
   const DEFAULTS = { v: 5, officeStyle: 'original', width: 'auto', margin: 'normal', font: 'Slab', officeFont: 'Original', size: 11, theme: 'light', bookmarks: true, split: false, panel: true, ui: 'dark', layout: 'continuous' };
-  const HEIGHTS = { legal: 1008, a4: 841.89, tablet: 576, phone: 576 }; // page height in Pages layout
+  const HEIGHTS = { letter: 792, legal: 936, a4: 841.89, tablet: 576, phone: 576 }; // page height in Pages layout: Letter 11 in, Legal 13 in (PH long bond)
   let opts = Object.assign({}, DEFAULTS);
   let saved = null;
   try { saved = JSON.parse(localStorage.getItem('pdfcraft.v1') || 'null'); } catch (e) {}
@@ -1991,8 +1989,9 @@ const FONTS = {"CalB": "AAEAAAAOAIAAAwBgR0RFRg2VDe0AAIGYAAAAuEdQT1OVtZTJAACCUAAA
     if (saved.v !== 5) { opts.layout = 'continuous'; opts.width = 'auto'; if (!saved.font || saved.font === 'Serif') opts.font = 'Slab'; opts.v = 5; }
   }
   if (opts.width !== 'auto' && !WIDTHS[wk()]) opts.width = 'auto';
-  // Auto width: phone-width pages on phones, tablet width on touch tablets, Legal width on computers.
-  const deviceKey = () => window.innerWidth <= 600 ? 'phone' : (window.innerWidth <= 1100 && window.matchMedia('(pointer: coarse)').matches) ? 'tablet' : 'legal';
+  opts.bookmarks = true; opts.split = false; // bookmarks are always added; long pages are never split
+  // Auto width: phone-width pages on phones, tablet width on touch tablets, Letter width (8.5 in) on computers.
+  const deviceKey = () => window.innerWidth <= 600 ? 'phone' : (window.innerWidth <= 1100 && window.matchMedia('(pointer: coarse)').matches) ? 'tablet' : 'letter';
   const wk = () => opts.width === 'auto' ? deviceKey() : opts.width;
   if (!SIZES.includes(+opts.size)) opts.size = 11;
   const persist = () => { try { localStorage.setItem('pdfcraft.v1', JSON.stringify(opts)); } catch (e) {} };
@@ -2034,15 +2033,12 @@ const FONTS = {"CalB": "AAEAAAAOAIAAAwBgR0RFRg2VDe0AAIGYAAAAuEdQT1OVtZTJAACCUAAA
     $('sizeVal').textContent = opts.size + ' pt';
     $('sizeDown').disabled = SIZES.indexOf(+opts.size) <= 0;
     $('sizeUp').disabled = SIZES.indexOf(+opts.size) >= SIZES.length - 1;
-    $('bmSw').setAttribute('aria-checked', String(!!opts.bookmarks));
-    $('splitSw').setAttribute('aria-checked', String(!!opts.split));
     $('styleGrp').hidden = !items.some(i => i.office);
     const allOwn = items.length > 0 && items.every(i => faithful(i) || i.kind === 'pdf');
     document.querySelectorAll('.ro').forEach(el => { el.hidden = allOwn; });
     const anyContinuous = opts.layout === 'continuous' || (opts.layout === 'auto' && (!items.length || items.some(i => !pagedFor(i))));
-    $('splitRow').hidden = !anyContinuous;
     $('layoutHint').textContent = opts.layout === 'auto' ? 'Word, PowerPoint and PDF keep their pages; Markdown and text run continuous.' : opts.layout === 'continuous' ? (items.length > 1 ? 'Everything becomes one continuous page.' : 'One continuous page.') : 'Regular pages.';
-    const dk = deviceKey(), widthName = { phone: 'phone', tablet: 'tablet', legal: 'screen' }[dk], inches = { phone: '4.5', tablet: '6', legal: '8.5' }[dk];
+    const dk = deviceKey(), widthName = { phone: 'phone', tablet: 'tablet', letter: 'screen' }[dk], inches = { phone: '4.5', tablet: '6', letter: '8.5' }[dk];
     $('widthHint').textContent = opts.width === 'auto' ? 'Fitted to this ' + widthName + ': ' + inches + ' in wide' : '';
     $('widthHint').hidden = opts.width !== 'auto';
     renderFiles();
@@ -2078,8 +2074,6 @@ const FONTS = {"CalB": "AAEAAAAOAIAAAwBgR0RFRg2VDe0AAIGYAAAAuEdQT1OVtZTJAACCUAAA
   const stepSize = d => { const i = SIZES.indexOf(+opts.size) + d; if (i < 0 || i >= SIZES.length) return; opts.size = SIZES[i]; persist(); syncControls(); changed(); };
   $('sizeDown').addEventListener('click', () => stepSize(-1));
   $('sizeUp').addEventListener('click', () => stepSize(1));
-  $('bmSw').addEventListener('click', () => { opts.bookmarks = !opts.bookmarks; persist(); syncControls(); scheduleMeasure(); });
-  $('splitSw').addEventListener('click', () => { opts.split = !opts.split; persist(); syncControls(); scheduleMeasure(); });
 
   // Inspector: a side panel on wide screens, a bottom sheet on phones.
   function setPanel(open) {
