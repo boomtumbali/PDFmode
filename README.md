@@ -70,7 +70,7 @@ PDFmode is a single self-contained `index.html` with no build step.
 **Run locally:** open `index.html` in a browser.
 
 **Host on Vercel:**
-1. Put `index.html`, `og-image.png` and this `README.md` in a GitHub repository.
+1. Put `index.html`, `og-image.png`, the two `pdfmode-hero-720p` videos, `pdfmode-poster.jpg` and this `README.md` in a GitHub repository.
 2. On [vercel.com](https://vercel.com), choose **Add New → Project**, import the repository, leave the **Framework Preset** as **Other**, and click **Deploy**.
 3. Every commit to the repository redeploys the site automatically.
 
@@ -82,6 +82,9 @@ PDFmode is a single self-contained `index.html` with no build step.
 | --- | --- |
 | `index.html` | The whole app: interface, conversion engine, and embedded fonts |
 | `og-image.png` | Link-preview image for Messenger, Facebook, X and others |
+| `pdfmode-hero-720p.mp4` | The 19-second how-it-works video on the landing page (MP4, for Safari, Chrome and Edge) |
+| `pdfmode-hero-720p.webm` | The same video as WebM, for browsers without MP4 support |
+| `pdfmode-poster.jpg` | Still frame shown while the video loads |
 | `README.md` | This file |
 
 ## Built with
