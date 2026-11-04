@@ -15,7 +15,7 @@
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="PDFmode">
 <meta property="og:title" content="PDFmode — one PDF, made for reading">
-<meta property="og:description" content="Merge notes, slides and handouts into one PDF, or one continuous page for reading. Free and private: it runs in your browser. Vibecoded by @boomtumbali.">
+<meta property="og:description" content="Merge notes, slides and handouts into one PDF, or one continuous page for reading. Free and private: it runs in your browser. By @boomtumbali.">
 <meta property="og:url" content="https://pdfmode.vercel.app/">
 <meta property="og:image" content="https://pdfmode.vercel.app/og-image.png">
 <meta property="og:image:type" content="image/png">
@@ -24,7 +24,7 @@
 <meta property="og:image:alt" content="PDFmode: notes, slides and handouts merged into one PDF made for reading">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="PDFmode — one PDF, made for reading">
-<meta name="twitter:description" content="Merge notes, slides and handouts into one PDF, or one continuous page for reading. Free and private: it runs in your browser. Vibecoded by @boomtumbali.">
+<meta name="twitter:description" content="Merge notes, slides and handouts into one PDF, or one continuous page for reading. Free and private: it runs in your browser. By @boomtumbali.">
 <meta name="twitter:image" content="https://pdfmode.vercel.app/og-image.png">
 <script>try { const o = JSON.parse(localStorage.getItem('pdfcraft.v1') || 'null'); let ui = o && o.ui; if (!o || (o.v !== 4 && o.v !== 5)) ui = (!ui || ui === 'system') ? 'dark' : ui; if (ui === 'light' || ui === 'dark') document.documentElement.dataset.theme = ui; } catch (e) { document.documentElement.dataset.theme = 'dark'; }</script>
 <style>
@@ -85,7 +85,11 @@ svg.i { width: 19px; height: 19px; fill: none; stroke: currentColor; stroke-widt
 /* Toolbar */
 .tb { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 20; height: var(--tbh); display: grid; grid-template-columns: 1fr minmax(0, auto) 1fr; align-items: center; gap: 12px;
   padding: 0 14px 0 18px; background: var(--bar); -webkit-backdrop-filter: saturate(180%) blur(20px); backdrop-filter: saturate(180%) blur(20px); border-bottom: 0.5px solid var(--hair); }
-.wm { font-family: "PC Slab", Rockwell, "Roboto Slab", Georgia, serif; font-weight: 700; font-size: 17px; letter-spacing: -0.015em; white-space: nowrap; }
+.wm { display: flex; align-items: baseline; gap: 7px; min-width: 0; overflow: hidden; white-space: nowrap; }
+.wm-name { font-family: "PC Slab", Rockwell, "Roboto Slab", Georgia, serif; font-weight: 700; font-size: 17px; letter-spacing: -0.015em; }
+.wm-by { font-size: 13px; font-weight: 500; color: var(--text2); overflow: hidden; text-overflow: ellipsis; }
+.wm-by a { color: var(--text); font-weight: 600; text-decoration: none; border-radius: 4px; }
+.wm-by a:hover { color: var(--accent); text-decoration: underline; text-underline-offset: 3px; }
 .title { min-width: 0; text-align: center; line-height: 1.25; }
 .title .n { font-weight: 600; font-size: 13.5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .title .m { font-size: 11.5px; color: var(--text2); font-variant-numeric: tabular-nums; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-height: 14px; transition: opacity 0.2s; }
@@ -212,7 +216,7 @@ body.landing .canvas { padding-bottom: 8px; }
 body.landing .insp, body.landing #setBtn, body.landing #exportBtn { display: none; }
 @media (max-width: 900px) { .hero { grid-template-columns: 1fr; } .hero-art { max-width: 420px; margin: 4px auto 0; order: -1; } .steps, .keeps { grid-template-columns: 1fr 1fr; } }
 @media (max-width: 560px) { .steps, .keeps { grid-template-columns: 1fr; } .land { padding-top: 4px; } .hero-art { max-width: 320px; order: 0; margin-top: 18px; } .land h1 br { display: none; } }
-@media (max-width: 760px) { body.landing .wm { display: block; } body.landing .title { display: none; } }
+@media (max-width: 760px) { body.landing .wm { display: flex; } body.landing .title { display: none; } }
 @media (prefers-reduced-motion: reduce) { .art .scroll, .art .wires path, .art .thumb, .art .callout { animation: none; } }
 
 /* Preview page: mirrors the PDF (sizes are PDF points × --k) */
@@ -340,7 +344,7 @@ body.landing .insp, body.landing #setBtn, body.landing #exportBtn { display: non
 </head>
 <body>
 <header class="tb">
-  <div class="wm">PDFmode</div>
+  <div class="wm"><span class="wm-name">PDFmode</span><span class="wm-by">by <a href="https://www.linkedin.com/in/boomtumbali" target="_blank" rel="noopener noreferrer">@boomtumbali</a></span></div>
   <div class="title"><div class="n" id="docName"></div><div class="m" id="docMeta"></div></div>
   <div class="tb-r">
     <button class="ib" id="openBtn" type="button" aria-label="Open file" title="Open file (⌘O)"><svg class="i" viewBox="0 0 24 24"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M16 13H8"/><path d="M16 17H8"/><path d="M10 9H8"/></svg></button>
@@ -510,7 +514,6 @@ body.landing .insp, body.landing #setBtn, body.landing #exportBtn { display: non
     </div>
   </aside>
 </div>
-<footer class="foot">vibecoded by <a href="https://www.linkedin.com/in/boomtumbali" target="_blank" rel="noopener noreferrer">@boomtumbali</a></footer>
 
 <div class="scrim" id="scrim"></div>
 <div class="modal" id="pasteDlg" role="dialog" aria-modal="true" aria-labelledby="pasteTitle">
