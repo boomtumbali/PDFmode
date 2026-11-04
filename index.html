@@ -27,6 +27,32 @@
 <meta name="twitter:description" content="Merge notes, slides and handouts into one PDF, or one continuous page for reading. Free and private: it runs in your browser. By @boomtumbali.">
 <meta name="twitter:image" content="https://pdfmode.vercel.app/og-image.png?v=2">
 <script>try { const o = JSON.parse(localStorage.getItem('pdfcraft.v1') || 'null'); let ui = o && o.ui; if (!o || (o.v !== 4 && o.v !== 5 && o.v !== 6)) ui = (!ui || ui === 'system') ? 'dark' : ui; if (ui === 'light' || ui === 'dark') document.documentElement.dataset.theme = ui; } catch (e) { document.documentElement.dataset.theme = 'dark'; }</script>
+<script>
+(function () {
+  window.addEventListener('error', function (e) {
+    if (window.__pmReady) return;
+    try {
+      if (!sessionStorage.getItem('pm-recovered')) {
+        sessionStorage.setItem('pm-recovered', '1');
+        localStorage.removeItem('pdfcraft.v1');
+        location.reload();
+        return;
+      }
+    } catch (err) {}
+    var show = function () {
+      if (document.getElementById('pm-fail')) return;
+      var d = document.createElement('div');
+      d.id = 'pm-fail';
+      d.setAttribute('role', 'alert');
+      d.style.cssText = 'position:fixed;inset:0;z-index:999;display:grid;place-items:center;background:#111113;color:#F5F5F7;font:15px/1.5 -apple-system,BlinkMacSystemFont,system-ui,sans-serif;padding:24px;text-align:center';
+      d.innerHTML = '<div><div style="font-weight:600;font-size:18px;margin-bottom:6px">PDFmode couldn’t start</div><div style="color:#A1A1A6;margin-bottom:18px">Check your internet connection, then try again.</div><button type="button" style="font:inherit;font-weight:600;color:#fff;background:#0A84FF;border:0;border-radius:999px;padding:9px 18px;cursor:pointer">Reset and reload</button></div>';
+      d.querySelector('button').onclick = function () { try { localStorage.removeItem('pdfcraft.v1'); sessionStorage.removeItem('pm-recovered'); } catch (err) {} location.reload(); };
+      document.body.appendChild(d);
+    };
+    if (document.body) show(); else document.addEventListener('DOMContentLoaded', show);
+  });
+})();
+</script>
 <style>
 :root {
   --tbh: 52px;
@@ -1990,11 +2016,23 @@ const FONTS = {"CalB": "AAEAAAAOAIAAAwBgR0RFRg2VDe0AAIGYAAAAuEdQT1OVtZTJAACCUAAA
     if (saved.v !== 5 && saved.v !== 6) { opts.width = 'auto'; if (!saved.font || saved.font === 'Serif') opts.font = 'Slab'; }
     if (saved.v !== 6) { opts.layout = 'auto'; opts.officeStyle = 'original'; opts.v = 6; }
   }
-  if (opts.width !== 'auto' && !WIDTHS[wk()]) opts.width = 'auto';
-  opts.bookmarks = true; opts.split = false; // bookmarks are always added; long pages are never split
   // Auto width: phone-width pages on phones, tablet width on touch tablets, Letter width (8.5 in) on computers.
   const deviceKey = () => window.innerWidth <= 600 ? 'phone' : (window.innerWidth <= 1100 && window.matchMedia('(pointer: coarse)').matches) ? 'tablet' : 'letter';
-  const wk = () => opts.width === 'auto' ? deviceKey() : opts.width;
+  // In a continuous view Letter and Legal aren't offered; a saved Letter/Legal width reads as A4 there.
+  // (continuousView is defined further down; wk() is only ever called after start-up has finished.)
+  const wk = () => opts.width === 'auto' ? deviceKey() : ((opts.width === 'letter' || opts.width === 'legal') && continuousView()) ? 'a4' : opts.width;
+  // Saved settings are only trusted if they are values this version knows.
+  const oneOf = (v, list, d) => list.includes(v) ? v : d;
+  opts.width = opts.width === 'auto' || WIDTHS[opts.width] ? opts.width : 'auto';
+  opts.layout = oneOf(opts.layout, ['auto', 'continuous', 'pages'], 'auto');
+  opts.officeStyle = oneOf(opts.officeStyle, ['original', 'reading'], 'original');
+  opts.margin = oneOf(opts.margin, ['narrow', 'normal', 'wide'], 'normal');
+  opts.font = oneOf(opts.font, ['Slab', 'Serif', 'Sans', 'Original'], 'Slab');
+  opts.officeFont = oneOf(opts.officeFont, ['Original', 'Slab', 'Serif', 'Sans'], 'Original');
+  opts.theme = oneOf(opts.theme, ['light', 'sepia', 'dark'], 'light');
+  opts.ui = oneOf(opts.ui, ['system', 'light', 'dark'], 'dark');
+  opts.panel = opts.panel !== false;
+  opts.bookmarks = true; opts.split = false; // bookmarks are always added; long pages are never split
   if (!SIZES.includes(+opts.size)) opts.size = 11;
   const persist = () => { try { localStorage.setItem('pdfcraft.v1', JSON.stringify(opts)); } catch (e) {} };
   const applyUi = () => { if (opts.ui === 'light' || opts.ui === 'dark') document.documentElement.dataset.theme = opts.ui; else delete document.documentElement.dataset.theme; };
@@ -2028,15 +2066,12 @@ const FONTS = {"CalB": "AAEAAAAOAIAAAwBgR0RFRg2VDe0AAIGYAAAAuEdQT1OVtZTJAACCUAAA
   function syncControls() {
     $('origBtn').disabled = !items.some(i => i.fonts) && !doc.fonts;
     const cont = continuousView();
-    const letterBtn = document.querySelector('.seg[data-key="width"] button[data-v="letter"]');
-    const legalBtn = document.querySelector('.seg[data-key="width"] button[data-v="legal"]');
-    legalBtn.hidden = cont;
-    letterBtn.textContent = cont ? '8.5 in' : 'Letter';
-    letterBtn.title = cont ? '8.5 in wide' : 'Letter, 8.5 × 11 in (short bond)';
+    document.querySelector('.seg[data-key="width"] button[data-v="letter"]').hidden = cont;
+    document.querySelector('.seg[data-key="width"] button[data-v="legal"]').hidden = cont;
     document.querySelectorAll('[data-key]').forEach(g => {
       const key = g.dataset.key, btns = Array.from(g.querySelectorAll('button[role="radio"]')).filter(b => !b.hidden);
       let val = key === 'font' ? fontChoice() : String(opts[key]);
-      if (key === 'width' && cont && val === 'legal') val = 'letter';
+      if (key === 'width' && cont && (val === 'legal' || val === 'letter')) val = 'a4';
       const idx = Math.max(0, btns.findIndex(b => b.dataset.v === val));
       btns.forEach((b, i) => { b.setAttribute('aria-checked', String(i === idx)); b.tabIndex = i === idx ? 0 : -1; });
       g.style.setProperty('--n', btns.length); g.style.setProperty('--i', idx);
@@ -2066,7 +2101,7 @@ const FONTS = {"CalB": "AAEAAAAOAIAAAwBgR0RFRg2VDe0AAIGYAAAAuEdQT1OVtZTJAACCUAAA
     const pick = b => {
       if (b.disabled) return;
       const k = key === 'font' && doc.fonts ? 'officeFont' : key;
-      if (String(opts[k]) === b.dataset.v || (k === 'width' && b.dataset.v === 'letter' && opts.width === 'legal' && continuousView())) return;
+      if (String(opts[k]) === b.dataset.v) return;
       opts[k] = b.dataset.v; persist(); syncControls();
       if (key === 'ui') { applyUi(); return; }
       changed(key === 'theme' || key === 'font' ? true : key === 'layout' || key === 'officeStyle' ? 'layout' : false);
@@ -2721,6 +2756,8 @@ const FONTS = {"CalB": "AAEAAAAOAIAAAwBgR0RFRg2VDe0AAIGYAAAAuEdQT1OVtZTJAACCUAAA
   applyMode();
   syncControls(); show();
   fontsReady.then(() => { if (hasDoc()) fit(); });
+  window.__pmReady = true;
+  try { sessionStorage.removeItem('pm-recovered'); } catch (e) {}
 })();
 </script>
 </body>
