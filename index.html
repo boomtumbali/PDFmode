@@ -2702,7 +2702,7 @@ const FONTS = {"CalB": "AAEAAAAOAIAAAwBgR0RFRg2VDe0AAIGYAAAAuEdQT1OVtZTJAACCUAAA
   function fileName() {
     let base = /\.[^.]+$/.test(doc.name) ? doc.name.replace(/\.[^.]+$/, '') : (result && result.title) || doc.name || 'Document';
     if (items.length > 1) base += ' and ' + (items.length - 1) + ' more';
-    return base.replace(/[\\/:*?"<>|]+/g, ' ').trim().slice(0, 120) + '.pdf';
+    return base.replace(/[\\/:*?"<>|]+/g, ' ').trim().slice(0, 120) + '-pdfmode.vercel.app.pdf';
   }
   async function exportPdf() {
     const btn = $('exportBtn');
