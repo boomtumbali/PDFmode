@@ -26,7 +26,7 @@
 <meta name="twitter:title" content="PDFmode — one PDF, made for reading">
 <meta name="twitter:description" content="Merge notes, slides and handouts into one PDF, or one continuous page for reading. Free and private: it runs in your browser. Vibecoded by @boomtumbali.">
 <meta name="twitter:image" content="https://pdfmode.vercel.app/og-image.png">
-<script>try { const o = JSON.parse(localStorage.getItem('pdfcraft.v1') || 'null'); let ui = o && o.ui; if (!o || o.v !== 4) ui = (!ui || ui === 'system') ? 'dark' : ui; if (ui === 'light' || ui === 'dark') document.documentElement.dataset.theme = ui; } catch (e) { document.documentElement.dataset.theme = 'dark'; }</script>
+<script>try { const o = JSON.parse(localStorage.getItem('pdfcraft.v1') || 'null'); let ui = o && o.ui; if (!o || (o.v !== 4 && o.v !== 5)) ui = (!ui || ui === 'system') ? 'dark' : ui; if (ui === 'light' || ui === 'dark') document.documentElement.dataset.theme = ui; } catch (e) { document.documentElement.dataset.theme = 'dark'; }</script>
 <style>
 :root {
   --tbh: 52px;
@@ -412,14 +412,14 @@ body.landing .insp, body.landing #setBtn, body.landing #exportBtn { display: non
 
       <ol class="steps" aria-label="How it works">
         <li><span class="sn">1</span><div><strong>Add files in any mix</strong><p>Open several at once; they merge in the order shown. Drag to reorder.</p></div></li>
-        <li><span class="sn">2</span><div><strong>Pick how it reads</strong><p><b>Auto</b> keeps Word, PowerPoint and PDF pages and runs Markdown and text continuous. Or choose <b>Continuous</b> or <b>Pages</b> for everything.</p></div></li>
+        <li><span class="sn">2</span><div><strong>Pick how it reads</strong><p><b>Continuous</b> (the default) flows everything into one long page sized for the screen you’re on. <b>Auto</b> keeps Word, PowerPoint and PDF pages; <b>Pages</b> uses regular pages.</p></div></li>
         <li><span class="sn">3</span><div><strong>Export one PDF</strong><p>Every file and heading becomes a bookmark, so you can jump straight to a topic.</p></div></li>
       </ol>
 
       <div class="keeps" aria-label="What each format keeps">
         <div><span class="dot" style="background:#2B579A" aria-hidden="true">W</span><strong>Word</strong><p>Fonts, sizes, colors, tables, lists, pictures, headers and page numbers.</p></div>
         <div><span class="dot" style="background:#C43E1C" aria-hidden="true">P</span><strong>PowerPoint</strong><p>Each slide as a page with its background, text boxes, shapes, tables and pictures.</p></div>
-        <div><span class="dot" style="background:#8E8E93" aria-hidden="true">MD</span><strong>Markdown and text</strong><p>Set in reading typefaces (Literata serif, Arvo slab or Atkinson Hyperlegible) with your size and page color.</p></div>
+        <div><span class="dot" style="background:#8E8E93" aria-hidden="true">MD</span><strong>Markdown and text</strong><p>Set in Arvo slab by default, or Literata serif or Atkinson Hyperlegible, at your size and page color.</p></div>
         <div><span class="dot" style="background:#D92D20" aria-hidden="true">PDF</span><strong>PDF</strong><p>Merged as it is, or stacked into the same continuous page.</p></div>
       </div>
       <p class="fine">Office fonts are replaced by free fonts with the same letter widths, so lines break where they do in Office. Some advanced layouts (columns, charts, text wrapped around pictures) are simplified.</p>
@@ -444,8 +444,8 @@ body.landing .insp, body.landing #setBtn, body.landing #exportBtn { display: non
       <div class="grp"><div class="lbl" id="l-layout">Layout</div>
         <div class="seg" role="radiogroup" aria-labelledby="l-layout" data-key="layout">
           <span class="th"></span>
-          <button type="button" role="radio" data-v="auto" title="Files with their own page size keep their pages; Markdown and text run continuous">Auto</button>
           <button type="button" role="radio" data-v="continuous">Continuous</button>
+          <button type="button" role="radio" data-v="auto" title="Files with their own page size keep their pages; Markdown and text run continuous">Auto</button>
           <button type="button" role="radio" data-v="pages">Pages</button>
         </div>
         <div class="hint" id="layoutHint"></div>
@@ -453,11 +453,13 @@ body.landing .insp, body.landing #setBtn, body.landing #exportBtn { display: non
       <div class="grp ro"><div class="lbl" id="l-width">Width</div>
         <div class="seg" role="radiogroup" aria-labelledby="l-width" data-key="width">
           <span class="th"></span>
+          <button type="button" role="radio" data-v="auto" title="Fit the page to this device">Auto</button>
           <button type="button" role="radio" data-v="legal" title="8.5 in, same as Letter">Legal</button>
           <button type="button" role="radio" data-v="a4" title="8.27 in">A4</button>
           <button type="button" role="radio" data-v="tablet" title="6 in">Tablet</button>
           <button type="button" role="radio" data-v="phone" title="4.5 in">Phone</button>
         </div>
+        <div class="hint" id="widthHint"></div>
       </div>
       <div class="grp ro"><div class="lbl" id="l-margin">Margins</div>
         <div class="seg" role="radiogroup" aria-labelledby="l-margin" data-key="margin">
@@ -470,8 +472,8 @@ body.landing .insp, body.landing #setBtn, body.landing #exportBtn { display: non
       <div class="grp ro"><div class="lbl" id="l-font">Typeface</div>
         <div class="seg" role="radiogroup" aria-labelledby="l-font" data-key="font">
           <span class="th"></span>
-          <button type="button" role="radio" data-v="Serif" class="serif" title="Literata, designed for reading on screens">Serif</button>
           <button type="button" role="radio" data-v="Slab" class="slab" title="Arvo, a geometric slab serif">Slab</button>
+          <button type="button" role="radio" data-v="Serif" class="serif" title="Literata, designed for reading on screens">Serif</button>
           <button type="button" role="radio" data-v="Sans" class="sans">Sans</button>
           <button type="button" role="radio" data-v="Original" id="origBtn" disabled title="Uses the fonts from a Word or PowerPoint file">Original</button>
         </div>
@@ -1974,37 +1976,44 @@ const FONTS = {"CalB": "AAEAAAAOAIAAAwBgR0RFRg2VDe0AAIGYAAAAuEdQT1OVtZTJAACCUAAA
   const WIDTHS = { legal: 612, a4: 595.28, tablet: 432, phone: 324 };
   const MARGINS = { legal: [36, 54, 72], a4: [36, 54, 72], tablet: [26, 36, 50], phone: [16, 22, 30] };
   const SIZES = [9, 10, 11, 12, 13, 14, 16, 18];
-  const DEFAULTS = { v: 4, officeStyle: 'original', width: 'legal', margin: 'normal', font: 'Serif', officeFont: 'Original', size: 11, theme: 'light', bookmarks: true, split: false, panel: true, ui: 'dark', layout: 'auto' };
+  const DEFAULTS = { v: 5, officeStyle: 'original', width: 'auto', margin: 'normal', font: 'Slab', officeFont: 'Original', size: 11, theme: 'light', bookmarks: true, split: false, panel: true, ui: 'dark', layout: 'continuous' };
   const HEIGHTS = { legal: 1008, a4: 841.89, tablet: 576, phone: 576 }; // page height in Pages layout
   let opts = Object.assign({}, DEFAULTS);
   let saved = null;
   try { saved = JSON.parse(localStorage.getItem('pdfcraft.v1') || 'null'); } catch (e) {}
-  if (saved && typeof saved === 'object') { opts = Object.assign(opts, saved); if (saved.v !== 3 && saved.v !== 4) opts.layout = 'auto'; if (saved.v !== 4) { if (!saved.ui || saved.ui === 'system') opts.ui = 'dark'; opts.v = 4; } }
-  else if (window.innerWidth <= 600) opts.width = 'phone';
-  if (!WIDTHS[opts.width]) opts.width = 'legal';
+  if (saved && typeof saved === 'object') {
+    opts = Object.assign(opts, saved);
+    if (saved.v !== 4 && saved.v !== 5 && (!saved.ui || saved.ui === 'system')) opts.ui = 'dark';
+    // v5 defaults: continuous layout, width fitted to the device, Arvo slab.
+    if (saved.v !== 5) { opts.layout = 'continuous'; opts.width = 'auto'; if (!saved.font || saved.font === 'Serif') opts.font = 'Slab'; opts.v = 5; }
+  }
+  if (opts.width !== 'auto' && !WIDTHS[wk()]) opts.width = 'auto';
+  // Auto width: phone-width pages on phones, tablet width on touch tablets, Legal width on computers.
+  const deviceKey = () => window.innerWidth <= 600 ? 'phone' : (window.innerWidth <= 1100 && window.matchMedia('(pointer: coarse)').matches) ? 'tablet' : 'legal';
+  const wk = () => opts.width === 'auto' ? deviceKey() : opts.width;
   if (!SIZES.includes(+opts.size)) opts.size = 11;
   const persist = () => { try { localStorage.setItem('pdfcraft.v1', JSON.stringify(opts)); } catch (e) {} };
   const applyUi = () => { if (opts.ui === 'light' || opts.ui === 'dark') document.documentElement.dataset.theme = opts.ui; else delete document.documentElement.dataset.theme; };
   applyUi();
-  const marginPt = () => MARGINS[opts.width][{ narrow: 0, normal: 1, wide: 2 }[opts.margin] ?? 1];
+  const marginPt = () => MARGINS[wk()][{ narrow: 0, normal: 1, wide: 2 }[opts.margin] ?? 1];
   // Every open file is an item; with one item the app works as before, with several they are merged in order.
   let items = [];
   let doc = { md: '', name: '' };
   const hasDoc = () => items.length > 0;
   // Typeface: Word and PowerPoint files default to their own fonts ("Original"); everything else uses the reading fonts.
-  const fontChoice = (it = doc) => it.fonts ? opts.officeFont : (opts.font === 'Original' ? 'Serif' : opts.font);
+  const fontChoice = (it = doc) => it.fonts ? opts.officeFont : (opts.font === 'Original' ? 'Slab' : opts.font);
   const fontPair = (it = doc) => {
     const c = fontChoice(it);
     if (c === 'Original' && it.fonts) return { body: it.fonts.body.family, head: it.fonts.head.family + 'D' };
-    const f = c === 'Original' ? 'Serif' : c;
+    const f = c === 'Original' ? 'Slab' : c;
     return { body: f, head: f + 'D' };
   };
   const faithful = (it = doc) => !!(it.office && opts.officeStyle !== 'reading'); // Word/PowerPoint with their own formatting
   // Auto: files that have their own page size (Word, PowerPoint, PDF) keep their pages; Markdown and text run continuous.
   const pagedFor = it => opts.layout === 'pages' || (opts.layout === 'auto' && (faithful(it) || it.kind === 'pdf'));
-  const convOpts = (it = doc, paged = pagedFor(it)) => { const fp = fontPair(it); return { widthPt: WIDTHS[opts.width], margin: marginPt(), fontSize: +opts.size, font: fp.body, headFont: fp.head, theme: opts.theme,
+  const convOpts = (it = doc, paged = pagedFor(it)) => { const fp = fontPair(it); return { widthPt: WIDTHS[wk()], margin: marginPt(), fontSize: +opts.size, font: fp.body, headFont: fp.head, theme: opts.theme,
     bookmarks: !!opts.bookmarks, limitPt: opts.split ? 200 * 72 : Infinity, images: it.images || {}, breaks: !!it.breaks,
-    pageHeightPt: paged ? HEIGHTS[opts.width] : 0 }; };
+    pageHeightPt: paged ? HEIGHTS[wk()] : 0 }; };
   const pdfPreview = () => items.length > 1 || faithful(doc) || doc.kind === 'pdf'; // otherwise the live HTML preview
   const narrow = () => window.matchMedia('(max-width: 760px)').matches;
   const floating = () => window.matchMedia('(max-width: 1100px)').matches; // sheet on phones, popover on tablets
@@ -2030,6 +2039,9 @@ const FONTS = {"CalB": "AAEAAAAOAIAAAwBgR0RFRg2VDe0AAIGYAAAAuEdQT1OVtZTJAACCUAAA
     const anyContinuous = opts.layout === 'continuous' || (opts.layout === 'auto' && (!items.length || items.some(i => !pagedFor(i))));
     $('splitRow').hidden = !anyContinuous;
     $('layoutHint').textContent = opts.layout === 'auto' ? 'Word, PowerPoint and PDF keep their pages; Markdown and text run continuous.' : opts.layout === 'continuous' ? (items.length > 1 ? 'Everything becomes one continuous page.' : 'One continuous page.') : 'Regular pages.';
+    const dk = deviceKey(), widthName = { phone: 'phone', tablet: 'tablet', legal: 'screen' }[dk], inches = { phone: '4.5', tablet: '6', legal: '8.5' }[dk];
+    $('widthHint').textContent = opts.width === 'auto' ? 'Fitted to this ' + widthName + ': ' + inches + ' in wide' : '';
+    $('widthHint').hidden = opts.width !== 'auto';
     renderFiles();
     const hint = $('fontHint');
     if (doc.fonts && fontChoice() === 'Original') {
@@ -2108,13 +2120,13 @@ const FONTS = {"CalB": "AAEAAAAOAIAAAwBgR0RFRg2VDe0AAIGYAAAAuEdQT1OVtZTJAACCUAAA
       '--pfont': css(fp.body),
       '--pdisplay': headBase === 'Serif' ? '"PC Serif Display", "PC Serif", "PC Sym", serif' : headBase === 'Sans' ? '"PC Sans Display", "PC Sans", "PC Sym", sans-serif' : css(headBase),
       '--phw': headBase === 'Serif' ? '600' : '700', '--pls': '0', '--plh': serif ? '1.6' : '1.55',
-      '--w': WIDTHS[opts.width], '--ph': HEIGHTS[opts.width], '--m': marginPt(), '--fs': opts.size, '--k': scale() };
+      '--w': WIDTHS[wk()], '--ph': HEIGHTS[wk()], '--m': marginPt(), '--fs': opts.size, '--k': scale() };
     for (const k in v) s.setProperty(k, v[k]);
   }
   function scale() {
     const cv = $('canvas'), cs = getComputedStyle(cv);
     const avail = cv.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight);
-    return Math.max(0.55, Math.min(1.3, avail / WIDTHS[opts.width])).toFixed(4);
+    return Math.max(0.55, Math.min(1.3, avail / WIDTHS[wk()])).toFixed(4);
   }
   function fit() { document.querySelectorAll('.page').forEach(p => p.style.setProperty('--k', scale())); }
 
@@ -2685,10 +2697,14 @@ const FONTS = {"CalB": "AAEAAAAOAIAAAwBgR0RFRg2VDe0AAIGYAAAAuEdQT1OVtZTJAACCUAAA
     $('app').classList.toggle('closed', m === 'side' && !opts.panel);
     $('setBtn').setAttribute('aria-pressed', String(m === 'side' && !!opts.panel));
   }
-  let rz = 0, lastMode = mode();
+  let rz = 0, lastMode = mode(), lastKey = deviceKey();
   window.addEventListener('resize', () => {
     clearTimeout(rz);
-    rz = setTimeout(() => { const m = mode(); if (m !== lastMode) { lastMode = m; applyMode(); } fit(); }, 100);
+    rz = setTimeout(() => {
+      const m = mode(); if (m !== lastMode) { lastMode = m; applyMode(); }
+      const k = deviceKey(); if (k !== lastKey) { lastKey = k; syncControls(); if (opts.width === 'auto' && hasDoc()) changed(); }
+      fit();
+    }, 100);
   });
   applyMode();
   syncControls(); show();
