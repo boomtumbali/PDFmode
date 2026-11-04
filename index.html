@@ -203,19 +203,44 @@ svg.i { width: 19px; height: 19px; fill: none; stroke: currentColor; stroke-widt
 .trust { display: flex; align-items: center; gap: 7px; margin: 22px 0 0; font-size: 12.5px; color: var(--text2); }
 .trust svg { width: 15px; height: 15px; color: #34C759; }
 .hero-art { margin: 0; }
+/* Hero: headline left, text and actions right, the tour film full width underneath */
+.hero { grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr); grid-template-areas: "head body" "media media"; align-items: end; row-gap: clamp(28px, 5vh, 48px); }
+.hero-head { grid-area: head; } .hero-body { grid-area: body; padding-bottom: 6px; }
+.hero-head h1 { margin-bottom: 0; }
+.hero-art { grid-area: media; }
 .hero-art.has-video .art { display: none; }
-.hero-art:not(.has-video) .hero-video { display: none; }
-.hero-video { position: relative; aspect-ratio: 16 / 9; border-radius: 18px; overflow: hidden; background: #0E0E10;
-  box-shadow: 0 0 0 0.5px var(--panel-hair), 0 30px 70px -24px rgba(0, 0, 0, 0.55); }
+.hero-art:not(.has-video) .hero-video, .hero-art:not(.has-video) .vcap { display: none; }
+.hero-art:not(.has-video) .art { display: block; max-width: 520px; margin: 0 auto; }
+.hero-video { position: relative; aspect-ratio: 16 / 9; border-radius: 22px; overflow: hidden; background: #0E0E10; cursor: zoom-in; isolation: isolate;
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.07), 0 40px 90px -30px rgba(10, 132, 255, 0.35), 0 30px 60px -30px rgba(0, 0, 0, 0.6); }
+:root[data-theme="light"] .hero-video { box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.06), 0 40px 90px -36px rgba(10, 132, 255, 0.45), 0 24px 50px -28px rgba(0, 0, 0, 0.35); }
 .hero-video video { display: block; width: 100%; height: 100%; object-fit: cover; }
-.vsound { position: absolute; right: 12px; bottom: 12px; height: 34px; padding: 0 12px 0 10px; border-radius: 999px; display: flex; align-items: center; gap: 6px;
-  background: rgba(20, 20, 22, 0.7); -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px); color: #fff; font: 600 12.5px var(--ui);
-  box-shadow: inset 0 0 0 0.5px rgba(255, 255, 255, 0.16); transition: background-color 0.15s, transform 0.1s; }
-.vsound:hover { background: rgba(40, 40, 44, 0.85); }
-.vsound:active { transform: scale(0.96); }
-.vsound svg { width: 17px; height: 17px; stroke-width: 1.9; }
-.vsound .on { display: none; }
-.vsound[aria-pressed="true"] .on { display: inline; } .vsound[aria-pressed="true"] .off { display: none; }
+/* Icon-only controls: shown on hover or keyboard focus with a pointer; always shown on touch screens */
+.vctl { position: absolute; top: 14px; right: 14px; display: flex; gap: 8px; opacity: 0; transform: translateY(-4px); transition: opacity 0.2s, transform 0.25s var(--ease); }
+.hero-video:hover .vctl, .hero-video:focus-within .vctl { opacity: 1; transform: none; }
+@media (hover: none) { .vctl { opacity: 1; transform: none; } .hero-video { cursor: default; } }
+.vbtn { width: 40px; height: 40px; border-radius: 50%; display: grid; place-items: center; color: #fff; background: rgba(18, 18, 20, 0.55);
+  -webkit-backdrop-filter: blur(14px) saturate(160%); backdrop-filter: blur(14px) saturate(160%); box-shadow: inset 0 0 0 0.5px rgba(255, 255, 255, 0.22); transition: background-color 0.15s, transform 0.1s; }
+.vbtn:hover { background: rgba(40, 40, 44, 0.78); } .vbtn:active { transform: scale(0.93); }
+.vbtn svg { width: 18px; height: 18px; stroke-width: 1.9; }
+#heroSound .on { display: none; } #heroSound[aria-pressed="true"] .on { display: inline; } #heroSound[aria-pressed="true"] .off { display: none; }
+.vcap { display: flex; align-items: center; gap: 10px; margin-top: 14px; font-size: 13px; color: var(--text3); }
+.vcap button { display: inline-flex; align-items: center; gap: 7px; font-weight: 600; font-size: 13.5px; color: var(--text); padding: 6px 2px; border-radius: 8px; }
+.vcap button:hover { color: var(--accent); }
+.vcap svg { width: 14px; height: 14px; fill: currentColor; stroke: none; }
+/* Full-size player */
+.vbox { position: fixed; inset: 0; z-index: 90; display: grid; place-items: center; padding: max(16px, env(safe-area-inset-top, 0px)) 16px max(16px, env(safe-area-inset-bottom, 0px));
+  background: rgba(5, 5, 7, 0.88); -webkit-backdrop-filter: blur(18px); backdrop-filter: blur(18px); opacity: 0; transition: opacity 0.25s; }
+.vbox.on { opacity: 1; }
+.vbox[hidden] { display: none; }
+.vbox-in { width: min(94vw, calc((100vh - 96px) * 16 / 9)); aspect-ratio: 16 / 9; border-radius: 16px; overflow: hidden; background: #000; box-shadow: 0 40px 120px rgba(0, 0, 0, 0.6);
+  transform: scale(0.97); transition: transform 0.35s var(--ease); }
+.vbox.on .vbox-in { transform: none; }
+.vbox-in video { display: block; width: 100%; height: 100%; background: #000; }
+.vbox-x { position: absolute; top: max(14px, env(safe-area-inset-top, 0px)); right: 14px; width: 42px; height: 42px; border-radius: 50%; display: grid; place-items: center; color: #fff;
+  background: rgba(255, 255, 255, 0.12); box-shadow: inset 0 0 0 0.5px rgba(255, 255, 255, 0.2); }
+.vbox-x:hover { background: rgba(255, 255, 255, 0.2); }
+.vbox-x svg { width: 20px; height: 20px; stroke-width: 2; }
 .art { width: 100%; height: auto; display: block; overflow: visible; }
 .art .chip { fill: var(--panel); stroke: var(--panel-hair); filter: drop-shadow(0 6px 14px rgba(0, 0, 0, 0.06)); }
 .art .ext { fill: #fff; font: 700 8.5px var(--ui); text-anchor: middle; }
@@ -256,8 +281,8 @@ body.landing .app { grid-template-columns: minmax(0, 1fr); min-height: 0; }
 body.landing .canvas { padding-bottom: 8px; }
 body.landing .insp, body.landing #setBtn, body.landing #exportBtn { display: none; }
 @media (max-width: 900px) { .hero { grid-template-columns: 1fr; } .hero-art { max-width: 420px; margin: 4px auto 0; order: -1; } .steps, .keeps { grid-template-columns: 1fr 1fr; } }
-@media (max-width: 900px) { .hero-art.has-video { max-width: 640px; width: 100%; } }
-@media (max-width: 560px) { .hero-art.has-video { max-width: none; } }
+@media (max-width: 900px) { .hero { grid-template-columns: 1fr; grid-template-areas: "head" "body" "media"; row-gap: 18px; } .hero-art.has-video { max-width: none; width: 100%; order: 0; margin: 10px 0 0; } .hero-body { padding-bottom: 0; } }
+@media (max-width: 560px) { .hero-art.has-video { max-width: none; margin-top: 6px; } .hero-video { border-radius: 16px; } .vcap span { display: none; } .vbtn { width: 36px; height: 36px; } .vctl { top: 10px; right: 10px; } }
 @media (max-width: 560px) { .steps, .keeps { grid-template-columns: 1fr; } .land { padding-top: 4px; } .hero-art { max-width: 320px; order: 0; margin-top: 18px; } .land h1 br { display: none; } }
 @media (max-width: 760px) { body.landing .wm { display: flex; } body.landing .title { display: none; } }
 @media (prefers-reduced-motion: reduce) { .art .scroll, .art .wires path, .art .thumb, .art .callout { animation: none; } }
@@ -406,9 +431,11 @@ body.landing .insp, body.landing #setBtn, body.landing #exportBtn { display: non
   <main class="canvas" id="canvas">
     <section class="empty land" id="empty" aria-labelledby="emptyTitle">
       <div class="hero">
-        <div class="hero-copy">
+        <div class="hero-head">
           <p class="eyebrow">A study tool for the files you actually get</p>
-          <h1 id="emptyTitle">Notes, slides and handouts.<br><span>One PDF, made for reading.</span></h1>
+          <h1 id="emptyTitle">Notes, slides and handouts. <br><span>One PDF, made for reading.</span></h1>
+        </div>
+        <div class="hero-body">
           <p class="lede">Drop in Markdown, Word, PowerPoint, PDF or plain text. PDFmode merges them in your order and keeps their formatting, or flows everything into one continuous page you can scroll without a single page break.</p>
           <div class="btns">
             <button class="pb big" type="button" id="chooseBtn">Choose files</button>
@@ -418,16 +445,21 @@ body.landing .insp, body.landing #setBtn, body.landing #exportBtn { display: non
           <p class="trust"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>Converted in your browser. Your files are never uploaded.</p>
         </div>
         <figure class="hero-art has-video">
-          <div class="hero-video">
+          <div class="hero-video" id="heroStage">
             <video id="heroVideo" muted loop playsinline preload="metadata" poster="pdfmode-poster.jpg" aria-label="How PDFmode works: add files, merge them into one continuous page, and export a PDF">
               <source src="pdfmode-hero-720p.mp4" type="video/mp4">
               <source src="pdfmode-hero-720p.webm" type="video/webm">
             </video>
-            <button type="button" class="vsound" id="heroSound" aria-pressed="false" aria-label="Turn sound on">
-              <svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M11 5 6 9H2v6h4l5 4V5Z"/><path class="off" d="m23 9-6 6M17 9l6 6"/><path class="on" d="M15.5 8.5a5 5 0 0 1 0 7M18.5 5.5a9 9 0 0 1 0 13"/></svg>
-              <span>Sound</span>
-            </button>
+            <div class="vctl">
+              <button type="button" class="vbtn" id="heroSound" aria-pressed="false" aria-label="Turn sound on" title="Sound">
+                <svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M11 5 6 9H2v6h4l5 4V5Z"/><path class="off" d="m22 9-6 6M16 9l6 6"/><path class="on" d="M15.5 8.5a5 5 0 0 1 0 7M18.5 5.5a9 9 0 0 1 0 13"/></svg>
+              </button>
+              <button type="button" class="vbtn" id="heroExpand" aria-label="Watch full screen in 1080p with sound" title="Watch in 1080p">
+                <svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg>
+              </button>
+            </div>
           </div>
+          <figcaption class="vcap"><button type="button" id="heroWatch"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4.5v15l12-7.5z"/></svg>Watch the 19-second tour</button><span>with sound, in 1080p</span></figcaption>
           <svg viewBox="0 0 480 380" class="art" aria-hidden="true">
             <defs>
               <clipPath id="pc-clip"><rect x="236" y="22" width="168" height="346" rx="7"/></clipPath>
@@ -2789,30 +2821,66 @@ const FONTS = {"CalB": "AAEAAAAOAIAAAwBgR0RFRg2VDe0AAIGYAAAAuEdQT1OVtZTJAACCUAAA
   try { sessionStorage.removeItem('pm-recovered'); } catch (e) {}
 })();
 </script>
+<div class="vbox" id="vbox" role="dialog" aria-modal="true" aria-label="PDFmode tour video" hidden>
+  <div class="vbox-in">
+    <video id="vboxVideo" controls playsinline preload="none" poster="pdfmode-poster.jpg">
+      <source src="pdfmode-promo-1080p.mp4" type="video/mp4">
+      <source src="pdfmode-hero-720p.webm" type="video/webm">
+    </video>
+  </div>
+  <button type="button" class="vbox-x" id="vboxClose" aria-label="Close video"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg></button>
+</div>
 <script>
 (function () {
   var v = document.getElementById('heroVideo'); if (!v) return;
-  var fig = v.closest('.hero-art'), btn = document.getElementById('heroSound');
+  var fig = v.closest('.hero-art'), stage = document.getElementById('heroStage');
+  var soundBtn = document.getElementById('heroSound'), box = document.getElementById('vbox'), big = document.getElementById('vboxVideo');
   var fail = function () { fig.classList.remove('has-video'); };
   var srcs = v.querySelectorAll('source'), last = srcs[srcs.length - 1];
   if (last) last.addEventListener('error', fail);
   v.addEventListener('error', fail);
   setTimeout(function () { if (v.networkState === 3 || v.error) fail(); }, 4000); // no playable source found
   var still = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  if (still) v.controls = true;
-  var play = function () { if (!still || !v.muted) { var p = v.play(); if (p && p.catch) p.catch(function () {}); } };
-  btn.addEventListener('click', function () {
-    var turnOn = v.muted;
-    v.muted = !turnOn;
-    if (turnOn) { v.currentTime = 0; var p = v.play(); if (p && p.catch) p.catch(function () {}); }
-    btn.setAttribute('aria-pressed', String(turnOn));
-    btn.setAttribute('aria-label', turnOn ? 'Turn sound off' : 'Turn sound on');
+  var visible = false, boxOpen = false;
+  var play = function (el) { var p = el.play(); if (p && p.catch) p.catch(function () {}); };
+  var resume = function () { if (visible && !boxOpen && (!still || !v.muted)) play(v); };
+  // inline sound: unmuting restarts the tour so the beats line up with the story
+  soundBtn.addEventListener('click', function (e) {
+    e.stopPropagation();
+    var on = v.muted; v.muted = !on;
+    if (on) { v.currentTime = 0; play(v); }
+    soundBtn.setAttribute('aria-pressed', String(on));
+    soundBtn.setAttribute('aria-label', on ? 'Turn sound off' : 'Turn sound on');
   });
+  // full-size 1080p player with sound and native controls
+  var opener = null;
+  var openBox = function () {
+    opener = document.activeElement; boxOpen = true; v.pause();
+    box.hidden = false; requestAnimationFrame(function () { box.classList.add('on'); });
+    big.currentTime = 0; big.muted = false; play(big);
+    document.getElementById('vboxClose').focus();
+  };
+  var closeBox = function () {
+    if (!boxOpen) return;
+    boxOpen = false; big.pause(); box.classList.remove('on');
+    setTimeout(function () { box.hidden = true; }, 250);
+    if (opener && opener.focus) opener.focus();
+    resume();
+  };
+  document.getElementById('heroExpand').addEventListener('click', function (e) { e.stopPropagation(); openBox(); });
+  document.getElementById('heroWatch').addEventListener('click', openBox);
+  stage.addEventListener('click', function (e) { if (!e.target.closest('.vbtn')) openBox(); });
+  document.getElementById('vboxClose').addEventListener('click', closeBox);
+  box.addEventListener('click', function (e) { if (e.target === box) closeBox(); });
+  big.addEventListener('ended', closeBox);
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && boxOpen) { e.stopPropagation(); closeBox(); } }, true);
+  if (still) v.removeAttribute('loop');
+  // play only while the film is on screen
   if ('IntersectionObserver' in window) {
     new IntersectionObserver(function (entries) {
-      entries.forEach(function (e) { if (e.isIntersecting) play(); else v.pause(); });
+      entries.forEach(function (e) { visible = e.isIntersecting; if (visible) resume(); else v.pause(); });
     }, { threshold: 0.25 }).observe(v);
-  } else play();
+  } else { visible = true; resume(); }
 })();
 </script>
 </body>
