@@ -412,11 +412,8 @@ body.landing .insp, body.landing #setBtn, body.landing #exportBtn { display: non
 /* ---- Navigation (v7): brand = home, section links on the start page, labelled actions in the app ---- */
 .wm-name { color: inherit; text-decoration: none; border-radius: 6px; }
 .wm-name:hover { color: var(--accent); }
-.lnav { display: none; align-items: center; gap: 4px; margin-right: 6px; }
-.lnav a { padding: 7px 11px; border-radius: 8px; color: var(--text2); text-decoration: none; font-size: 13.5px; font-weight: 500; }
-.lnav a:hover { color: var(--text); background: var(--fill); }
 .topcta { display: none; }
-body.landing .lnav { display: flex; } body.landing .topcta { display: inline-flex; } body.landing #openBtn { display: none; }
+body.landing .topcta { display: inline-flex; } body.landing #openBtn { display: none; }
 .ab { height: 34px; padding: 0 12px 0 9px; border-radius: 9px; display: inline-flex; align-items: center; gap: 6px; color: var(--text); font-size: 13.5px; font-weight: 500; transition: background-color 0.15s; }
 .ab:hover { background: var(--fill); }
 .ab svg { width: 18px; height: 18px; color: var(--text2); }
@@ -439,7 +436,6 @@ body.landing .lnav { display: flex; } body.landing .topcta { display: inline-fle
   body:not(.landing) .title { text-align: right; }
   body:not(.landing) .canvas { padding-bottom: calc(96px + env(safe-area-inset-bottom, 0px)); }
   body:not(.landing) .hud { bottom: calc(84px + env(safe-area-inset-bottom, 0px)); }
-  .lnav { display: none !important; }
   body.landing .topcta { height: 32px; padding: 0 14px; }
 }
 /* ---- Start page (v7): one centred story — what it is, the action, then the film as proof ---- */
@@ -473,7 +469,6 @@ body.landing .lnav { display: flex; } body.landing .topcta { display: inline-fle
   <div class="wm"><a href="#" class="wm-name" id="homeLink" aria-label="PDFmode, back to the start">PDFmode</a><span class="wm-by">by <a href="https://www.linkedin.com/in/boomtumbali" target="_blank" rel="noopener noreferrer">@boomtumbali</a></span></div>
   <div class="title"><div class="n" id="docName"></div><div class="m" id="docMeta"></div></div>
   <div class="tb-r">
-    <nav class="lnav" aria-label="Sections"><a href="#how">How it works</a><a href="#formats">Formats</a></nav>
     <button class="pb topcta" id="topChoose" type="button">Choose files</button>
     <button class="ab" id="openBtn" type="button" title="Add files (⌘O)"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg><span class="lb">Add files</span></button>
     <button class="ab" id="setBtn" type="button" aria-controls="insp" aria-pressed="true" title="Page settings"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 4h-7M10 4H3M21 12h-9M8 12H3M21 20h-5M12 20H3M14 2v4M8 10v4M16 18v4"/></svg><span class="lb">Settings</span></button>
