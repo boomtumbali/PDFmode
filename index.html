@@ -2841,9 +2841,10 @@ const FONTS = {"CalB": "AAEAAAAOAIAAAwBgR0RFRg2VDe0AAIGYAAAAuEdQT1OVtZTJAACCUAAA
   }
   const downloadsP = (window.claude && typeof window.claude.use === 'function') ? window.claude.use('downloads').catch(() => null) : Promise.resolve(null);
   function fileName() {
-    let base = /\.[^.]+$/.test(doc.name) ? doc.name.replace(/\.[^.]+$/, '') : (result && result.title) || doc.name || 'Document';
-    if (items.length > 1) base += ' and ' + (items.length - 1) + ' more';
-    return base.replace(/[\\/:*?"<>|]+/g, ' ').trim().slice(0, 120) + '-pdfmode.vercel.app.pdf';
+    // Export name is the local date and time, e.g. 06NOV2026-0051-pdfmode.vercel.app.pdf (whatever the files are)
+    const d = new Date(), p2 = n => String(n).padStart(2, '0');
+    const mon = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'][d.getMonth()];
+    return p2(d.getDate()) + mon + d.getFullYear() + '-' + p2(d.getHours()) + p2(d.getMinutes()) + '-pdfmode.vercel.app.pdf';
   }
   async function exportPdf() {
     const btn = $('exportBtn');
