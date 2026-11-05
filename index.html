@@ -408,6 +408,60 @@ body.landing .insp, body.landing #setBtn, body.landing #exportBtn { display: non
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; }
 }
+
+/* ---- Navigation (v7): brand = home, section links on the start page, labelled actions in the app ---- */
+.wm-name { color: inherit; text-decoration: none; border-radius: 6px; }
+.wm-name:hover { color: var(--accent); }
+.lnav { display: none; align-items: center; gap: 4px; margin-right: 6px; }
+.lnav a { padding: 7px 11px; border-radius: 8px; color: var(--text2); text-decoration: none; font-size: 13.5px; font-weight: 500; }
+.lnav a:hover { color: var(--text); background: var(--fill); }
+.topcta { display: none; }
+body.landing .lnav { display: flex; } body.landing .topcta { display: inline-flex; } body.landing #openBtn { display: none; }
+.ab { height: 34px; padding: 0 12px 0 9px; border-radius: 9px; display: inline-flex; align-items: center; gap: 6px; color: var(--text); font-size: 13.5px; font-weight: 500; transition: background-color 0.15s; }
+.ab:hover { background: var(--fill); }
+.ab svg { width: 18px; height: 18px; color: var(--text2); }
+.ab[aria-pressed="true"] { background: var(--fill); } .ab[aria-pressed="true"] svg { color: var(--accent); }
+@media (max-width: 1000px) { .ab .lb { display: none; } .ab { padding: 0; width: 34px; justify-content: center; } }
+.mtxt { margin: 0 18px 4px; color: var(--text2); font-size: 14px; line-height: 1.5; }
+#homeDlg { width: min(420px, calc(100% - 32px)); }
+.bbar { display: none; }
+@media (max-width: 760px) {
+  body:not(.landing) .bbar { display: grid; grid-template-columns: 1fr 1fr 1.25fr; gap: 8px; position: fixed; left: 0; right: 0; bottom: 0; z-index: 35;
+    padding: 8px 12px calc(8px + env(safe-area-inset-bottom, 0px)); background: var(--bar); -webkit-backdrop-filter: saturate(180%) blur(20px); backdrop-filter: saturate(180%) blur(20px);
+    border-top: 0.5px solid var(--hair); }
+  .bbar button { height: 48px; border-radius: 12px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; font-size: 11.5px; font-weight: 600; color: var(--text); background: var(--fill); }
+  .bbar button svg { width: 20px; height: 20px; }
+  .bbar button.go { background: var(--accent); color: #fff; flex-direction: row; gap: 7px; font-size: 14px; }
+  .bbar button:disabled { opacity: 0.4; }
+  body:not(.landing) #openBtn, body:not(.landing) #setBtn, body:not(.landing) #exportBtn { display: none; }
+  body:not(.landing) .wm { display: flex; } body:not(.landing) .wm-by { display: none; }
+  body:not(.landing) .tb { grid-template-columns: auto minmax(0, 1fr); }
+  body:not(.landing) .title { text-align: right; }
+  body:not(.landing) .canvas { padding-bottom: calc(96px + env(safe-area-inset-bottom, 0px)); }
+  body:not(.landing) .hud { bottom: calc(84px + env(safe-area-inset-bottom, 0px)); }
+  .lnav { display: none !important; }
+  body.landing .topcta { height: 32px; padding: 0 14px; }
+}
+/* ---- Start page (v7): one centred story — what it is, the action, then the film as proof ---- */
+.land { max-width: 1180px; }
+.hero { grid-template-columns: 1fr !important; grid-template-areas: "head" "body" "media" !important; justify-items: center; text-align: center; row-gap: 0 !important; align-items: start; }
+.hero-head { max-width: 1060px; }
+.sh + .steps, .sh + .keeps { margin-top: 0; }
+.hero-head .eyebrow { margin-bottom: 16px; }
+.land h1 { font-size: clamp(34px, 5.4vw, 66px); line-height: 1.04; }
+.hero-body { max-width: 640px; display: flex; flex-direction: column; align-items: center; padding: 0; }
+.hero-body .lede { margin: 20px auto 26px; max-width: 36em; }
+.hero-body .btns { justify-content: center; }
+.hero-body .trust { justify-content: center; }
+.hero-art.has-video { width: 100%; max-width: 1180px; margin: clamp(34px, 6vh, 56px) 0 0; }
+.sh { margin: clamp(56px, 9vh, 88px) 0 18px; text-align: center; font-family: "PC Slab", Rockwell, Georgia, serif; font-size: clamp(24px, 2.6vw, 32px); letter-spacing: -0.01em; scroll-margin-top: calc(var(--tbh) + 24px); }
+@media (max-width: 760px) {
+  .hero { text-align: left; justify-items: stretch; }
+  .hero-body { align-items: flex-start; } .hero-body .btns, .hero-body .trust { justify-content: flex-start; }
+  .hero-body .lede { margin: 14px 0 20px; }
+  .hero-art.has-video { margin-top: 26px; }
+  .sh { text-align: left; margin-top: 44px; }
+}
 </style>
 <script>
   window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
@@ -416,17 +470,29 @@ body.landing .insp, body.landing #setBtn, body.landing #exportBtn { display: non
 </head>
 <body>
 <header class="tb">
-  <div class="wm"><span class="wm-name">PDFmode</span><span class="wm-by">by <a href="https://www.linkedin.com/in/boomtumbali" target="_blank" rel="noopener noreferrer">@boomtumbali</a></span></div>
+  <div class="wm"><a href="#" class="wm-name" id="homeLink" aria-label="PDFmode, back to the start">PDFmode</a><span class="wm-by">by <a href="https://www.linkedin.com/in/boomtumbali" target="_blank" rel="noopener noreferrer">@boomtumbali</a></span></div>
   <div class="title"><div class="n" id="docName"></div><div class="m" id="docMeta"></div></div>
   <div class="tb-r">
-    <button class="ib" id="openBtn" type="button" aria-label="Open file" title="Open file (⌘O)"><svg class="i" viewBox="0 0 24 24"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M16 13H8"/><path d="M16 17H8"/><path d="M10 9H8"/></svg></button>
-    <button class="ib" id="setBtn" type="button" aria-label="Page settings" aria-controls="insp" aria-pressed="true" title="Page settings"><svg class="i" viewBox="0 0 24 24"><path d="M21 4h-7M10 4H3M21 12h-9M8 12H3M21 20h-5M12 20H3M14 2v4M8 10v4M16 18v4"/></svg></button>
+    <nav class="lnav" aria-label="Sections"><a href="#how">How it works</a><a href="#formats">Formats</a></nav>
+    <button class="pb topcta" id="topChoose" type="button">Choose files</button>
+    <button class="ab" id="openBtn" type="button" title="Add files (⌘O)"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg><span class="lb">Add files</span></button>
+    <button class="ab" id="setBtn" type="button" aria-controls="insp" aria-pressed="true" title="Page settings"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 4h-7M10 4H3M21 12h-9M8 12H3M21 20h-5M12 20H3M14 2v4M8 10v4M16 18v4"/></svg><span class="lb">Settings</span></button>
     <button class="pb" id="exportBtn" type="button" disabled title="Export PDF (⌘E)"><span class="spin" aria-hidden="true"></span><svg class="i ok" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg><span id="exportLbl">Export PDF</span></button>
   </div>
   <input type="file" id="addFile" multiple hidden accept=".pdf,application/pdf,.md,.markdown,.mdown,.mkd,.txt,.text,.docx,.pptx,.html,.htm,text/markdown,text/plain,text/html,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/vnd.openxmlformats-officedocument.presentationml.presentation">
   <input type="file" id="file" multiple accept=".pdf,application/pdf,.md,.markdown,.mdown,.mkd,.txt,.text,.docx,.pptx,.html,.htm,text/markdown,text/plain,text/html,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/vnd.openxmlformats-officedocument.presentationml.presentation" hidden>
 </header>
 
+<nav class="bbar" id="bbar" aria-label="Document actions">
+  <button type="button" id="bbAdd"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg><span>Add files</span></button>
+  <button type="button" id="bbSet"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 4h-7M10 4H3M21 12h-9M8 12H3M21 20h-5M12 20H3M14 2v4M8 10v4M16 18v4"/></svg><span>Settings</span></button>
+  <button type="button" id="bbExport" class="go"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12M7 10l5 5 5-5M5 21h14"/></svg><span>Export PDF</span></button>
+</nav>
+<div class="modal" id="homeDlg" role="alertdialog" aria-modal="true" aria-labelledby="homeTitle" aria-describedby="homeText">
+  <div class="modal-h"><strong id="homeTitle">Close these files?</strong></div>
+  <p class="mtxt" id="homeText">You’ll go back to the start page. Export first if you want to keep the PDF.</p>
+  <div class="modal-f"><button class="gb" type="button" id="homeCancel">Keep working</button><button class="pb" type="button" id="homeOk">Close files</button></div>
+</div>
 <div class="app" id="app">
   <main class="canvas" id="canvas">
     <section class="empty land" id="empty" aria-labelledby="emptyTitle">
@@ -447,19 +513,18 @@ body.landing .insp, body.landing #setBtn, body.landing #exportBtn { display: non
         <figure class="hero-art has-video">
           <div class="hero-video" id="heroStage">
             <video id="heroVideo" muted loop playsinline preload="metadata" poster="pdfmode-poster.jpg" aria-label="How PDFmode works: add files, merge them into one continuous page, and export a PDF">
-              <source src="pdfmode-hero-720p.mp4" type="video/mp4">
-              <source src="pdfmode-hero-720p.webm" type="video/webm">
+              <source src="pdfmode-promo-1080p.mp4" type="video/mp4">
+              <source src="pdfmode-promo-1080p.webm" type="video/webm">
             </video>
             <div class="vctl">
               <button type="button" class="vbtn" id="heroSound" aria-pressed="false" aria-label="Turn sound on" title="Sound">
                 <svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M11 5 6 9H2v6h4l5 4V5Z"/><path class="off" d="m22 9-6 6M16 9l6 6"/><path class="on" d="M15.5 8.5a5 5 0 0 1 0 7M18.5 5.5a9 9 0 0 1 0 13"/></svg>
               </button>
-              <button type="button" class="vbtn" id="heroExpand" aria-label="Watch full screen in 1080p with sound" title="Watch in 1080p">
+              <button type="button" class="vbtn" id="heroExpand" aria-label="Watch full screen with sound" title="Full screen">
                 <svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg>
               </button>
             </div>
           </div>
-          <figcaption class="vcap"><button type="button" id="heroWatch"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4.5v15l12-7.5z"/></svg>Watch the 19-second tour</button><span>with sound, in 1080p</span></figcaption>
           <svg viewBox="0 0 480 380" class="art" aria-hidden="true">
             <defs>
               <clipPath id="pc-clip"><rect x="236" y="22" width="168" height="346" rx="7"/></clipPath>
@@ -503,12 +568,14 @@ body.landing .insp, body.landing #setBtn, body.landing #exportBtn { display: non
         </figure>
       </div>
 
+      <h2 class="sh" id="how">How it works</h2>
       <ol class="steps" aria-label="How it works">
         <li><span class="sn">1</span><div><strong>Add files in any mix</strong><p>Open several at once; they merge in the order shown. Drag to reorder.</p></div></li>
         <li><span class="sn">2</span><div><strong>Pick how it reads</strong><p><b>Auto</b> (the default) keeps Word, PowerPoint and PDF pages and runs Markdown and text as one long page. Or choose <b>Continuous</b> or <b>Pages</b> for everything.</p></div></li>
         <li><span class="sn">3</span><div><strong>Export one PDF</strong><p>Every file and heading becomes a bookmark, so you can jump straight to a topic.</p></div></li>
       </ol>
 
+      <h2 class="sh" id="formats">What each format keeps</h2>
       <div class="keeps" aria-label="What each format keeps">
         <div><span class="dot" style="background:#2B579A" aria-hidden="true">W</span><strong>Word</strong><p>Fonts, sizes, colors, tables, lists, pictures, headers and page numbers.</p></div>
         <div><span class="dot" style="background:#C43E1C" aria-hidden="true">P</span><strong>PowerPoint</strong><p>Each slide as a page with its background, text boxes, shapes, tables and pictures.</p></div>
@@ -2402,7 +2469,7 @@ const FONTS = {"CalB": "AAEAAAAOAIAAAwBgR0RFRg2VDe0AAIGYAAAAuEdQT1OVtZTJAACCUAAA
     const has = hasDoc();
     $('empty').classList.toggle('on', !has);
     document.body.classList.toggle('landing', !has);
-    $('exportBtn').disabled = !has;
+    $('exportBtn').disabled = !has; $('bbExport').disabled = !has;
     $('docName').textContent = !has ? '' : items.length > 1 ? items.length + ' files merged' : doc.name;
     if (!has) meta('');
   }
@@ -2692,8 +2759,20 @@ const FONTS = {"CalB": "AAEAAAAOAIAAAwBgR0RFRg2VDe0AAIGYAAAAuEdQT1OVtZTJAACCUAAA
   }
   const readFile = f => openFiles([f]);
   const describeOrBlank = () => (result && resultKey === keyOf() ? describe(result) : '');
-  const pickFile = () => $('file').click();
+  const pickFile = () => (hasDoc() ? $('addFile') : $('file')).click(); // with files open, this adds more
   $('openBtn').addEventListener('click', pickFile);
+  $('topChoose').addEventListener('click', () => $('file').click());
+  $('bbAdd').addEventListener('click', () => $('addFile').click());
+  $('bbSet').addEventListener('click', () => $('setBtn').click());
+  $('bbExport').addEventListener('click', () => $('exportBtn').click());
+  // The brand always leads back to the start; with files open it asks first, so nothing is lost by accident.
+  const homeOpen = () => { $('homeDlg').classList.add('on'); $('scrim').classList.add('on'); setTimeout(() => $('homeCancel').focus(), 50); };
+  const homeClose = () => { $('homeDlg').classList.remove('on'); if (!$('insp').classList.contains('open') && !$('pasteDlg').classList.contains('on')) $('scrim').classList.remove('on'); };
+  $('homeLink').addEventListener('click', e => { e.preventDefault(); if (hasDoc()) homeOpen(); else window.scrollTo({ top: 0, behavior: 'smooth' }); });
+  $('homeCancel').addEventListener('click', homeClose);
+  $('homeOk').addEventListener('click', () => { homeClose(); setItems([]); window.scrollTo(0, 0); });
+  $('scrim').addEventListener('click', () => { if ($('homeDlg').classList.contains('on')) homeClose(); });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape' && $('homeDlg').classList.contains('on')) homeClose(); });
   $('chooseBtn').addEventListener('click', pickFile);
   $('file').addEventListener('change', e => { openFiles(e.target.files, false); e.target.value = ''; });
   $('addBtn').addEventListener('click', () => $('addFile').click());
@@ -2821,61 +2900,41 @@ const FONTS = {"CalB": "AAEAAAAOAIAAAwBgR0RFRg2VDe0AAIGYAAAAuEdQT1OVtZTJAACCUAAA
   try { sessionStorage.removeItem('pm-recovered'); } catch (e) {}
 })();
 </script>
-<div class="vbox" id="vbox" role="dialog" aria-modal="true" aria-label="PDFmode tour video" hidden>
-  <div class="vbox-in">
-    <video id="vboxVideo" controls playsinline preload="none" poster="pdfmode-poster.jpg">
-      <source src="pdfmode-promo-1080p.mp4" type="video/mp4">
-      <source src="pdfmode-hero-720p.webm" type="video/webm">
-    </video>
-  </div>
-  <button type="button" class="vbox-x" id="vboxClose" aria-label="Close video"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg></button>
-</div>
 <script>
 (function () {
   var v = document.getElementById('heroVideo'); if (!v) return;
-  var fig = v.closest('.hero-art'), stage = document.getElementById('heroStage');
-  var soundBtn = document.getElementById('heroSound'), box = document.getElementById('vbox'), big = document.getElementById('vboxVideo');
+  var fig = v.closest('.hero-art'), stage = document.getElementById('heroStage'), soundBtn = document.getElementById('heroSound');
   var fail = function () { fig.classList.remove('has-video'); };
   var srcs = v.querySelectorAll('source'), last = srcs[srcs.length - 1];
   if (last) last.addEventListener('error', fail);
   v.addEventListener('error', fail);
-  setTimeout(function () { if (v.networkState === 3 || v.error) fail(); }, 4000); // no playable source found
-  var still = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  var visible = false, boxOpen = false;
-  var play = function (el) { var p = el.play(); if (p && p.catch) p.catch(function () {}); };
-  var resume = function () { if (visible && !boxOpen && (!still || !v.muted)) play(v); };
-  // inline sound: unmuting restarts the tour so the beats line up with the story
-  soundBtn.addEventListener('click', function (e) {
-    e.stopPropagation();
-    var on = v.muted; v.muted = !on;
-    if (on) { v.currentTime = 0; play(v); }
+  setTimeout(function () { if (v.networkState === 3 || v.error) fail(); }, 5000); // no playable source found
+  var still = window.matchMedia('(prefers-reduced-motion: reduce)').matches, visible = false;
+  var play = function () { var p = v.play(); if (p && p.catch) p.catch(function () {}); };
+  var resume = function () { if (visible && (!still || !v.muted)) play(); };
+  var setSound = function (on) {
+    v.muted = !on;
     soundBtn.setAttribute('aria-pressed', String(on));
     soundBtn.setAttribute('aria-label', on ? 'Turn sound off' : 'Turn sound on');
-  });
-  // full-size 1080p player with sound and native controls
-  var opener = null;
-  var openBox = function () {
-    opener = document.activeElement; boxOpen = true; v.pause();
-    box.hidden = false; requestAnimationFrame(function () { box.classList.add('on'); });
-    big.currentTime = 0; big.muted = false; play(big);
-    document.getElementById('vboxClose').focus();
   };
-  var closeBox = function () {
-    if (!boxOpen) return;
-    boxOpen = false; big.pause(); box.classList.remove('on');
-    setTimeout(function () { box.hidden = true; }, 250);
-    if (opener && opener.focus) opener.focus();
-    resume();
+  // sound on restarts the tour, so the beats line up with the story
+  soundBtn.addEventListener('click', function (e) { e.stopPropagation(); var on = v.muted; setSound(on); if (on) { v.currentTime = 0; play(); } });
+  // full screen: the same 1080p video, from the top, with sound and native controls
+  var full = function () {
+    setSound(true); v.currentTime = 0; play();
+    if (v.requestFullscreen) v.requestFullscreen().catch(function () {});
+    else if (v.webkitEnterFullscreen) v.webkitEnterFullscreen();
   };
-  document.getElementById('heroExpand').addEventListener('click', function (e) { e.stopPropagation(); openBox(); });
-  document.getElementById('heroWatch').addEventListener('click', openBox);
-  stage.addEventListener('click', function (e) { if (!e.target.closest('.vbtn')) openBox(); });
-  document.getElementById('vboxClose').addEventListener('click', closeBox);
-  box.addEventListener('click', function (e) { if (e.target === box) closeBox(); });
-  big.addEventListener('ended', closeBox);
-  document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && boxOpen) { e.stopPropagation(); closeBox(); } }, true);
-  if (still) v.removeAttribute('loop');
-  // play only while the film is on screen
+  document.getElementById('heroExpand').addEventListener('click', function (e) { e.stopPropagation(); full(); });
+  stage.addEventListener('click', function (e) { if (!e.target.closest('.vbtn')) full(); });
+  var onFs = function () {
+    var inFs = document.fullscreenElement === v || document.webkitFullscreenElement === v;
+    v.controls = inFs || still;
+    if (!inFs) { setSound(false); resume(); }
+  };
+  document.addEventListener('fullscreenchange', onFs); document.addEventListener('webkitfullscreenchange', onFs);
+  v.addEventListener('webkitendfullscreen', function () { setSound(false); resume(); });
+  if (still) { v.controls = true; v.removeAttribute('loop'); }
   if ('IntersectionObserver' in window) {
     new IntersectionObserver(function (entries) {
       entries.forEach(function (e) { visible = e.isIntersecting; if (visible) resume(); else v.pause(); });
