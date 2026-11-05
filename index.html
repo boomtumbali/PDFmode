@@ -431,7 +431,9 @@ body.landing .topcta { display: inline-flex; } body.landing #openBtn { display: 
   .bbar button.go { background: var(--accent); color: #fff; flex-direction: row; gap: 7px; font-size: 14px; }
   .bbar button:disabled { opacity: 0.4; }
   body:not(.landing) #openBtn, body:not(.landing) #setBtn, body:not(.landing) #exportBtn { display: none; }
-  body:not(.landing) .wm { display: flex; } body:not(.landing) .wm-by { display: none; }
+  body:not(.landing) .wm { display: flex; flex-direction: column; align-items: flex-start; gap: 1px; line-height: 1.15; }
+  body:not(.landing) .wm-by { display: block; font-size: 11.5px; }
+  body:not(.landing) .tb-r { display: none; }
   body:not(.landing) .tb { grid-template-columns: auto minmax(0, 1fr); }
   body:not(.landing) .title { text-align: right; }
   body:not(.landing) .canvas { padding-bottom: calc(96px + env(safe-area-inset-bottom, 0px)); }
