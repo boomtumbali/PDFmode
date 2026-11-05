@@ -439,6 +439,14 @@ body.landing .topcta { display: inline-flex; } body.landing #openBtn { display: 
   body:not(.landing) .canvas { padding-bottom: calc(96px + env(safe-area-inset-bottom, 0px)); }
   body:not(.landing) .hud { bottom: calc(84px + env(safe-area-inset-bottom, 0px)); }
   body.landing .topcta { height: 32px; padding: 0 14px; }
+  /* Close-files dialog: full-width bottom sheet, text and buttons on the same 18px edge */
+  #homeDlg { width: 100%; }
+  #homeDlg .modal-h { padding: 22px 18px 8px; }
+  #homeDlg .modal-h strong { font-size: 17px; }
+  #homeDlg .mtxt { margin-bottom: 0; }
+  #homeDlg .modal-f { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding: 18px 18px 16px; }
+  #homeDlg .modal-f button { height: 46px; padding: 0; justify-content: center; border-radius: 12px; font-size: 15px; font-weight: 600; }
+  #homeDlg .modal-f .gb { background: var(--fill); }
 }
 /* ---- Start page (v7): one centred story — what it is, the action, then the film as proof ---- */
 .land { max-width: 1180px; }
