@@ -404,7 +404,7 @@ body.landing .insp, body.landing #setBtn, body.landing #exportBtn { display: non
 @media (max-width: 900px) { .hero { grid-template-columns: 1fr; grid-template-areas: "head" "body" "media"; row-gap: 18px; } .hero-art.has-video { max-width: none; width: 100%; order: 0; margin: 10px 0 0; } .hero-body { padding-bottom: 0; } }
 @media (max-width: 560px) { .hero-art.has-video { max-width: none; margin-top: 6px; } .hero-video { border-radius: 16px; } .vcap span { display: none; } .vbtn { width: 36px; height: 36px; } .vctl { top: 10px; right: 10px; } }
 @media (max-width: 560px) { .steps, .keeps { grid-template-columns: 1fr; } .land { padding-top: 4px; } .hero-art { max-width: 320px; order: 0; margin-top: 18px; } .land h1 br { display: none; } }
-@media (max-width: 760px) { body.landing .wm { display: flex; } body.landing .title { display: none; } }
+@media (max-width: 760px) { body.landing .wm { display: flex; flex-direction: column; align-items: flex-start; gap: 1px; line-height: 1.15; } body.landing .wm-by { display: block; font-size: 11.5px; } body.landing .title { display: none; } }
 @media (prefers-reduced-motion: reduce) { .art .scroll, .art .wires path, .art .thumb, .art .callout { animation: none; } }
 
 /* Preview page: mirrors the PDF (sizes are PDF points × --k) */
