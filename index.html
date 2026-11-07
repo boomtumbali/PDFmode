@@ -153,10 +153,12 @@ svg.i { width: 19px; height: 19px; fill: none; stroke: currentColor; stroke-widt
 .tcard .ti svg { width: 20px; height: 20px; }
 .tcard strong { display: block; font-size: 14.5px; font-weight: 620; margin: 1px 0 3px; }
 .tcard .d { display: block; font-size: 13px; line-height: 1.45; color: var(--text2); }
-.tl-strip { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.tl-strip { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 .tl-strip .tcard { flex-direction: column; gap: 10px; }
-@media (max-width: 960px) { .tl-strip { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
-@media (max-width: 620px) { .tl-strip { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 700px) {
+  .tl-strip { grid-template-columns: minmax(0, 1fr); }   /* phones: one column, cards laid out like the Tools picker */
+  .tl-strip .tcard { flex-direction: row; gap: 14px; }
+}
 
 /* Workspace */
 .tl-work { flex: 1; min-height: 0; display: grid; grid-template-columns: minmax(0, 1fr) auto; }
