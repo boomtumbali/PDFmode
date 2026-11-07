@@ -3009,11 +3009,13 @@ const FONTS = {"CalB": "AAEAAAAOAIAAAwBgR0RFRg2VDe0AAIGYAAAAuEdQT1OVtZTJAACCUAAA
     $('hud').classList.add('on'); clearTimeout(hudTimer); hudTimer = setTimeout(() => $('hud').classList.remove('on'), 2400);
   }
   const downloadsP = (window.claude && typeof window.claude.use === 'function') ? window.claude.use('downloads').catch(() => null) : Promise.resolve(null);
-  function fileName() {
-    // Export name is the local date and time, e.g. 06NOV2026-0051-pdfmode.vercel.app.pdf (whatever the files are)
+  // What each feature calls itself in the exported file name: <date>-<time>-<tag>-by-pdfmode.vercel.app.<ext>
+  const TOOL_TAG = { merge: 'merged', organize: 'organized', split: 'split', numbers: 'numbered', watermark: 'watermarked', images: 'images-to-pdf', toimg: 'pdf-to-images' };
+  function fileName(tool) {
+    // e.g. 06NOV2026-0051-merged-by-pdfmode.vercel.app.pdf (local date and time, then the feature used)
     const d = new Date(), p2 = n => String(n).padStart(2, '0');
     const mon = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'][d.getMonth()];
-    return p2(d.getDate()) + mon + d.getFullYear() + '-' + p2(d.getHours()) + p2(d.getMinutes()) + '-pdfmode.vercel.app.pdf';
+    return p2(d.getDate()) + mon + d.getFullYear() + '-' + p2(d.getHours()) + p2(d.getMinutes()) + '-' + (TOOL_TAG[tool] || TOOL_TAG.merge) + '-by-pdfmode.vercel.app.pdf';
   }
   async function exportPdf() {
     const btn = $('exportBtn');
@@ -3023,7 +3025,7 @@ const FONTS = {"CalB": "AAEAAAAOAIAAAwBgR0RFRg2VDe0AAIGYAAAAuEdQT1OVtZTJAACCUAAA
     try {
       let r = result;
       if (!r || resultKey !== keyOf()) { r = await build(); result = r; resultKey = keyOf(); meta(describe(r)); renderPages(); }
-      const blob = new Blob([r.bytes], { type: 'application/pdf' }), name = fileName();
+      const blob = new Blob([r.bytes], { type: 'application/pdf' }), name = fileName('merge');
       const dl = await Promise.race([downloadsP, new Promise(res => setTimeout(() => res(null), 4000))]);
       if (dl) {
         try { await dl.save({ filename: name, data: blob }); state = 'done'; hud('Saved ' + name); }
@@ -3591,7 +3593,7 @@ const FONTS = {"CalB": "AAEAAAAOAIAAAwBgR0RFRg2VDe0AAIGYAAAAuEdQT1OVtZTJAACCUAAA
       const btn = $('tlGo'); if (T.busy || btn.disabled || !T.tool) return;
       T.busy = true; btn.dataset.state = 'busy'; btn.disabled = true; $('tlGoLbl').textContent = 'Working'; let done = false;
       try {
-        const PL = window.PDFLib, id = T.tool.id, pdfBlob = b => new Blob([b], { type: 'application/pdf' }); let blob, name = fileName();
+        const PL = window.PDFLib, id = T.tool.id, pdfBlob = b => new Blob([b], { type: 'application/pdf' }); let blob, name = fileName(id);
         if (id === 'organize') blob = pdfBlob(await buildOrganize(PL, T.bytes, T.L));
         else if (id === 'numbers') blob = pdfBlob(await stampNumbers(PL, T.bytes, T.nm));
         else if (id === 'watermark') blob = pdfBlob(await stampWatermark(PL, T.bytes, Object.assign({}, T.wm, { text: T.wm.text.trim() })));
