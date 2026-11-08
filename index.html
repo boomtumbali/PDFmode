@@ -57,10 +57,10 @@
 :root {
   --tbh: 52px;
   --canvas: #F2F2F5; --bar: rgba(250, 250, 252, 0.78); --bar-solid: #FAFAFC; --hair: rgba(0, 0, 0, 0.1);
-  --text: #1D1D1F; --text2: #6E6E73; --text3: #8E8E93;
+  --text: #1D1D1F; --text2: #636366; --text3: #6E6E73;
   --fill: rgba(118, 118, 128, 0.12); --fill-strong: rgba(118, 118, 128, 0.2); --thumb: #FFFFFF;
   --thumb-shadow: 0 3px 8px rgba(0, 0, 0, 0.12), 0 3px 1px rgba(0, 0, 0, 0.04), 0 0 0 0.5px rgba(0, 0, 0, 0.04);
-  --accent: #007AFF; --accent-press: #0062CC; --on-accent: #FFFFFF;
+  --accent: #0068DA; --accent-fill: #0071EB; --accent-press: #0062CC; --on-accent: #FFFFFF;
   --panel: #FFFFFF; --panel-hair: rgba(0, 0, 0, 0.08);
   --page-shadow: 0 0 0 0.5px rgba(0, 0, 0, 0.07), 0 2px 6px rgba(0, 0, 0, 0.04), 0 16px 40px -8px rgba(0, 0, 0, 0.1);
   --sheet-shadow: 0 -1px 0 rgba(0, 0, 0, 0.04), 0 -20px 60px rgba(0, 0, 0, 0.12);
@@ -78,7 +78,7 @@
     --text: #F5F5F7; --text2: #A1A1A6; --text3: #8E8E93;
     --fill: rgba(118, 118, 128, 0.24); --fill-strong: rgba(118, 118, 128, 0.36); --thumb: #636366;
     --thumb-shadow: 0 3px 8px rgba(0, 0, 0, 0.3), 0 0 0 0.5px rgba(255, 255, 255, 0.06);
-    --accent: #0A84FF; --accent-press: #409CFF;
+    --accent: #0A84FF; --accent-fill: #0A6FDE; --accent-press: #095FBD;
     --panel: #1C1C1E; --panel-hair: rgba(255, 255, 255, 0.08);
     --page-shadow: 0 0 0 0.5px rgba(255, 255, 255, 0.08), 0 16px 40px -8px rgba(0, 0, 0, 0.6);
     --sheet-shadow: 0 -1px 0 rgba(255, 255, 255, 0.06), 0 -20px 60px rgba(0, 0, 0, 0.5);
@@ -91,7 +91,7 @@
   --text: #F5F5F7; --text2: #A1A1A6; --text3: #8E8E93;
   --fill: rgba(118, 118, 128, 0.24); --fill-strong: rgba(118, 118, 128, 0.36); --thumb: #636366;
   --thumb-shadow: 0 3px 8px rgba(0, 0, 0, 0.3), 0 0 0 0.5px rgba(255, 255, 255, 0.06);
-  --accent: #0A84FF; --accent-press: #409CFF;
+  --accent: #0A84FF; --accent-fill: #0A6FDE; --accent-press: #095FBD;
   --panel: #1C1C1E; --panel-hair: rgba(255, 255, 255, 0.08);
   --page-shadow: 0 0 0 0.5px rgba(255, 255, 255, 0.08), 0 16px 40px -8px rgba(0, 0, 0, 0.6);
   --sheet-shadow: 0 -1px 0 rgba(255, 255, 255, 0.06), 0 -20px 60px rgba(0, 0, 0, 0.5);
@@ -199,10 +199,10 @@ button.tp-f { cursor: pointer; }
 .tp-n { text-align: center; font-size: 12px; color: var(--text2); font-variant-numeric: tabular-nums; }
 .tp[data-sel="1"] .tp-f { background: color-mix(in srgb, var(--accent) 14%, transparent); box-shadow: 0 0 0 2px var(--accent); }
 .tp[data-sel="1"] .tp-n { color: var(--accent); font-weight: 600; }
-.tp-ck { position: absolute; top: 8px; right: 8px; width: 20px; height: 20px; border-radius: 50%; background: var(--accent); color: #fff; display: none; place-items: center; z-index: 2; }
+.tp-ck { position: absolute; top: 8px; right: 8px; width: 20px; height: 20px; border-radius: 50%; background: var(--accent-fill); color: #fff; display: none; place-items: center; z-index: 2; }
 .tp-ck svg { width: 12px; height: 12px; stroke-width: 3; }
 .tp[data-sel="1"] .tp-ck { display: grid; }
-.tp-chip { position: absolute; left: 8px; top: 8px; z-index: 2; min-width: 20px; height: 20px; padding: 0 7px; border-radius: 999px; display: none; place-items: center; background: var(--accent); color: #fff; font-size: 11px; font-weight: 650; font-variant-numeric: tabular-nums; }
+.tp-chip { position: absolute; left: 8px; top: 8px; z-index: 2; min-width: 20px; height: 20px; padding: 0 7px; border-radius: 999px; display: none; place-items: center; background: var(--accent-fill); color: #fff; font-size: 11px; font-weight: 650; font-variant-numeric: tabular-nums; }
 .tp-chip.on { display: grid; }
 .tp.dim .tp-box { opacity: 0.3; }
 .tp.drag { opacity: 0.4; }
@@ -221,7 +221,7 @@ button.tp-f { cursor: pointer; }
 .sg-pl img { display: block; width: 100%; height: auto; pointer-events: none; user-select: none; -webkit-user-select: none; -webkit-user-drag: none; }
 .sg-x, .sg-rs { display: none; position: absolute; }
 .sg-pl.sel .sg-x, .ed-it.sel .sg-x { display: grid; place-items: center; top: -15px; right: -15px; width: 28px; height: 28px; border-radius: 50%; background: #FF453A; color: #fff; font-size: 19px; line-height: 1; box-shadow: 0 1px 4px rgba(0, 0, 0, 0.35); cursor: pointer; }
-.sg-pl.sel .sg-rs, .ed-it.sel .sg-rs { display: block; right: -11px; bottom: -11px; width: 20px; height: 20px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 0 2px #fff; cursor: nwse-resize; }
+.sg-pl.sel .sg-rs, .ed-it.sel .sg-rs { display: block; right: -11px; bottom: -11px; width: 20px; height: 20px; border-radius: 50%; background: var(--accent-fill); box-shadow: 0 0 0 2px #fff; cursor: nwse-resize; }
 .sg-pad { position: relative; height: 128px; border-radius: 10px; background: #fff; box-shadow: inset 0 0 0 0.5px rgba(0, 0, 0, 0.2); overflow: hidden; display: grid; place-items: center; }
 .sg-pad canvas { position: absolute; inset: 0; width: 100%; height: 100%; touch-action: none; cursor: crosshair; }
 .sg-pad::before { content: ""; position: absolute; left: 14px; right: 14px; bottom: 34px; border-top: 1px dashed rgba(0, 0, 0, 0.22); pointer-events: none; }
@@ -239,13 +239,21 @@ button.tp-f { cursor: pointer; }
 .ed-text { white-space: pre; line-height: 1.2; font-size: calc(var(--s, 2) * 1cqw); }
 .ed-tx { min-width: 1ch; min-height: 1.2em; outline: none; white-space: pre; cursor: inherit; -webkit-user-select: text; user-select: text; }
 .ed-img img { display: block; width: 100%; height: auto; pointer-events: none; user-select: none; -webkit-user-select: none; -webkit-user-drag: none; }
+.ed-hl { position: absolute; inset: 0; z-index: 1; pointer-events: none; }
+.ed-ht { position: absolute; border-radius: 2px; cursor: text; pointer-events: none; }
+.edt .ed-ht { pointer-events: auto; }
+.edt .ed-ht:hover { background: color-mix(in srgb, var(--accent) 14%, transparent); box-shadow: 0 0 0 1px var(--accent); }
+.ed-ht.used { display: none; }
+.ed-cov { position: absolute; z-index: 1; pointer-events: none; }
+@media (hover: none) { .edt .ed-ht { box-shadow: 0 0 0 1px color-mix(in srgb, var(--accent) 40%, transparent); } }
 .ed-th { display: flex; align-items: center; gap: 10px; min-width: 0; }
 .ed-th img { width: 36px; height: 36px; object-fit: cover; border-radius: 6px; background: #fff; box-shadow: inset 0 0 0 0.5px rgba(0, 0, 0, 0.2); flex: none; }
 .ed-th span { font-size: 12.5px; color: var(--text2); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .grp > .tl-link { align-self: flex-start; text-align: left; padding: 0; }
 
 /* Resize and crop controls */
-select.tl-in { -webkit-appearance: none; appearance: none; padding-right: 32px; cursor: pointer; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='m2.5 4.5 3.5 3.5 3.5-3.5' fill='none' stroke='%238E8E93' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 11px center; background-size: 12px; }
+select.tl-in { -webkit-appearance: none; appearance: none; padding-right: 32px; cursor: pointer; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='m2.5 4.5 3.5 3.5 3.5-3.5' fill='none' stroke='%238E8E93' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 11px center; background-size: 12px; background-color: color-mix(in srgb, var(--text) 9%, var(--panel)); color: var(--text); }
+select.tl-in option, select.tl-in optgroup { background-color: var(--panel); color: var(--text); }
 input[type="number"].tl-in { -moz-appearance: textfield; appearance: textfield; }
 input[type="number"].tl-in::-webkit-outer-spin-button, input[type="number"].tl-in::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
 .cr-ins { display: grid; grid-template-columns: 1fr 1fr; gap: 10px 12px; }
@@ -305,7 +313,7 @@ input[type="number"].tl-in::-webkit-outer-spin-button, input[type="number"].tl-i
 .ib { width: 34px; height: 34px; border-radius: 9px; display: grid; place-items: center; color: var(--text2); transition: background-color 0.15s, color 0.15s; }
 .ib:hover { background: var(--fill); color: var(--text); }
 .ib[aria-pressed="true"] { background: var(--fill); color: var(--accent); }
-.pb { height: 32px; padding: 0 15px; border-radius: 999px; background: var(--accent); color: var(--on-accent); font-weight: 590; font-size: 13.5px; display: inline-flex; align-items: center; gap: 7px; white-space: nowrap; transition: background-color 0.15s, opacity 0.2s, transform 0.1s; }
+.pb { height: 32px; padding: 0 15px; border-radius: 999px; background: var(--accent-fill); color: var(--on-accent); font-weight: 590; font-size: 13.5px; display: inline-flex; align-items: center; gap: 7px; white-space: nowrap; transition: background-color 0.15s, opacity 0.2s, transform 0.1s; }
 .pb:not(:disabled):hover { background: var(--accent-press); }
 .pb:not(:disabled):active { transform: scale(0.97); }
 .pb:disabled { opacity: 0.35; cursor: default; }
@@ -617,7 +625,7 @@ body.landing .topcta { display: inline-flex; } body.landing #openBtn { display: 
     border-top: 0.5px solid var(--hair); }
   .bbar button { height: 48px; border-radius: 12px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; font-size: 11.5px; font-weight: 600; color: var(--text); background: var(--fill); }
   .bbar button svg { width: 20px; height: 20px; }
-  .bbar button.go { background: var(--accent); color: #fff; flex-direction: row; gap: 7px; font-size: 14px; }
+  .bbar button.go { background: var(--accent-fill); color: #fff; flex-direction: row; gap: 7px; font-size: 14px; }
   .bbar button:disabled { opacity: 0.4; }
   body:not(.landing) #openBtn, body:not(.landing) #setBtn, body:not(.landing) #exportBtn { display: none; }
   body:not(.landing) .wm { display: flex; flex-direction: column; align-items: flex-start; gap: 1px; line-height: 1.15; }
@@ -3275,7 +3283,7 @@ const FONTS = {"CalB": "AAEAAAAOAIAAAwBgR0RFRg2VDe0AAIGYAAAAuEdQT1OVtZTJAACCUAAA
       { id: 'merge', name: 'Merge PDFs', desc: 'Join PDFs, Word files and slides into one PDF, in your order.', external: true },
       { id: 'split', name: 'Split PDF', desc: 'Cut a PDF into several parts, or pull out just the pages you need.', go: 'Split PDF', drop: ['Choose a PDF', 'to split into parts or extract pages.'] },
       { id: 'organize', name: 'Organize pages', desc: 'Rotate, delete and reorder the pages of your PDF by dragging.', go: 'Save PDF', drop: ['Choose a PDF', 'to rotate, delete and reorder its pages.'] },
-      { id: 'edit', name: 'Edit PDF', desc: 'Tap anywhere to type text, add pictures or cover old words.', go: 'Save edited PDF', drop: ['Choose a PDF', 'to type on it, add pictures or cover words.'] },
+      { id: 'edit', name: 'Edit PDF', desc: 'Tap text to change it, or add new text, pictures and covers.', go: 'Save edited PDF', drop: ['Choose a PDF', 'to type on it, add pictures or cover words.'] },
       { id: 'sign', name: 'Sign PDF', desc: 'Draw, type or upload a signature, then place it on any page.', go: 'Save signed PDF', drop: ['Choose a PDF', 'to add your signature.'] },
       { id: 'images', name: 'Images to PDF', desc: 'Turn photos and scans into one PDF, in the order you choose.', go: 'Create PDF', drop: ['Choose images', 'JPG, PNG, WebP or GIF. Add as many as you like.'] },
       { id: 'toimg', name: 'PDF to images', desc: 'Save the pages of a PDF as JPG or PNG pictures to share easily.', go: 'Save images', drop: ['Choose a PDF', 'to save its pages as images.'] },
@@ -3294,7 +3302,7 @@ const FONTS = {"CalB": "AAEAAAAOAIAAAwBgR0RFRg2VDe0AAIGYAAAAuEdQT1OVtZTJAACCUAAA
       ti: () => ({ fmt: 'jpg', dpi: 150, text: '' }),
       tt: () => ({ fmt: 'txt', layout: 'para', text: '', marks: false }),
       sg: () => ({ mode: 'draw', ink: '#1D1D1F', font: 'script', text: '', strokes: [], pw: 252, ph: 128, img: null, url: null, ar: 0 }),
-      ed: () => ({ mode: 'text', font: 'sans', size: 12, bold: false, color: '#000000', cover: '#FFFFFF', img: null, items: [], sel: null, edit: null, endAt: 0 }),
+      ed: () => ({ mode: 'text', font: 'sans', size: 12, bold: false, color: '#000000', cover: '#FFFFFF', img: null, items: [], sel: null, edit: null, endAt: 0, runs: {} }),
       rs: () => ({ size: 'a4', orient: 'auto', fit: 'fit', margin: 0, cw: 210, ch: 297 }),
       cr: () => ({ mode: 'all', unit: 'mm', all: { l: 0.06, t: 0.06, r: 0.06, b: 0.06 }, per: {}, cur: 0 })
     };
@@ -3819,6 +3827,7 @@ const FONTS = {"CalB": "AAEAAAAOAIAAAwBgR0RFRg2VDe0AAIGYAAAAuEdQT1OVtZTJAACCUAAA
         await pg.render({ canvasContext: cv.getContext('2d'), viewport: vp }).promise;
         if (seq !== T.seq || !li._want) { cv.width = cv.height = 0; return; }
         const old = box.querySelector(':scope > canvas'); if (old) old.remove(); box.prepend(cv); li._done = true;
+        if (T.tool && T.tool.id === 'edit') edPrep(pg, li._n, li, seq).catch(e => console.error(e));
       } catch (e) { console.error(e); } finally { li._busy = false; }
     }
     function sgRelease(li) { const c = li.firstChild.querySelector(':scope > canvas'); if (c) { c.width = c.height = 0; c.remove(); } li._done = false; }
@@ -3880,6 +3889,7 @@ const FONTS = {"CalB": "AAEAAAAOAIAAAwBgR0RFRg2VDe0AAIGYAAAAuEdQT1OVtZTJAACCUAAA
     const edElOf = id => $('tlPages').querySelector('.ed-it[data-id="' + id + '"]');
     function edSelect(id) {
       const s = T.ed, prev = s.sel; s.sel = id; $('tlPages').querySelectorAll('.ed-it').forEach(el => el.classList.toggle('sel', +el.dataset.id === id));
+      if (prev != null && prev !== id) { const pv = edGet(prev); if (pv && pv.cv && edSame(pv)) edRemove(pv.id); } // tapped existing text but changed nothing: put it back as it was
       const p = id != null ? edGet(id) : null;
       if (p) { s.mode = p.type === 'text' ? 'text' : p.type === 'img' ? 'image' : 'cover'; if (p.type === 'text') { s.font = p.font; s.size = p.size; s.bold = p.bold; s.color = p.color; } else if (p.type === 'box') s.cover = p.color; buildOpts(); }
       else if (prev != null) refresh();
@@ -3891,11 +3901,71 @@ const FONTS = {"CalB": "AAEAAAAOAIAAAwBgR0RFRg2VDe0AAIGYAAAAuEdQT1OVtZTJAACCUAAA
     }
     function edEditEnd(el) {
       const p = edGet(+el.dataset.id), t = el.firstChild; el.dataset.editing = ''; el.classList.remove('editing'); t.removeAttribute('contenteditable'); T.ed.edit = null; T.ed.endAt = performance.now();
-      if (!p) return; if (!p.text.trim()) { edRemove(p.id); return; } el.firstChild.textContent = p.text; refresh();
+      if (!p) return; if (!p.text.trim() && !p.cv) { edRemove(p.id); return; } el.firstChild.textContent = p.text; refresh();
     }
     function edRemove(id) {
-      const s = T.ed; s.items = s.items.filter(p => p.id !== id); const el = edElOf(id); if (el) el.remove();
+      const s = T.ed, gone = edGet(id); s.items = s.items.filter(p => p.id !== id); const el = edElOf(id); if (el) el.remove();
+      if (gone && gone.cv) { const box = $('tlPages').children[gone.n] && $('tlPages').children[gone.n].firstChild; if (box) { const cv = box.querySelector('.ed-cov[data-for="' + id + '"]'); if (cv) cv.remove(); const h = box.querySelector('.ed-ht[data-i="' + gone.run + '"]'); if (h) h.classList.remove('used'); } }
       if (s.sel === id) s.sel = null; if (s.edit === id) s.edit = null; refresh();
+    }
+
+    // ---- change the words already on the page: find each line of text, cover it, retype it in the same spot ----
+    const ED_NORM = { 'ﬁ': 'fi', 'ﬂ': 'fl', 'ﬀ': 'ff', 'ﬃ': 'ffi', 'ﬄ': 'ffl', ' ': ' ', ' ': ' ', ' ': ' ', '‐': '-', '‑': '-', '−': '-', '​': '' };
+    const edSame = p => JSON.stringify([p.text, p.fx, p.fy, p.size, p.font, p.bold, p.color]) === p.snap;
+    const edLive = p => p.type !== 'text' || (p.cv ? !edSame(p) : !!p.text.trim());
+    async function edPrep(pg, n, li, seq) {
+      const s = T.ed; if (!s.runs[n]) {
+        s.runs[n] = []; const vp = pg.getViewport({ scale: 1 }), tc = await pg.getTextContent(); if (seq !== T.seq) return; const v = vp.transform, its = [];
+        if (tc.items.length > 6000) return;
+        for (const it of tc.items) {
+          if (!it.str || !it.str.trim()) continue; const t = it.transform;
+          const m = [v[0] * t[0] + v[2] * t[1], v[1] * t[0] + v[3] * t[1], v[0] * t[2] + v[2] * t[3], v[1] * t[2] + v[3] * t[3], v[0] * t[4] + v[2] * t[5] + v[4], v[1] * t[4] + v[3] * t[5] + v[5]];
+          const size = Math.hypot(m[2], m[3]); if (size < 4 || size > 120 || m[0] <= 0 || m[3] >= 0 || Math.abs(m[1]) > size * 0.05) continue; // upright text only
+          let nm = ''; try { if (pg.commonObjs.has(it.fontName)) nm = pg.commonObjs.get(it.fontName).name || ''; } catch (e) {} const fam = (tc.styles[it.fontName] || {}).fontFamily || '';
+          const bold = /bold|black|heavy|semibold|demi|extrab/i.test(nm), font = /mono|courier|consol|typewriter|menlo/i.test(nm) || /monospace/.test(fam) ? 'mono' : (/times|georgia|garamond|palatino|minion|cambria|caslon|baskerv|bookman|century/i.test(nm) && !/sans/i.test(nm)) || (/serif/.test(fam) && !/sans/.test(fam)) ? 'serif' : 'sans';
+          its.push({ str: it.str.replace(/[ﬁﬂﬀﬃﬄ   ‐‑−​]/g, c => ED_NORM[c]), x: m[4], base: m[5], w: it.width * vp.scale, size, font, bold });
+        }
+        const lines = []; for (const it of its) { let L = null; for (let k = lines.length - 1; k >= Math.max(0, lines.length - 40); k--) { const l = lines[k]; if (Math.abs(l.base - it.base) < Math.max(l.size, it.size) * 0.3 && Math.abs(l.size - it.size) <= Math.max(l.size, it.size) * 0.25) { L = l; break; } } if (!L) lines.push(L = { base: it.base, size: it.size, its: [] }); L.its.push(it); }
+        const out = [];
+        for (const L of lines) {
+          L.its.sort((a, b) => a.x - b.x); let cur = null;
+          for (const it of L.its) {
+            const gap = cur ? it.x - (cur.x + cur.w) : 0;
+            if (cur && gap <= it.size && gap >= -it.size * 0.6 && cur.font === it.font && cur.bold === it.bold) { if (gap > it.size * 0.12 && !/ $/.test(cur.str) && !/^ /.test(it.str)) cur.str += ' '; cur.str += it.str; cur.w = it.x + it.w - cur.x; }
+            else { cur = { str: it.str, x: it.x, base: L.base, w: it.w, size: it.size, font: it.font, bold: it.bold, vw: vp.width, vh: vp.height }; out.push(cur); }
+          }
+        }
+        s.runs[n] = out.filter(r => { r.str = r.str.replace(/\s+$/, '').replace(/^\s+/, ''); return r.str && r.w > 2 && ED_WIN.test(r.str); }).sort((a, b) => a.base - b.base || a.x - b.x);
+      }
+      const box = li.firstChild, runs = s.runs[n]; if (seq !== T.seq || !runs.length || box.querySelector(':scope > .ed-hl')) return;
+      const L = mk('div', 'ed-hl'); runs.forEach((r, i) => { const h = mk('div', 'ed-ht'); h.dataset.i = i; h.style.left = (r.x - 2) / r.vw * 100 + '%'; h.style.width = (r.w + 4) / r.vw * 100 + '%'; h.style.top = (r.base - 0.9 * r.size) / r.vh * 100 + '%'; h.style.height = 1.2 * r.size / r.vh * 100 + '%'; if (s.items.some(p => p.n === n && p.run === i)) h.classList.add('used'); L.append(h); }); box.append(L);
+    }
+    // the paper colour behind a line, and the ink colour of its letters, read from the picture of the page
+    function edSample(box, r) {
+      const out = { bg: '#FFFFFF', fg: '#000000' }, cv = box.querySelector(':scope > canvas'); if (!cv || !cv.width) return out;
+      try {
+        const k = cv.width / r.vw, g = cv.getContext('2d', { willReadFrequently: true }), X0 = Math.max(0, Math.floor((r.x - 3) * k)), X1 = Math.min(cv.width, Math.ceil((r.x + r.w + 3) * k)), Y0 = Math.max(0, Math.floor((r.base - 0.88 * r.size) * k)), Y1 = Math.min(cv.height, Math.ceil((r.base + 0.26 * r.size) * k));
+        const W = X1 - X0, H = Y1 - Y0; if (W < 2 || H < 2) return out; const d = g.getImageData(X0, Y0, W, H).data, buck = new Map();
+        const at = (x, y) => { const j = (y * W + x) * 4, key = (d[j] >> 4) << 8 | (d[j + 1] >> 4) << 4 | (d[j + 2] >> 4), b = buck.get(key) || [0, 0, 0, 0]; b[0]++; b[1] += d[j]; b[2] += d[j + 1]; b[3] += d[j + 2]; buck.set(key, b); };
+        for (let x = 0; x < W; x++) { at(x, 0); at(x, H - 1); } for (let y = 1; y < H - 1; y++) { at(0, y); at(W - 1, y); }
+        let best = null; buck.forEach(b => { if (!best || b[0] > best[0]) best = b; }); const bg = [best[1] / best[0], best[2] / best[0], best[3] / best[0]];
+        let mx = 0; const dist = j => Math.abs(d[j] - bg[0]) + Math.abs(d[j + 1] - bg[1]) + Math.abs(d[j + 2] - bg[2]); for (let j = 0; j < d.length; j += 4) mx = Math.max(mx, dist(j));
+        let fg = [0, 0, 0]; if (mx > 90) { let c = 0, a = [0, 0, 0]; for (let j = 0; j < d.length; j += 4) if (dist(j) >= mx * 0.8) { c++; a[0] += d[j]; a[1] += d[j + 1]; a[2] += d[j + 2]; } fg = a.map(v => v / c); }
+        const hex = c => '#' + c.map(v => Math.round(v).toString(16).padStart(2, '0')).join('').toUpperCase();
+        out.bg = bg.every(v => v >= 243) ? '#FFFFFF' : hex(bg); out.fg = fg.every(v => v <= 55) ? '#000000' : hex(fg);
+      } catch (e) { console.error(e); } return out;
+    }
+    function edCov(p) { const c = mk('div', 'ed-cov'), v = p.cv; c.dataset.for = p.id; c.style.left = v.fx * 100 + '%'; c.style.top = v.fy * 100 + '%'; c.style.width = v.fw * 100 + '%'; c.style.height = v.fh * 100 + '%'; c.style.background = v.color; return c; }
+    function edFromRun(n, i, ev) {
+      const s = T.ed, r = s.runs[n] && s.runs[n][i]; if (!r || s.items.some(p => p.n === n && p.run === i)) return;
+      const box = $('tlPages').children[n].firstChild, c = edSample(box, r), size = clamp(Math.round(r.size * 10) / 10, 6, 96), bs = edBase(r.font, r.bold) * size;
+      const p = { type: 'text', text: r.str, size, font: r.font, bold: r.bold, color: c.fg, fx: r.x / r.vw, fy: (r.base - bs) / r.vh, run: i, id: ++T.uid, n, vw: r.vw, vh: r.vh,
+        cv: { fx: (r.x - 1.5) / r.vw, fy: (r.base - 0.88 * r.size) / r.vh, fw: (r.w + 3) / r.vw, fh: 1.14 * r.size / r.vh, color: c.bg } };
+      p.snap = JSON.stringify([p.text, p.fx, p.fy, p.size, p.font, p.bold, p.color]); s.items.push(p);
+      const ht = box.querySelector('.ed-ht[data-i="' + i + '"]'); if (ht) ht.classList.add('used');
+      const el = edEl(p); box.append(edCov(p), el); edSelect(p.id); edEditStart(el, p);
+      try { let rg = null; if (ev && document.caretPositionFromPoint) { const cp = document.caretPositionFromPoint(ev.clientX, ev.clientY); if (cp && el.contains(cp.offsetNode)) { rg = document.createRange(); rg.setStart(cp.offsetNode, cp.offset); rg.collapse(true); } } else if (ev && document.caretRangeFromPoint) { rg = document.caretRangeFromPoint(ev.clientX, ev.clientY); if (rg && !el.contains(rg.startContainer)) rg = null; } if (rg) { const g = getSelection(); g.removeAllRanges(); g.addRange(rg); } } catch (e) {}
+      refresh();
     }
     async function edAdd(n, cx, cy) {
       const s = T.ed, m = s.mode, box = $('tlPages').children[n].firstChild, d = await pgDim(n), seq = T.seq; let p;
@@ -3934,7 +4004,7 @@ const FONTS = {"CalB": "AAEAAAAOAIAAAwBgR0RFRg2VDe0AAIGYAAAAuEdQT1OVtZTJAACCUAAA
     }
     // the big pages
     function buildEdit() {
-      T.cards = new Map(); T.queue = []; T.running = 0; T.sgq = Promise.resolve(); T.sgAsp = ''; T.dim = []; T.ed.items = []; T.ed.sel = null; T.ed.edit = null;
+      T.cards = new Map(); T.queue = []; T.running = 0; T.sgq = Promise.resolve(); T.sgAsp = ''; T.dim = []; T.ed.items = []; T.ed.sel = null; T.ed.edit = null; T.ed.runs = {};
       const ol = $('tlPages'); ol.replaceChildren();
       T.io = new IntersectionObserver(es => es.forEach(en => { const li = en.target; li._want = en.isIntersecting; if (li._want) sgQueue(li); else sgRelease(li); }), { root: $('tlCanvas'), rootMargin: '900px 0px' });
       const frag = document.createDocumentFragment();
@@ -3948,6 +4018,11 @@ const FONTS = {"CalB": "AAEAAAAOAIAAAwBgR0RFRg2VDe0AAIGYAAAAuEdQT1OVtZTJAACCUAAA
       const { PDFDocument, StandardFonts, rgb, degrees } = PL, doc = await PDFDocument.load(bytes, { ignoreEncryption: true }), pages = doc.getPages(), fonts = new Map(), imgs = new Map();
       const font = async (f, b) => { const k = f + b; if (!fonts.has(k)) fonts.set(k, await doc.embedFont(StandardFonts[ED_FONT[f].std[b ? 1 : 0]])); return fonts.get(k); };
       const col = h => rgb(parseInt(h.slice(1, 3), 16) / 255, parseInt(h.slice(3, 5), 16) / 255, parseInt(h.slice(5, 7), 16) / 255);
+      const pgv = pg => { const rot = ((pg.getRotation().angle % 360) + 360) % 360, cb = pg.getCropBox(), W = cb.width, H = cb.height; return { rot, cb, W, H, vw: rot % 180 ? H : W, vh: rot % 180 ? W : H }; };
+      for (const p of list) if (p.cv) { // the old words are hidden first, so nothing typed on top is covered
+        const pg = pages[p.n], { rot, cb, W, H, vw, vh } = pgv(pg), P = (l, t) => rot === 0 ? [cb.x + l, cb.y + H - t] : rot === 90 ? [cb.x + t, cb.y + l] : rot === 180 ? [cb.x + W - l, cb.y + t] : [cb.x + W - t, cb.y + H - l];
+        const v = p.cv, w = v.fw * vw, h = v.fh * vh, [x, y] = P(v.fx * vw, v.fy * vh + h); pg.drawRectangle({ x, y, width: w, height: h, color: col(v.color), borderWidth: 0, rotate: degrees(rot) });
+      }
       for (const p of list) {
         const pg = pages[p.n], rot = ((pg.getRotation().angle % 360) + 360) % 360, cb = pg.getCropBox(), W = cb.width, H = cb.height, vw = rot % 180 ? H : W, vh = rot % 180 ? W : H;
         // a point measured on the page as it is seen (from its top-left) -> the file's own coordinates
@@ -4127,10 +4202,10 @@ const FONTS = {"CalB": "AAEAAAAOAIAAAwBgR0RFRg2VDe0AAIGYAAAAuEdQT1OVtZTJAACCUAAA
           h.textContent = r.error ? r.error : T.tState === 'none' ? 'This PDF looks scanned: no selectable text was found on the pages checked. Pictures of text can’t be read here, so the result may be empty.' :
             'Reads ' + plural(T.ttPages.length, 'page') + ' into one ' + (t.fmt === 'md' ? 'Markdown (.md)' : 'text (.txt)') + ' file. Works on PDFs with selectable text.'; }
       } else if (id === 'edit') {
-        const h = $('tlHint'), s = T.ed, live = s.items.filter(p => p.type !== 'text' || p.text.trim()), bad = live.some(p => p.type === 'text' && !ED_WIN.test(p.text)); ok = live.length > 0 && !bad;
+        const h = $('tlHint'), s = T.ed, live = s.items.filter(edLive), bad = live.some(p => p.type === 'text' && !ED_WIN.test(p.text)); ok = live.length > 0 && !bad; $('tlPages').classList.toggle('edt', s.mode === 'text');
         if (h) { h.classList.toggle('bad', bad);
-          h.textContent = bad ? 'Some characters can’t be drawn in a PDF font. Use plain letters, numbers and common punctuation.' : live.length ? plural(live.length, 'item') + ' added. Drag to move, tap text again to edit, × removes. Tap an empty spot to add more.' :
-            s.mode === 'text' ? 'Tap the page where the text should go, then type.' : s.mode === 'image' ? (s.img ? 'Tap the page where the picture should go.' : 'Choose an image, then tap the page where it should go.') : 'Tap the page to add a box that covers what is underneath. Drag the dot to size it.'; }
+          h.textContent = bad ? 'Some characters can’t be drawn in a PDF font. Use plain letters, numbers and common punctuation.' : live.length ? plural(live.length, 'edit') + '. Drag to move, tap text again to edit, × undoes it.' + (live.some(p => p.cv) ? ' Old words are covered, not erased from the file.' : '') :
+            s.mode === 'text' ? 'Tap text on the page to change it, or tap an empty spot to add new text.' : s.mode === 'image' ? (s.img ? 'Tap the page where the picture should go.' : 'Choose an image, then tap the page where it should go.') : 'Tap the page to add a box that covers what is underneath. Drag the dot to size it.'; }
       } else if (id === 'resize') {
         const r = T.rs, h = $('tlHint'); ok = rsOk(r); T.cards.forEach(c => paintOverlay(c)); const [w, hh] = rsMm(r);
         if (h) { h.classList.toggle('bad', !ok); h.textContent = !ok ? 'Width and height must be between 20 and 2000 mm.' : rsName(r) + ' · ' + mmTxt(w) + ' × ' + mmTxt(hh) + ' mm. ' + (r.orient === 'auto' ? 'Each page keeps its orientation. ' : '') +
@@ -4188,7 +4263,7 @@ const FONTS = {"CalB": "AAEAAAAOAIAAAwBgR0RFRg2VDe0AAIGYAAAAuEdQT1OVtZTJAACCUAAA
           }
         }
         else if (id === 'sign') blob = pdfBlob(await buildSigned(PL, T.bytes, T.pl));
-        else if (id === 'edit') blob = pdfBlob(await buildEdited(PL, T.bytes, T.ed.items.filter(p => p.type !== 'text' || p.text.trim())));
+        else if (id === 'edit') blob = pdfBlob(await buildEdited(PL, T.bytes, T.ed.items.filter(edLive)));
         else if (id === 'resize') blob = pdfBlob(await buildResized(PL, T.bytes, T.rs));
         else if (id === 'crop') blob = pdfBlob(await buildCropped(PL, T.bytes, T.cr));
         else if (id === 'totext') {
@@ -4259,6 +4334,7 @@ const FONTS = {"CalB": "AAEAAAAOAIAAAwBgR0RFRg2VDe0AAIGYAAAAuEdQT1OVtZTJAACCUAAA
       if (!T.tool || T.tool.id !== 'edit') return;
       const x = e.target.closest('.sg-x'); if (x) { edRemove(+x.parentNode.dataset.id); return; }
       if (e.target.closest('.ed-it')) return;
+      const ht = e.target.closest('.ed-ht'); if (ht && pagesEl.classList.contains('edt')) { const li = ht.closest('.sg-li'); if (li) edFromRun(li._n, +ht.dataset.i, e); return; }
       const box = e.target.closest('.sg-pg'); if (!box) return;
       if (T.ed.sel != null) { edSelect(null); return; }
       const r = box.getBoundingClientRect(); edAdd(box.parentNode._n, (e.clientX - r.left) / r.width, (e.clientY - r.top) / r.height);
