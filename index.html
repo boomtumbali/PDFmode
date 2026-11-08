@@ -152,7 +152,7 @@ svg.i { width: 19px; height: 19px; fill: none; stroke: currentColor; stroke-widt
 .tcard .ti, .tl-drop .ti { flex: none; width: 38px; height: 38px; border-radius: 10px; display: grid; place-items: center; background: color-mix(in srgb, var(--accent) 13%, transparent); color: var(--accent); }
 .tcard .ti svg { width: 20px; height: 20px; }
 .tcard strong { display: block; font-size: 14.5px; font-weight: 620; margin: 1px 0 3px; }
-.tcard .d { display: block; font-size: 13px; line-height: 1.45; color: var(--text2); }
+.tcard .d { display: block; font-size: 13px; line-height: 1.45; color: var(--text2); text-wrap: balance; }
 .tl-strip { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 .tl-strip .tcard { flex-direction: column; gap: 10px; }
 @media (max-width: 700px) {
@@ -3228,15 +3228,15 @@ const FONTS = {"CalB": "AAEAAAAOAIAAAwBgR0RFRg2VDe0AAIGYAAAAuEdQT1OVtZTJAACCUAAA
     };
     const svg = n => '<svg class="i" viewBox="0 0 24 24" aria-hidden="true">' + IC[n] + '</svg>';
     const TOOLS = [
-      { id: 'merge', name: 'Merge PDFs', desc: 'Join PDFs, Word and slides into one PDF, in your order.', external: true },
-      { id: 'organize', name: 'Organize pages', desc: 'Rotate, delete and reorder the pages of a PDF.', go: 'Save PDF', drop: ['Choose a PDF', 'to rotate, delete and reorder its pages.'] },
-      { id: 'split', name: 'Split PDF', desc: 'Cut a PDF into parts, or pull out the pages you need.', go: 'Split PDF', drop: ['Choose a PDF', 'to split into parts or extract pages.'] },
-      { id: 'numbers', name: 'Page numbers', desc: 'Add page numbers in the corner you choose.', go: 'Add numbers', drop: ['Choose a PDF', 'to add page numbers.'] },
-      { id: 'watermark', name: 'Watermark', desc: 'Stamp text like “DRAFT” across every page.', go: 'Add watermark', drop: ['Choose a PDF', 'to stamp a text watermark on every page.'] },
-      { id: 'images', name: 'Images to PDF', desc: 'Turn photos and scans into one PDF, in your order.', go: 'Create PDF', drop: ['Choose images', 'JPG, PNG, WebP or GIF. Add as many as you like.'] },
-      { id: 'toimg', name: 'PDF to images', desc: 'Save pages as JPG or PNG pictures you can share.', go: 'Save images', drop: ['Choose a PDF', 'to save its pages as images.'] },
-      { id: 'sign', name: 'Sign PDF', desc: 'Draw, type or upload your signature and place it on any page.', go: 'Save signed PDF', drop: ['Choose a PDF', 'to add your signature.'] },
-      { id: 'totext', name: 'PDF to text', desc: 'Copy the words out of a PDF as plain text or Markdown.', go: 'Save text', drop: ['Choose a PDF', 'to pull out its text.'] }
+      { id: 'merge', name: 'Merge PDFs', desc: 'Join PDFs, Word files and slides into one PDF, in your order.', external: true },
+      { id: 'organize', name: 'Organize pages', desc: 'Rotate, delete and reorder the pages of your PDF by dragging.', go: 'Save PDF', drop: ['Choose a PDF', 'to rotate, delete and reorder its pages.'] },
+      { id: 'split', name: 'Split PDF', desc: 'Cut a PDF into several parts, or pull out just the pages you need.', go: 'Split PDF', drop: ['Choose a PDF', 'to split into parts or extract pages.'] },
+      { id: 'numbers', name: 'Page numbers', desc: 'Number every page in the corner you choose, from any start.', go: 'Add numbers', drop: ['Choose a PDF', 'to add page numbers.'] },
+      { id: 'watermark', name: 'Watermark', desc: 'Stamp text like “DRAFT” on every page, in any size or colour.', go: 'Add watermark', drop: ['Choose a PDF', 'to stamp a text watermark on every page.'] },
+      { id: 'images', name: 'Images to PDF', desc: 'Turn photos and scans into one PDF, in the order you choose.', go: 'Create PDF', drop: ['Choose images', 'JPG, PNG, WebP or GIF. Add as many as you like.'] },
+      { id: 'toimg', name: 'PDF to images', desc: 'Save the pages of a PDF as JPG or PNG pictures to share easily.', go: 'Save images', drop: ['Choose a PDF', 'to save its pages as images.'] },
+      { id: 'sign', name: 'Sign PDF', desc: 'Draw, type or upload a signature, then place it on any page.', go: 'Save signed PDF', drop: ['Choose a PDF', 'to add your signature.'] },
+      { id: 'totext', name: 'PDF to text', desc: 'Copy the words out of any PDF as plain text or a Markdown file.', go: 'Save text', drop: ['Choose a PDF', 'to pull out its text.'] }
     ];
     const cardHtml = t => '<button class="tcard" type="button" data-tool="' + t.id + '"><span class="ti">' + svg(t.id) + '</span><div><strong>' + t.name + '</strong><span class="d">' + t.desc + '</span></div></button>';
     const DEF = {
