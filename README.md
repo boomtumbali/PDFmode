@@ -38,6 +38,27 @@ PDFmode turns Markdown, Word, PowerPoint, PDF and plain-text files into one clea
 - **Searchable output.** Text in the PDF is real, selectable text, and every file and heading becomes a bookmark.
 - **Exact preview.** For Word, PowerPoint and merged files, the preview *is* the exported PDF.
 
+## PDF tools
+
+Twelve free tools, with no limits and nothing uploaded:
+
+| Tool | What it does |
+| --- | --- |
+| Merge PDFs | Join PDFs, Word files and slides into one PDF, in your order |
+| Split PDF | Cut a PDF into parts, or pull out the pages you need |
+| Organize pages | Rotate, delete and reorder pages by dragging |
+| Edit PDF | Change existing text, or add new text |
+| Sign PDF | Draw, type or upload a signature, then place it on the page |
+| Images to PDF | Turn photos and scans into one PDF |
+| PDF to images | Save pages as JPG or PNG |
+| Crop PDF | Trim the margins of one page or the whole PDF |
+| Resize PDF | Change a PDF or Word file to A4, Letter, Legal or another size |
+| PDF to text | Copy the words out as plain text or Markdown |
+| Page numbers | Number every page in the corner you choose |
+| Watermark | Stamp text like "DRAFT" on every page |
+
+After every save, PDFmode confirms the file and suggests a useful next step. Picking one passes your new PDF straight into that tool, so there's no re-uploading.
+
 ## Privacy
 
 Everything runs in your browser. Your files are **never uploaded** to a server. The app only downloads its own code libraries (from the jsDelivr CDN) when it loads.
@@ -47,7 +68,7 @@ Everything runs in your browser. Your files are **never uploaded** to a server. 
 1. Go to [pdfmode.vercel.app](https://pdfmode.vercel.app).
 2. Click **Choose files**, drop files anywhere on the page, or **Paste text**.
 3. Adjust the settings if you like: Formatting, Layout, Width, Typeface, Text size, Page color.
-4. Click **Export PDF**.
+4. Click **Export PDF**. The success screen confirms the file and offers a next step, like signing it or adding a watermark.
 
 **Keyboard shortcuts:**
 - `⌘O` / `Ctrl+O`: open files
@@ -62,6 +83,9 @@ Everything runs in your browser. Your files are **never uploaded** to a server. 
 - **Older `.doc` and `.ppt` files aren't supported.** Save them as `.docx` / `.pptx` first.
 - **Very long continuous pages** open fine in Chrome, Edge, Safari and most phone PDF viewers. Adobe Reader can't open single pages longer than 200 in; use **Pages** layout for Adobe Reader.
 - **Maximum file size** is 40 MB per file.
+- **Password-protected or restricted PDFs** can't be opened. PDFmode says so; remove the protection first.
+- **Scanned PDFs** are pictures of pages, so their words can't be edited or copied. You can still sign, crop, number, split or merge them.
+- **Sign PDF** places a picture of your signature. It isn't a certified digital signature.
 
 ## Run or host it yourself
 
@@ -80,12 +104,18 @@ PDFmode is a single self-contained `index.html` with no build step.
 
 | File | Purpose |
 | --- | --- |
-| `index.html` | The whole app: interface, conversion engine, and embedded fonts |
+| `index.html` | The whole app: interface, conversion engine, PDF tools, embedded fonts and the GCash QR code (shown only when someone chooses to support) |
 | `og-image.png` | Link-preview image for Messenger, Facebook, X and others |
 | `pdfmode-poster.jpg` | Still frame shown while the video loads |
 | `pdfmode-promo-1080p.mp4` | The 19-second how-it-works film on the start page (1080p, MP4) |
 | `pdfmode-promo-1080p.webm` | The same film as WebM, for browsers without MP4 support |
 | `README.md` | This file |
+
+## Support
+
+PDFmode is free for everyone, with no ads, no limits and no sign-up. If it saved you time, you can chip in any amount through GCash (or any InstaPay bank app) from the small **Support** link that appears after you save a file (or in the FAQ). It shows a short note first, and the GCash QR code only if you choose to chip in.
+
+Follow the maker: [LinkedIn](https://www.linkedin.com/in/boomtumbali/) · [X](https://x.com/boomtumbali) · [GitHub](https://github.com/boomtumbali)
 
 ## Built with
 
