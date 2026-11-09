@@ -13,7 +13,7 @@ PDFmode turns Markdown, Word, PowerPoint, PDF and plain-text files into one clea
 
 ## What it does
 
-- **Opens almost any class file:** Markdown (`.md`), Word (`.docx`), PowerPoint (`.pptx`), PDF, plain text (`.txt`) and web pages (`.html`). It detects the format from the file itself, so there's nothing to choose.
+- **Opens almost any class file:** Markdown (`.md`), Word (`.docx`), PowerPoint (`.pptx`), PDF, plain text (`.txt`) and web pages (`.html`). It detects the format from the file itself, so there's nothing to choose. Photos added next to documents become pages of their own; choosing only photos opens **Images to PDF**. Files PDFmode can't use (spreadsheets, ZIPs, audio…) get a clear message saying what to do instead.
 - **Keeps the original formatting** of Word and PowerPoint files: fonts, sizes, colors, alignment, spacing, lists, tables, pictures, headers, footers and page numbers. Slides keep their backgrounds, shapes and layout.
 - **Or switches to Reading style:** the text is reflowed in a reading typeface at your chosen size and page color, and speaker notes from slides are included.
 - **Merges files in order.** Open several at once and they're combined in the order shown. Drag, or use the arrows, to reorder.
@@ -83,6 +83,7 @@ Everything runs in your browser. Your files are **never uploaded** to a server. 
 - **Older `.doc` and `.ppt` files aren't supported.** Save them as `.docx` / `.pptx` first.
 - **Very long continuous pages** open fine in Chrome, Edge, Safari and most phone PDF viewers. Adobe Reader can't open single pages longer than 200 in; use **Pages** layout for Adobe Reader.
 - **Maximum file size** is 40 MB per file.
+- **Offline:** files already open keep working. PDFmode shows a notice when the connection drops, since opening some kinds of files loads extra code.
 - **Password-protected or restricted PDFs** can't be opened. PDFmode says so; remove the protection first.
 - **Scanned PDFs** are pictures of pages, so their words can't be edited or copied. You can still sign, crop, number, split or merge them.
 - **Sign PDF** places a picture of your signature. It isn't a certified digital signature.

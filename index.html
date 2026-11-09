@@ -747,22 +747,26 @@ body.landing .supBtn { display: inline-flex; }
 @media (max-width: 1000px) { .tl-strip { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 @media (max-width: 620px) { .tl-strip { grid-template-columns: minmax(0, 1fr); } }
 
-/* ---- Section sublines + FAQ (v12) ---- */
+/* ---- Section sublines + FAQ (v14: plain accordion) ---- */
 .shs { margin: -6px auto 22px; max-width: 46em; text-align: center; color: var(--text2); font-size: 14.5px; line-height: 1.5; }
-.faq { max-width: 820px; margin: 0 auto; display: grid; gap: 8px; }
-.qa { border-radius: 14px; background: var(--panel); box-shadow: 0 0 0 0.5px var(--panel-hair); }
-.qa summary { list-style: none; cursor: pointer; display: flex; align-items: center; justify-content: space-between; gap: 14px; padding: 16px 18px; font-weight: 600; font-size: 15px; line-height: 1.35; border-radius: 14px; }
+.faq { max-width: 760px; margin: 0 auto; border-top: 0.5px solid var(--hair); }
+.qa { border-bottom: 0.5px solid var(--hair); }
+.qa summary { list-style: none; cursor: pointer; display: flex; align-items: center; justify-content: space-between; gap: 20px; padding: 18px 2px; font-weight: 600; font-size: 16px; line-height: 1.35; color: var(--text); transition: color 0.15s; }
 .qa summary::-webkit-details-marker { display: none; }
-.qa summary:hover { background: var(--fill); }
-.qa summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
-.qa summary svg { width: 18px; height: 18px; flex: none; color: var(--text3); transition: transform 0.2s var(--ease); }
-.qa[open] summary svg { transform: rotate(180deg); }
-.qa-a { padding: 0 18px 16px; }
-.qa-a p { margin: 0; color: var(--text2); font-size: 14.5px; line-height: 1.6; max-width: 62em; }
+@media (hover: hover) { .qa summary:hover { color: var(--accent); } .qa summary:hover .qa-ic { color: var(--accent); } }
+.qa summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; border-radius: 6px; }
+.qa-ic { position: relative; width: 14px; height: 14px; flex: none; color: var(--text3); transition: color 0.15s; }
+.qa-ic::before, .qa-ic::after { content: ""; position: absolute; left: 0; top: 6px; width: 14px; height: 2px; border-radius: 1px; background: currentColor; transition: transform 0.25s var(--ease), opacity 0.2s; }
+.qa-ic::after { transform: rotate(90deg); }
+.qa[open] .qa-ic::after { transform: rotate(0deg); opacity: 0; }
+.qa-a { padding: 0 34px 20px 2px; }
+.qa-a p { margin: 0; color: var(--text2); font-size: 15px; line-height: 1.65; }
 .qa-a a { color: var(--accent); }
 .qa-a b { color: var(--text); font-weight: 600; }
-@media (max-width: 760px) { .shs { text-align: left; margin-left: 0; } .qa summary { padding: 14px 16px; font-size: 14.5px; } .qa-a { padding: 0 16px 14px; } }
-@media (prefers-reduced-motion: reduce) { .qa summary svg { transition: none; } }
+.qa[open] .qa-a { animation: qaIn 0.25s var(--ease); }
+@keyframes qaIn { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: none; } }
+@media (max-width: 760px) { .shs { text-align: left; margin-left: 0; } .qa summary { padding: 16px 0; font-size: 15px; } .qa-a { padding: 0 24px 18px 0; } }
+@media (prefers-reduced-motion: reduce) { .qa[open] .qa-a { animation: none; } .qa-ic::before, .qa-ic::after { transition: none; } }
 
 /* ---- Support sheet, two steps (v13) ---- */
 .supsheet { width: min(460px, calc(100% - 32px)); transition: opacity 0.2s, transform 0.25s var(--ease), width 0.25s var(--ease); }
@@ -779,6 +783,34 @@ body.landing .supBtn { display: inline-flex; }
 .sup-s2 .sup-acts { margin-bottom: 0; }
 .qa-link { color: var(--accent); font: inherit; padding: 0; text-decoration: underline; text-underline-offset: 3px; }
 @media (max-width: 760px) { .supsheet, .supsheet.wide { width: 100%; } }
+
+/* ---- Draggable sheets + status bars (v14) ---- */
+.tl-grab { display: none; }
+@media (max-width: 760px) {
+  .tl-side { transition: height 0.3s var(--sheet-ease, ease), max-height 0.3s var(--sheet-ease, ease); }
+  .tl-side.dragging { transition: none; }
+  .tl-grab { display: grid; place-items: center; position: sticky; top: 0; z-index: 3; height: 26px; margin-bottom: -6px; background: var(--panel); cursor: grab; touch-action: none; }
+  .tl-grab span { width: 40px; height: 5px; border-radius: 3px; background: var(--fill-strong); transition: background-color 0.15s, width 0.15s; }
+  .tl-grab:active span, .tl-side.dragging .tl-grab span { width: 48px; background: var(--text3); }
+  .tl-side.peek .tl-side-in { opacity: 0.35; pointer-events: none; }
+  .sheet-head { touch-action: none; cursor: grab; }
+  .insp.dragging { transition: none !important; }
+  .sheet .sh-head { touch-action: none; }
+  .sheet { padding-top: 26px; }
+  .sheet::before { content: ""; position: absolute; top: 8px; left: 50%; width: 40px; height: 5px; margin-left: -20px; border-radius: 3px; background: var(--fill-strong); }
+  .sheet.dragging { transition: none !important; }
+}
+.statusbar { position: fixed; z-index: 95; left: 50%; bottom: calc(18px + env(safe-area-inset-bottom, 0px)); transform: translate(-50%, 20px); opacity: 0; max-width: calc(100% - 24px);
+  display: flex; align-items: center; gap: 10px; padding: 9px 9px 9px 14px; border-radius: 14px; background: var(--panel); color: var(--text); font-size: 13.5px;
+  box-shadow: 0 0 0 0.5px var(--panel-hair), 0 16px 40px rgba(0, 0, 0, 0.35); transition: opacity 0.2s, transform 0.25s var(--ease); }
+.statusbar.on { opacity: 1; transform: translate(-50%, 0); }
+.statusbar[hidden] { display: none; }
+.statusbar .sb-dot { width: 8px; height: 8px; flex: none; border-radius: 50%; background: #FF9F0A; }
+.statusbar.ok .sb-dot { background: #30D158; } .statusbar.err .sb-dot { background: #FF453A; }
+.statusbar .sb-t { line-height: 1.35; }
+.statusbar button { flex: none; height: 30px; padding: 0 12px; border-radius: 8px; font-weight: 600; font-size: 13px; }
+.statusbar .sb-go { background: var(--accent); color: #fff; } .statusbar .sb-x { color: var(--text2); padding: 0 8px; }
+@media (max-width: 760px) { body:not(.landing) .statusbar { bottom: calc(84px + env(safe-area-inset-bottom, 0px)); } }
 </style>
 <script>
   window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
@@ -908,17 +940,17 @@ body.landing .supBtn { display: inline-flex; }
       </div>
 <h2 class="sh" id="faq">Questions</h2>
       <div class="faq">
-        <details class="qa"><summary>Is PDFmode really free?<svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></summary><div class="qa-a"><p>Yes. There’s no sign-up, no ads, no watermark and no daily limit. PDFmode is kept going by people who choose to support it.</p></div></details>
-        <details class="qa"><summary>Are my files uploaded anywhere?<svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></summary><div class="qa-a"><p>No. Everything happens in your browser, on your own device, so your files never reach a server. The page only downloads its own code when it opens, and counts visits anonymously, never your files or personal details.</p></div></details>
-        <details class="qa"><summary>Which files can I use?<svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></summary><div class="qa-a"><p>Markdown (.md), plain text (.txt), Word (.docx), PowerPoint (.pptx), PDF and web pages (.html), up to 40 MB each. Photos (JPG, PNG, WebP or GIF) go through <b>Images to PDF</b>. Older .doc and .ppt files need to be saved as .docx or .pptx first.</p></div></details>
-        <details class="qa"><summary>What’s the difference between Auto, Continuous and Pages?<svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></summary><div class="qa-a"><p><b>Continuous</b> makes one long page with no page breaks, which is easiest to scroll on a phone. <b>Pages</b> makes regular pages, best for printing. <b>Auto</b> (the default) keeps the pages of Word, PowerPoint and PDF files and runs Markdown and text continuously.</p></div></details>
-        <details class="qa"><summary>Why won’t Adobe Reader open my continuous PDF?<svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></summary><div class="qa-a"><p>Adobe Reader can’t open pages longer than 200 inches. Chrome, Edge, Safari and most phone PDF viewers can. If you need Adobe Reader, export with <b>Pages</b>.</p></div></details>
-        <details class="qa"><summary>Why does my Word or PowerPoint file look a little different?<svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></summary><div class="qa-a"><p>Microsoft’s fonts can’t be included, so PDFmode uses free fonts with the same letter widths, and lines break where they do in Office. Columns, charts and text wrapped around pictures are simplified. For clean, readable text, switch <b>Formatting</b> to <b>Reading</b>.</p></div></details>
-        <details class="qa"><summary>Can I edit or copy text from a scanned PDF?<svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></summary><div class="qa-a"><p>Not the existing words. A scan is a picture of a page, so there’s no text to change or copy, and <b>PDF to text</b> will say so. You can still add new text, sign, crop, number, split or merge it.</p></div></details>
-        <details class="qa"><summary>Is a signature from Sign PDF legally binding?<svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></summary><div class="qa-a"><p>Sign PDF places a picture of your signature on the page, like signing a printout. It isn’t a certified digital signature, so for official documents, check what your school or office accepts.</p></div></details>
-        <details class="qa"><summary>My download didn’t start. Where’s my file?<svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></summary><div class="qa-a"><p>Check your Downloads folder (on iPhone: Files › Downloads). If nothing arrived, tap <b>Save again</b> on the success screen. Some in-app browsers, like Messenger’s, can block downloads, so open pdfmode.vercel.app in Chrome or Safari instead.</p></div></details>
-        <details class="qa"><summary>Can PDFmode open password-protected PDFs?<svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></summary><div class="qa-a"><p>No. PDFmode tells you when a PDF is protected. Remove the password with the app that made it, then try again.</p></div></details>
-        <details class="qa"><summary>How can I support PDFmode?<svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></summary><div class="qa-a"><p>Thank you for asking. You can <button type="button" class="qa-link" data-support>chip in any amount through GCash</button>, follow the maker, or simply share PDFmode with your classmates. A small Support link also appears after you save a file.</p></div></details>
+        <details class="qa" name="faq"><summary>Is PDFmode really free?<span class="qa-ic" aria-hidden="true"></span></summary><div class="qa-a"><p>Yes. There’s no sign-up, no ads, no watermark and no daily limit. PDFmode is kept going by people who choose to support it.</p></div></details>
+        <details class="qa" name="faq"><summary>Are my files uploaded anywhere?<span class="qa-ic" aria-hidden="true"></span></summary><div class="qa-a"><p>No. Everything happens in your browser, on your own device, so your files never reach a server. The page only downloads its own code when it opens, and counts visits anonymously, never your files or personal details.</p></div></details>
+        <details class="qa" name="faq"><summary>Which files can I use?<span class="qa-ic" aria-hidden="true"></span></summary><div class="qa-a"><p>Markdown (.md), plain text (.txt), Word (.docx), PowerPoint (.pptx), PDF and web pages (.html), up to 40 MB each. Photos (JPG, PNG, WebP or GIF) go through <b>Images to PDF</b>. Older .doc and .ppt files need to be saved as .docx or .pptx first.</p></div></details>
+        <details class="qa" name="faq"><summary>What’s the difference between Auto, Continuous and Pages?<span class="qa-ic" aria-hidden="true"></span></summary><div class="qa-a"><p><b>Continuous</b> makes one long page with no page breaks, which is easiest to scroll on a phone. <b>Pages</b> makes regular pages, best for printing. <b>Auto</b> (the default) keeps the pages of Word, PowerPoint and PDF files and runs Markdown and text continuously.</p></div></details>
+        <details class="qa" name="faq"><summary>Why won’t Adobe Reader open my continuous PDF?<span class="qa-ic" aria-hidden="true"></span></summary><div class="qa-a"><p>Adobe Reader can’t open pages longer than 200 inches. Chrome, Edge, Safari and most phone PDF viewers can. If you need Adobe Reader, export with <b>Pages</b>.</p></div></details>
+        <details class="qa" name="faq"><summary>Why does my Word or PowerPoint file look a little different?<span class="qa-ic" aria-hidden="true"></span></summary><div class="qa-a"><p>Microsoft’s fonts can’t be included, so PDFmode uses free fonts with the same letter widths, and lines break where they do in Office. Columns, charts and text wrapped around pictures are simplified. For clean, readable text, switch <b>Formatting</b> to <b>Reading</b>.</p></div></details>
+        <details class="qa" name="faq"><summary>Can I edit or copy text from a scanned PDF?<span class="qa-ic" aria-hidden="true"></span></summary><div class="qa-a"><p>Not the existing words. A scan is a picture of a page, so there’s no text to change or copy, and <b>PDF to text</b> will say so. You can still add new text, sign, crop, number, split or merge it.</p></div></details>
+        <details class="qa" name="faq"><summary>Is a signature from Sign PDF legally binding?<span class="qa-ic" aria-hidden="true"></span></summary><div class="qa-a"><p>Sign PDF places a picture of your signature on the page, like signing a printout. It isn’t a certified digital signature, so for official documents, check what your school or office accepts.</p></div></details>
+        <details class="qa" name="faq"><summary>My download didn’t start. Where’s my file?<span class="qa-ic" aria-hidden="true"></span></summary><div class="qa-a"><p>Check your Downloads folder (on iPhone: Files › Downloads). If nothing arrived, tap <b>Save again</b> on the success screen. Some in-app browsers, like Messenger’s, can block downloads, so open pdfmode.vercel.app in Chrome or Safari instead.</p></div></details>
+        <details class="qa" name="faq"><summary>Can PDFmode open password-protected PDFs?<span class="qa-ic" aria-hidden="true"></span></summary><div class="qa-a"><p>No. PDFmode tells you when a PDF is protected. Remove the password with the app that made it, then try again.</p></div></details>
+        <details class="qa" name="faq"><summary>How can I support PDFmode?<span class="qa-ic" aria-hidden="true"></span></summary><div class="qa-a"><p>Thank you for asking. You can <button type="button" class="qa-link" data-support>chip in any amount through GCash</button>, follow the maker, or simply share PDFmode with your classmates. A small Support link also appears after you save a file.</p></div></details>
       </div>
 
       <p class="fine">Office fonts are replaced by free fonts with the same letter widths, so lines break where they do in Office. Some advanced layouts (columns, charts, text wrapped around pictures) are simplified.</p>
@@ -1054,6 +1086,8 @@ body.landing .supBtn { display: inline-flex; }
     <button type="button" class="tl-link sup-back" id="supBack"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg>Back</button>
   </div>
 </div>
+<div class="statusbar" id="netBar" role="status" aria-live="polite" hidden><span class="sb-dot" aria-hidden="true"></span><span class="sb-t" id="netText"></span><button type="button" class="sb-x" id="netX" aria-label="Dismiss">✕</button></div>
+<div class="statusbar err" id="crashBar" role="alert" hidden><span class="sb-dot" aria-hidden="true"></span><span class="sb-t">Something went wrong. Your files are still on this device.</span><button type="button" class="sb-go" id="crashReload">Reload</button><button type="button" class="sb-x" id="crashX" aria-label="Dismiss">✕</button></div>
 <div class="tools" id="tools" role="dialog" aria-modal="true" aria-labelledby="tlTitle">
   <header class="tl-bar">
     <div class="tl-l">
@@ -1090,7 +1124,7 @@ body.landing .supBtn { display: inline-flex; }
         <div class="tl-acts" id="tlActs" hidden></div>
         <ol class="tgrid" id="tlPages" hidden></ol>
       </div>
-      <aside class="tl-side" id="tlSide" hidden aria-label="Tool options"><div class="tl-side-in" id="tlOpts"></div></aside>
+      <aside class="tl-side" id="tlSide" hidden aria-label="Tool options"><div class="tl-grab" id="tlGrab" role="button" tabindex="0" aria-label="Resize the options panel. Drag down to see more of the page, up to see more options."><span></span></div><div class="tl-side-in" id="tlOpts"></div></aside>
     </div>
   </div>
   <input type="file" id="tlFile" hidden>
@@ -3141,7 +3175,23 @@ const FONTS = {"CalB": "AAEAAAAOAIAAAwBgR0RFRg2VDe0AAIGYAAAAuEdQT1OVtZTJAACCUAAA
       line.replace(/[\\`*_{}\[\]<>()#+\-.!|~]/g, '\\$&').replace(/^[ \t]+/, m => '\u00A0'.repeat(m.replace(/\t/g, '    ').length))
     ).join('\n');
   }
+  const isImageFile = f => /^image\//.test(f.type) || /\.(jpe?g|png|webp|gif|bmp|avif|heic|heif)$/i.test(f.name);
+  // A photo added next to documents becomes a page of its own (A4, fitted, upright), so it can be merged in order.
+  async function imageItem(f) {
+    let bmp;
+    try { bmp = await createImageBitmap(f, { imageOrientation: 'from-image' }); }
+    catch (e) { throw Object.assign(new Error('img'), { heic: /\.(heic|heif)$/i.test(f.name) }); }
+    const c = document.createElement('canvas'); c.width = bmp.width; c.height = bmp.height;
+    const g = c.getContext('2d'); g.fillStyle = '#fff'; g.fillRect(0, 0, c.width, c.height); g.drawImage(bmp, 0, 0);
+    const blob = await new Promise(r => c.toBlob(r, 'image/jpeg', 0.9)); c.width = c.height = 0;
+    if (!blob) throw new Error('img');
+    const doc = await PDFLib.PDFDocument.create(), im = await doc.embedJpg(new Uint8Array(await blob.arrayBuffer()));
+    const land = bmp.width > bmp.height, W = land ? 841.89 : 595.28, H = land ? 595.28 : 841.89, m = 24, k = Math.min((W - 2 * m) / bmp.width, (H - 2 * m) / bmp.height);
+    const w = bmp.width * k, h = bmp.height * k; doc.addPage([W, H]).drawImage(im, { x: (W - w) / 2, y: (H - h) / 2, width: w, height: h });
+    return makeItem('', f.name, false, null, null, { kind: 'pdf', pdf: await doc.save(), pageIn: [H / 72], img: true });
+  }
   async function parseFile(f) {
+    if (isImageFile(f)) return imageItem(f);
     if (f.size > 40 * 1024 * 1024) throw Object.assign(new Error('big'), { file: f.name });
     const ext = (f.name.split('.').pop() || '').toLowerCase();
     if (ext === 'doc' || ext === 'ppt') throw Object.assign(new Error('old'), { ext });
@@ -3163,6 +3213,13 @@ const FONTS = {"CalB": "AAEAAAAOAIAAAwBgR0RFRg2VDe0AAIGYAAAAuEdQT1OVtZTJAACCUAAA
         else if (z.file('ppt/presentation.xml')) { fonts = await pptxFonts(z).catch(() => null); md = await pptxToMarkdown(z); office = { kind: 'pptx', zip: z }; }
         else throw new Error('unsupported');
       } else {
+        // Only real text goes down this path: binary files (audio, video, programs…) get a clear message instead of garbage pages.
+        const known = /^(md|markdown|mdown|mkd|txt|text|html?)$/.test(ext);
+        if (!known) {
+          const peek = new Uint8Array(await f.slice(0, 4096).arrayBuffer());
+          let odd = 0; for (const c of peek) { if (c === 0) { odd = peek.length; break; } if (c < 9 || (c > 13 && c < 32)) odd++; }
+          if (!peek.length || odd > peek.length * 0.02) throw new Error('unsupported');
+        }
         const text = await f.text();
         if (ext === 'html' || ext === 'htm' || (/^\s*<(!doctype html|html)[\s>]/i.test(text) && ext !== 'md')) { meta('Converting…', true); md = await htmlToMarkdown(text); }
         else if (ext === 'txt' || ext === 'text') { breaks = true; md = looksLikeMarkdown(text) ? text : plainToMarkdown(text); }
@@ -3172,14 +3229,25 @@ const FONTS = {"CalB": "AAEAAAAOAIAAAwBgR0RFRg2VDe0AAIGYAAAAuEdQT1OVtZTJAACCUAAA
     }
   }
   const whyFailed = (e, name) => e && e.message === 'load' ? 'Couldn’t load the converter. Check your connection.'
-    : e && e.message === 'unsupported' ? name + ' isn’t a supported kind of file'
     : e && e.message === 'old' ? 'Older .' + e.ext + ' files aren’t supported. Save as .' + e.ext + 'x first.'
     : e && e.message === 'big' ? name + ' is larger than 40 MB'
-    : e && e.message === 'locked' ? name + ' is password-protected or restricted. Remove the protection first.' : 'Couldn’t read ' + name;
+    : e && e.message === 'locked' ? name + ' is password-protected or restricted. Remove the protection first.'
+    : e && e.message === 'img' ? (e.heic ? name + ' is an iPhone HEIC photo this browser can’t read. Change it to JPG, or open PDFmode in Safari.' : 'Couldn’t read the photo ' + name + '.')
+    : e && e.message === 'unsupported' ? unsupportedMsg(name)
+    : !navigator.onLine ? 'You’re offline, so ' + name + ' couldn’t be opened. Reconnect and try again.' : 'Couldn’t read ' + name + '. It may be damaged.';
+  function unsupportedMsg(name) {
+    const ext = (String(name).split('.').pop() || '').toLowerCase();
+    if (/^(xlsx?|xlsm|csv|ods|numbers)$/.test(ext)) return name + ': spreadsheets aren’t supported yet. Save it as a PDF first, then add it.';
+    if (/^(key|pages|odt|odp|rtf)$/.test(ext)) return name + ' can’t be opened. Save it as PDF, Word (.docx) or PowerPoint (.pptx) first.';
+    if (/^(zip|rar|7z|tar|gz)$/.test(ext)) return name + ' is a compressed folder. Unzip it, then choose the files inside.';
+    return name + ' can’t be opened. PDFmode works with PDF, Word, PowerPoint, Markdown, text, web pages and photos.';
+  }
   // Open one or more files. Several files are merged in the order chosen (rename or reorder them to change it).
   async function openFiles(list, append) {
     const files = Array.from(list || []).filter(Boolean);
     if (!files.length) return;
+    // Only photos, on a fresh start: Images to PDF has the right options (page size, order, margins).
+    if (!append && !hasDoc() && files.every(isImageFile) && window.__pmToolsOpen) { window.__pmToolsOpen('images', files, true); return; }
     const got = [];
     for (let i = 0; i < files.length; i++) {
       meta(files.length > 1 ? 'Reading ' + (i + 1) + ' of ' + files.length + '…' : 'Converting…', true);
@@ -3223,7 +3291,7 @@ const FONTS = {"CalB": "AAEAAAAOAIAAAwBgR0RFRg2VDe0AAIGYAAAAuEdQT1OVtZTJAACCUAAA
       const btn = (k, label, dis, fn) => { const b = document.createElement('button'); b.type = 'button'; b.className = 'fb'; b.setAttribute('aria-label', label + ' ' + it.name); b.title = label; b.disabled = dis; b.innerHTML = '<svg class="i" viewBox="0 0 24 24">' + ICON[k] + '</svg>'; b.addEventListener('click', ev => { ev.stopPropagation(); fn(); }); return b; };
       const no = document.createElement('span'); no.className = 'no'; no.textContent = items.length > 1 ? i + 1 : '';
       const fn = document.createElement('span'); fn.className = 'fn'; fn.textContent = it.name; fn.title = it.name;
-      const fk = document.createElement('span'); fk.className = 'fk'; fk.textContent = KIND[it.kind] || '';
+      const fk = document.createElement('span'); fk.className = 'fk'; fk.textContent = it.img ? 'IMG' : (KIND[it.kind] || '');
       li.append(no, fn, fk);
       if (items.length > 1) li.append(btn('up', 'Move up', i === 0, () => move(i, i - 1)), btn('down', 'Move down', i === items.length - 1, () => move(i, i + 1)));
       li.append(btn('x', 'Remove', false, () => { const next = items.slice(); next.splice(i, 1); setItems(next); }));
@@ -3583,9 +3651,11 @@ const FONTS = {"CalB": "AAEAAAAOAIAAAwBgR0RFRg2VDe0AAIGYAAAAuEdQT1OVtZTJAACCUAAA
     }
     function handleFiles(files) {
       if (!T.tool || T.busy) return; const arr = Array.from(files || []);
-      if (T.tool.id === 'images') { const imgs = arr.filter(isImg); if (!imgs.length) return hud('Choose JPG, PNG, WebP or GIF images.', false); return addImages(imgs); }
+      if (T.tool.id === 'images') { const imgs = arr.filter(isImg); if (!imgs.length) return hud(arr.some(isPdf) ? 'That’s a PDF. Images to PDF takes photos. Pick Organize pages or Merge PDFs to work with a PDF.' : 'Choose JPG, PNG, WebP or GIF images.', false); return addImages(imgs); }
+      if (arr.length && !arr.some(isPdf) && arr.every(isImg) && !(T.tool.id === 'resize')) { pickTool('images'); hud('Switched to Images to PDF for your photos.', true); return addImages(arr); }
+      const wrong = f => /\.(docx|pptx|md|markdown|txt|html?)$/i.test(f.name) ? f.name + ' isn’t a PDF yet. Open it with Choose files on the start page to make a PDF, then use this tool.' : f.name + ' isn’t a PDF.';
       if (T.tool.id === 'resize') { const w = arr.find(isPdf), d = arr.find(x => /\.docx$/i.test(x.name)); if (!w && !d) return hud('Choose a PDF or a Word (.docx) file.', false); return w ? loadPdf(w) : loadWord(d); }
-      const f = arr.find(isPdf); if (!f) return hud('Choose a PDF file.', false); loadPdf(f);
+      const f = arr.find(isPdf); if (!f) return hud(arr.length ? wrong(arr[0]) : 'Choose a PDF file.', false); loadPdf(f);
     }
     async function loadPdf(file) {
       const my = ++T.lseq; $('tlDrop').classList.add('busy'); $('tlDropT').textContent = 'Opening…'; if ($('tlDrop').hidden) hud('Opening ' + file.name + '…', false);
@@ -3602,7 +3672,7 @@ const FONTS = {"CalB": "AAEAAAAOAIAAAwBgR0RFRg2VDe0AAIGYAAAAuEdQT1OVtZTJAACCUAAA
         T.seq++; T.bytes = bytes; T.pdf = pdf; T.name = file.name; T.total = pdf.numPages;
         T.L = Array.from({ length: pdf.numPages }, (_, n) => ({ id: n, n, rot: 0 })); T.hist = []; T.sel = new Set();
         buildWork();
-      } catch (e) { console.error(e); fail('Couldn’t open that PDF.'); }
+      } catch (e) { console.error(e); fail(navigator.onLine ? 'Couldn’t open that PDF.' : 'You’re offline. Reconnect, then try again.'); }
     }
     async function ensureMeasure() {
       if (T.meas) return;
@@ -4547,6 +4617,7 @@ const FONTS = {"CalB": "AAEAAAAOAIAAAwBgR0RFRg2VDe0AAIGYAAAAuEdQT1OVtZTJAACCUAAA
     $('supShowQr').addEventListener('click', () => supStep(2));
     $('supBack').addEventListener('click', () => supStep(1));
     window.__pmSupport = () => { supStep(1); openSheet('supDlg'); };
+    window.__pmToolsOpen = (id, files, auto) => { openTools(id); setTimeout(() => { handleFiles(files); if (auto) hud('Opened Images to PDF for your photos.', true); }, 60); };
     document.addEventListener('click', e => { const b = e.target.closest('[data-support]'); if (b) { e.preventDefault(); window.__pmSupport(); } });
 
     $('tlFile').addEventListener('change', e => { const f = e.target.files; if (f && f.length) handleFiles(f); });
@@ -4727,6 +4798,103 @@ const FONTS = {"CalB": "AAEAAAAOAIAAAwBgR0RFRg2VDe0AAIGYAAAAuEdQT1OVtZTJAACCUAAA
     } else setTimeout(go, 100);
   }
   go();
+})();
+</script>
+<script>
+(function () {
+  'use strict';
+  var $ = function (id) { return document.getElementById(id); };
+  var phone = function () { return window.matchMedia('(max-width: 760px)').matches; };
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  // Pointer drag with velocity, for touch and mouse.
+  function drag(handle, h) {
+    var y0 = 0, t0 = 0, active = false, lastY = 0, lastT = 0, v = 0, moved = false;
+    handle.addEventListener('pointerdown', function (e) {
+      if (!phone() || (e.target.closest && e.target.closest('button:not(.tl-grab), a, input')) || (e.pointerType === 'mouse' && e.button !== 0)) return;
+      active = true; moved = false; y0 = lastY = e.clientY; t0 = lastT = performance.now(); v = 0;
+      try { handle.setPointerCapture(e.pointerId); } catch (err) {}
+      if (h.start) h.start();
+    });
+    handle.addEventListener('pointermove', function (e) {
+      if (!active) return; var now = performance.now(), dy = e.clientY - y0;
+      if (Math.abs(dy) > 4) moved = true;
+      v = (e.clientY - lastY) / Math.max(1, now - lastT); lastY = e.clientY; lastT = now;
+      if (moved) h.move(dy);
+    });
+    var end = function (e) { if (!active) return; active = false; h.end(e.clientY - y0, v, moved); };
+    handle.addEventListener('pointerup', end); handle.addEventListener('pointercancel', end);
+  }
+  // 1. Page settings sheet: pull down to put it away and see the page.
+  var insp = $('insp'), head = insp && insp.querySelector('.sheet-head');
+  if (insp && head) drag(head, {
+    start: function () { insp.classList.add('dragging'); },
+    move: function (dy) { insp.style.transform = 'translateY(' + Math.max(0, dy) + 'px)'; },
+    end: function (dy, v, moved) {
+      insp.classList.remove('dragging');
+      if (moved && (dy > insp.offsetHeight * 0.22 || v > 0.55)) { var b = $('sheetDone'); if (b) b.click(); }
+      requestAnimationFrame(function () { insp.style.transform = ''; });
+    }
+  });
+  // 2. Done and Support sheets: same gesture closes them.
+  document.querySelectorAll('.sheet').forEach(function (sh) {
+    var hd = sh.querySelector('.sh-head'); if (!hd) return;
+    drag(hd, {
+      start: function () { sh.classList.add('dragging'); },
+      move: function (dy) { sh.style.transform = 'translateY(' + Math.max(0, dy) + 'px)'; },
+      end: function (dy, v, moved) {
+        sh.classList.remove('dragging');
+        if (moved && (dy > sh.offsetHeight * 0.22 || v > 0.55)) { var x = sh.querySelector('#doneX, #supX'); if (x) x.click(); }
+        requestAnimationFrame(function () { sh.style.transform = ''; });
+      }
+    });
+  });
+  // 3. Tool options panel: drag to resize. Snaps to peek (see the whole page), normal, or tall (more options).
+  var side = $('tlSide'), grab = $('tlGrab');
+  if (side && grab) {
+    var snaps = function () { var vh = window.innerHeight; return [64, Math.round(vh * 0.44), Math.round(vh * 0.78)]; };
+    var hNow = 0, base = 0;
+    var setH = function (h) { side.style.height = h + 'px'; side.style.maxHeight = h + 'px'; side.classList.toggle('peek', h <= 90); grab.setAttribute('aria-expanded', String(h > 90)); };
+    var snapTo = function (h) { side.classList.remove('dragging'); setH(h); hNow = h; };
+    drag(grab, {
+      start: function () { base = side.getBoundingClientRect().height; side.classList.add('dragging'); },
+      move: function (dy) { var s = snaps(); setH(Math.max(s[0], Math.min(s[2], base - dy))); },
+      end: function (dy, v, moved) {
+        var s = snaps(), h = side.getBoundingClientRect().height;
+        if (!moved) { snapTo(h <= 90 ? s[1] : s[0]); return; } // a tap toggles peek
+        if (v > 0.5) return snapTo(h > s[1] + 20 ? s[1] : s[0]);
+        if (v < -0.5) return snapTo(h < s[1] - 20 ? s[1] : s[2]);
+        snapTo(s.reduce(function (a, b) { return Math.abs(b - h) < Math.abs(a - h) ? b : a; }));
+      }
+    });
+    grab.addEventListener('keydown', function (e) {
+      var s = snaps(), h = side.getBoundingClientRect().height, i = s.reduce(function (a, b, j) { return Math.abs(b - h) < Math.abs(s[a] - h) ? j : a; }, 0);
+      if (e.key === 'ArrowDown') { e.preventDefault(); snapTo(s[Math.max(0, i - 1)]); }
+      else if (e.key === 'ArrowUp') { e.preventDefault(); snapTo(s[Math.min(2, i + 1)]); }
+      else if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); snapTo(h <= 90 ? s[1] : s[0]); }
+    });
+    // Every new file or tool starts from the normal height; leaving phone width clears the sizing.
+    new MutationObserver(function () { if (!side.hidden && phone()) { side.style.height = side.style.maxHeight = ''; side.classList.remove('peek'); } }).observe(side, { attributes: true, attributeFilter: ['hidden'] });
+    window.matchMedia('(max-width: 760px)').addEventListener('change', function () { side.style.height = side.style.maxHeight = ''; side.classList.remove('peek'); });
+  }
+  // 4. Connection and crash feedback.
+  var net = $('netBar'), crash = $('crashBar'), netT = 0;
+  var show = function (el) { el.hidden = false; requestAnimationFrame(function () { el.classList.add('on'); }); };
+  var hide = function (el) { el.classList.remove('on'); setTimeout(function () { if (!el.classList.contains('on')) el.hidden = true; }, 250); };
+  var offline = function () { net.classList.remove('ok'); $('netText').textContent = 'You’re offline. Files already open still work. Opening new files may need a connection.'; clearTimeout(netT); show(net); };
+  var online = function () { if (net.hidden) return; net.classList.add('ok'); $('netText').textContent = 'Back online.'; clearTimeout(netT); netT = setTimeout(function () { hide(net); }, 2500); };
+  window.addEventListener('offline', offline); window.addEventListener('online', online);
+  if (navigator.onLine === false) offline();
+  $('netX').addEventListener('click', function () { hide(net); });
+  var last = 0;
+  var oops = function () { if (!window.__pmReady) return; var now = Date.now(); if (now - last < 10000) return; last = now; show(crash); };
+  window.addEventListener('error', function (e) {
+    var m = String((e && e.message) || ''); if (!e || !e.error || /ResizeObserver loop|Script error/i.test(m)) return; oops();
+  });
+  window.addEventListener('unhandledrejection', function (e) {
+    var r = e && e.reason; if (!(r instanceof Error) || r.name === 'AbortError' || r.name === 'NotAllowedError') return; oops();
+  });
+  $('crashReload').addEventListener('click', function () { location.reload(); });
+  $('crashX').addEventListener('click', function () { hide(crash); });
 })();
 </script>
 </body>
