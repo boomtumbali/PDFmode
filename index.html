@@ -1139,6 +1139,7 @@ body.landing .supBtn { display: inline-flex; }
   </div>
 </div>
 <div class="statusbar" id="netBar" role="status" aria-live="polite" hidden><span class="sb-dot" aria-hidden="true"></span><span class="sb-t" id="netText"></span><button type="button" class="sb-x" id="netX" aria-label="Dismiss">✕</button></div>
+<div class="statusbar" id="lightBar" role="status" aria-live="polite" hidden><span class="sb-dot" aria-hidden="true"></span><span class="sb-t" id="lightText"></span><button type="button" class="sb-go" id="lightRetry">Try full design</button><button type="button" class="sb-x" id="lightX" aria-label="Dismiss">✕</button></div>
 <div class="statusbar err" id="crashBar" role="alert" hidden><span class="sb-dot" aria-hidden="true"></span><span class="sb-t">Something went wrong. Your files are still on this device.</span><button type="button" class="sb-go" id="crashReload">Reload</button><button type="button" class="sb-x" id="crashX" aria-label="Dismiss">✕</button></div>
 <div class="tools" id="tools" role="dialog" aria-modal="true" aria-labelledby="tlTitle">
   <header class="tl-bar">
@@ -1992,6 +1993,42 @@ body.landing .supBtn { display: inline-flex; }
     return true;
   }
   // Paint one shape or picture: fill (colour, gradient or picture, with crop), outline, rotation and flips.
+  function paintOn(g, o, k) {
+    const W = o.w * k, H = o.h * k, rad = (o.rot || 0) * Math.PI / 180;
+    g.save();
+    g.translate((o.x || 0) * k + W / 2, (o.y || 0) * k + H / 2); g.rotate(rad); g.scale(o.flipH ? -1 : 1, o.flipV ? -1 : 1); g.translate(-W / 2, -H / 2);
+    const path = geomPath(o.geom, W, H), f = o.fill;
+    if (f && f.color) { g.globalAlpha = f.alpha == null ? 1 : f.alpha; g.fillStyle = f.color; g.fill(path); g.globalAlpha = 1; }
+    else if (f && f.grad && f.grad.length) {
+      let gr;
+      if (f.radial) gr = g.createRadialGradient(W / 2, H / 2, 0, W / 2, H / 2, Math.hypot(W, H) / 2);
+      else { const a = f.ang * Math.PI / 180, dx = Math.cos(a), dy = Math.sin(a), L = (Math.abs(W * dx) + Math.abs(H * dy)) / 2; gr = g.createLinearGradient(W / 2 - dx * L, H / 2 - dy * L, W / 2 + dx * L, H / 2 + dy * L); }
+      f.grad.forEach(s => gr.addColorStop(Math.min(1, Math.max(0, s.pos)), rgba(s.color, s.alpha)));
+      g.fillStyle = gr; g.fill(path);
+    } else if (o.img) {
+      const im = o.img, c = o.crop || { l: 0, t: 0, r: 0, b: 0 }, iw = im.naturalWidth || im.width, ih = im.naturalHeight || im.height;
+      const sx = c.l * iw, sy = c.t * ih, sw = iw * (1 - c.l - c.r), sh = ih * (1 - c.t - c.b);
+      const fr = o.fillRect || { l: 0, t: 0, r: 0, b: 0 }; // "stretch" offsets: the picture may extend past the shape
+      g.save(); g.clip(path); g.globalAlpha = o.imgAlpha == null ? 1 : o.imgAlpha;
+      g.drawImage(im, sx, sy, Math.max(1, sw), Math.max(1, sh), fr.l * W, fr.t * H, W * (1 - fr.l - fr.r), H * (1 - fr.t - fr.b)); g.restore();
+    }
+    if (o.line && o.line.color) { g.globalAlpha = o.line.alpha == null ? 1 : o.line.alpha; g.lineWidth = o.line.w * k; g.strokeStyle = o.line.color; g.lineJoin = 'round'; g.stroke(path); g.globalAlpha = 1; }
+    g.restore();
+  }
+  // Big photos are decoded once and kept at a sensible size, so a deck that reuses a 6-megapixel photo on every slide stays fast.
+  const imgCache = new Map();
+  async function cachedImg(key, getUri) {
+    if (imgCache.has(key)) return imgCache.get(key);
+    const pr = (async () => {
+      const uri = await getUri(); if (!uri) return null;
+      const im = await loadImg(uri), max = 2000, big = Math.max(im.naturalWidth, im.naturalHeight);
+      if (big <= max) return im;
+      const s = max / big, c = document.createElement('canvas'); c.width = Math.round(im.naturalWidth * s); c.height = Math.round(im.naturalHeight * s);
+      c.getContext('2d').drawImage(im, 0, 0, c.width, c.height); return c;
+    })();
+    imgCache.set(key, pr); return pr;
+  }
+  const fillRectOf = bf => { const st = bf && kid(bf, 'stretch'), fr = st && kid(st, 'fillRect'); if (!fr) return null; const v = n => (+fr.getAttribute(n) || 0) / 100000; const r = { l: v('l'), t: v('t'), r: v('r'), b: v('b') }; return (r.l || r.t || r.r || r.b) ? r : null; };
   async function rasterShape(o) {
     const k = Math.max(1, Math.min(3, 2400 / Math.max(o.w, o.h, 1)));
     const rad = (o.rot || 0) * Math.PI / 180, cs = Math.abs(Math.cos(rad)), sn = Math.abs(Math.sin(rad));
@@ -2312,8 +2349,11 @@ body.landing .supBtn { display: inline-flex; }
         }
         const rel = rid && rels[rid];
         if (!rel || rel.external) continue;
-        let uri = await media(z, resolvePath('word/', rel.target), ctx);
+        const wpath = resolvePath('word/', rel.target);
+        let uri = await media(z, wpath, ctx);
         if (!uri) continue;
+        // Photos straight from a phone camera can be 12+ megapixels; print quality needs far less.
+        if (uri.length > 900000) { try { const im = await cachedImg(wpath, () => uri); if (im && im.tagName === 'CANVAS') uri = im.toDataURL(/png/.test(uri.slice(0, 30)) ? 'image/png' : 'image/jpeg', 0.88); } catch (e) {} }
         if (!wPt || !hPt) { wPt = Math.min(contentW, 300); hPt = 0; }
         const crop = cropOf(deep(d, 'blipFill'));
         if (crop && hPt) { try { uri = (await rasterShape({ w: wPt, h: hPt, img: await loadImg(uri), crop, geom: { prst: 'rect' } })).uri; } catch (e) {} }
@@ -2329,7 +2369,14 @@ body.landing .supBtn { display: inline-flex; }
     const alignOf = jc => ({ center: 'center', right: 'right', end: 'right', both: 'justify', distribute: 'justify', justify: 'justify' }[jc] || 'left');
 
     let prevStyle = null, prevContextual = false;
+    let doneParas = 0;
+    const totalParas = Math.max(1, deepAll(doc, 'p').length);
     async function paragraph(p, inTable) {
+      if (++doneParas % 120 === 0) {
+        if (ctx.progress) ctx.progress(doneParas, totalParas, 'paragraph');
+        if (ctx.cancelled && ctx.cancelled()) throw Object.assign(new Error('cancelled'), { cancelled: true });
+        await new Promise(r => setTimeout(r, 0));
+      }
       const pPr = readPPr(kid(p, 'pPr'));
       const sid = pPr.style || defaultPara;
       const listLvl = (() => {
@@ -2558,7 +2605,7 @@ body.landing .supBtn { display: inline-flex; }
       const clrMap = {};
       if (cm) for (const a of Array.from(cm.attributes)) clrMap[a.name] = a.value;
       const P = { theme, clrMap };
-      const items = [];
+      const items = [], ops = []; // ops: artwork in stacking order; each may also carry a plain vector version
       const font = (name, role) => {
         if (!name || name === '+mn-lt' || name === '+mn-ea') name = theme.minor;
         if (name === '+mj-lt' || name === '+mj-ea') name = theme.major;
@@ -2612,20 +2659,18 @@ body.landing .supBtn { display: inline-flex; }
               let x1 = g.x, y1 = g.y, x2 = g.x + g.w, y2 = g.y + g.h;
               if (xf.flipH) [x1, x2] = [x2, x1]; if (xf.flipV) [y1, y2] = [y2, y1];
               if (xf.rot) { const cx = g.x + g.w / 2, cy = g.y + g.h / 2, a = xf.rot * Math.PI / 180, R = (x, y) => [cx + (x - cx) * Math.cos(a) - (y - cy) * Math.sin(a), cy + (x - cx) * Math.sin(a) + (y - cy) * Math.cos(a)]; [x1, y1] = R(x1, y1); [x2, y2] = R(x2, y2); }
-              items.push({ canvas: [{ type: 'line', x1, y1, x2, y2, lineWidth: LN.w, lineColor: LN.color, strokeOpacity: LN.alpha }], absolutePosition: { x: 0, y: 0 } });
+              ops.push({ line: { x1, y1, x2, y2, w: LN.w, color: LN.color, alpha: LN.alpha }, vector: { canvas: [{ type: 'line', x1, y1, x2, y2, lineWidth: LN.w, lineColor: LN.color, strokeOpacity: LN.alpha }], absolutePosition: { x: 0, y: 0 } } });
             }
           } else if (F || LN) {
             const simple = !xf.rot && !xf.flipH && !xf.flipV && !geo.cust && /^(rect|ellipse)$/.test(geo.prst) && (!F || (F.color && F.alpha >= 0.999));
-            if (simple) {
-              const shape = geo.prst === 'ellipse' ? { type: 'ellipse', x: g.w / 2, y: g.h / 2, r1: g.w / 2, r2: g.h / 2 } : { type: 'rect', x: 0, y: 0, w: g.w, h: g.h };
+            const spec = { x: g.x, y: g.y, w: g.w, h: g.h, rot: xf.rot, flipH: xf.flipH, flipV: xf.flipV, geom: geo, fill: F && !F.blip ? F : null, line: LN };
+            if (F && F.blip) { const b = deep(F.blip, 'blip'), rid = b && b.getAttribute('r:embed'), rel = rid && src.rels[rid];
+              if (rel) { const path = resolvePath(src.dir, rel.target); spec.img = await cachedImg(path, () => media(z, path, ctx)); spec.crop = cropOf(F.blip); spec.fillRect = fillRectOf(F.blip); } }
+            const op = { spec };
+            if (simple) { const shape = geo.prst === 'ellipse' ? { type: 'ellipse', x: g.w / 2, y: g.h / 2, r1: g.w / 2, r2: g.h / 2 } : { type: 'rect', x: 0, y: 0, w: g.w, h: g.h };
               if (F) shape.color = F.color; if (LN) { shape.lineColor = LN.color; shape.lineWidth = LN.w; }
-              items.push({ canvas: [shape], absolutePosition: { x: g.x, y: g.y } });
-            } else {
-              let img = null, crop = null;
-              if (F && F.blip) { const b = deep(F.blip, 'blip'), rid = b && b.getAttribute('r:embed'), rel = rid && src.rels[rid]; const uri = rel && await media(z, resolvePath(src.dir, rel.target), ctx); if (uri) { img = await loadImg(uri); crop = cropOf(F.blip); } }
-              const r = await rasterShape({ w: g.w, h: g.h, rot: xf.rot, flipH: xf.flipH, flipV: xf.flipV, geom: geo, fill: F && !F.blip ? F : null, img, crop, line: LN });
-              items.push({ image: r.uri, width: r.w, height: r.h, absolutePosition: { x: g.x + r.dx, y: g.y + r.dy } });
-            }
+              op.vector = { canvas: [shape], absolutePosition: { x: g.x, y: g.y } }; }
+            if (spec.img || !F || !F.blip) ops.push(op);
           }
         } catch (e) { console.warn('shape skipped', e); }
         const tx = kid(sp, 'txBody');
@@ -2676,7 +2721,9 @@ body.landing .supBtn { display: inline-flex; }
           const hasText = runs.some(r => r.text && r.text.trim());
           const spB = pPr && deep(kid(pPr, 'spcBef'), 'spcPts'), spA = pPr && deep(kid(pPr, 'spcAft'), 'spcPts');
           const lnPct = (pPr && deep(kid(pPr, 'lnSpc'), 'spcPct')) || null;
-          const lh = lnPct ? +lnPct.getAttribute('val') / 100000 : (lvlAttr(lvl, lp => { const e = deep(kid(lp, 'lnSpc'), 'spcPct'); return e ? +e.getAttribute('val') / 100000 : null; }) || (isTitle(role) ? 0.9 : 1));
+          const lnPts = (pPr && deep(kid(pPr, 'lnSpc'), 'spcPts')) || null; // exact line spacing in points
+          const lhPct = lnPct ? +lnPct.getAttribute('val') / 100000 : (lvlAttr(lvl, lp => { const e = deep(kid(lp, 'lnSpc'), 'spcPct'); return e ? +e.getAttribute('val') / 100000 : null; }) || (isTitle(role) ? 0.9 : 1));
+          const lh = lnPts && !lnPct ? Math.max(0.6, Math.min(3, (+lnPts.getAttribute('val') / 100) / ((runs.find(r => r.fontSize) || { fontSize: baseSize * scale }).fontSize * 1.22))) : lhPct;
           const before = spB ? +spB.getAttribute('val') / 100 : (lvlAttr(lvl, lp => { const e = deep(kid(lp, 'spcBef'), 'spcPts'); return e ? +e.getAttribute('val') / 100 : null; }) || 0);
           const after = spA ? +spA.getAttribute('val') / 100 : 0;
           const buNone = pPr && kid(pPr, 'buNone');
@@ -2718,15 +2765,16 @@ body.landing .supBtn { display: inline-flex; }
         g = tf(g);
         const b = deep(pic, 'blip'); const rid = b && b.getAttribute('r:embed'); const rel = rid && src.rels[rid];
         if (!rel) return;
-        const uri = await media(z, resolvePath(src.dir, rel.target), ctx);
+        const mpath = resolvePath(src.dir, rel.target);
+        const uri = await media(z, mpath, ctx);
         if (!uri) return;
         const spPr = kid(pic, 'spPr'), bf = kid(pic, 'blipFill'), crop = cropOf(bf), xf = xfOf(spPr), geo = geomOf(spPr), am = deep(b, 'alphaModFix');
         const ln = spPr && kid(spPr, 'ln'), lf = ln && kid(ln, 'solidFill'), LN = lf ? { color: colorOf(lf, P), alpha: alphaOf(lf), w: ln.getAttribute('w') ? +ln.getAttribute('w') / EMU : 0.75 } : null;
-        if (!crop && !xf.rot && !xf.flipH && !xf.flipV && geo.prst === 'rect' && !geo.cust && !am && !LN) { items.push({ image: uri, width: g.w, height: g.h, absolutePosition: { x: g.x, y: g.y } }); return; }
-        try {
-          const r = await rasterShape({ w: g.w, h: g.h, rot: xf.rot, flipH: xf.flipH, flipV: xf.flipV, geom: geo, img: await loadImg(uri), crop, imgAlpha: am ? +am.getAttribute('amt') / 100000 : null, line: LN });
-          items.push({ image: r.uri, width: r.w, height: r.h, absolutePosition: { x: g.x + r.dx, y: g.y + r.dy } });
-        } catch (e) { items.push({ image: uri, width: g.w, height: g.h, absolutePosition: { x: g.x, y: g.y } }); }
+        const plain = !crop && !xf.rot && !xf.flipH && !xf.flipV && geo.prst === 'rect' && !geo.cust && !am && !LN;
+        const op = { spec: { x: g.x, y: g.y, w: g.w, h: g.h, rot: xf.rot, flipH: xf.flipH, flipV: xf.flipV, geom: geo, crop, fillRect: fillRectOf(bf), imgAlpha: am ? +am.getAttribute('amt') / 100000 : null, line: LN } };
+        try { op.spec.img = await cachedImg(mpath, () => uri); } catch (e) { op.spec.img = null; }
+        if (plain) op.vector = { image: uri, width: g.w, height: g.h, absolutePosition: { x: g.x, y: g.y } };
+        if (op.spec.img || op.vector) ops.push(op);
       };
       // Charts (from the saved numbers) and SmartArt (from its saved drawing).
       const drawGraphic = async (gf, src, tf) => {
@@ -2739,7 +2787,7 @@ body.landing .supBtn { display: inline-flex; }
           const cs = xml(await f.async('string'));
           const pal = ['accent1', 'accent2', 'accent3', 'accent4', 'accent5', 'accent6'].map(a => P.theme.colors[a]).filter(Boolean);
           const img = await drawChartImage(cs, g.w, g.h, pal.length ? pal : ['#4472C4', '#ED7D31', '#A5A5A5', '#FFC000', '#5B9BD5', '#70AD47'], el => colorOf(el, P));
-          if (img) items.push({ image: img, width: g.w, height: g.h, absolutePosition: { x: g.x, y: g.y } });
+          if (img) { const im = await loadImg(img); ops.push({ spec: { x: g.x, y: g.y, w: g.w, h: g.h, geom: { prst: 'rect' }, img: im }, vector: { image: img, width: g.w, height: g.h, absolutePosition: { x: g.x, y: g.y } } }); }
           return;
         }
         if (/diagram/.test(uri)) {
@@ -2807,7 +2855,26 @@ body.landing .supBtn { display: inline-flex; }
       if (M && showMaster(S.d.documentElement) && showMaster(L && L.d.documentElement)) await walk(deep(M.d, 'spTree'), M, id, true);
       if (L && showMaster(S.d.documentElement)) await walk(deep(L.d, 'spTree'), L, id, true);
       await walk(deep(S.d, 'spTree'), S, id, false);
-      pages.push({ items, bg });
+      let art = [];
+      const heavy = bgImage || ops.some(o => !o.vector);
+      if (!heavy) art = ops.map(o => o.vector);
+      else {
+        const k = Math.min(2, (ctx.layerPx || 1600) / W), cv = document.createElement('canvas'); cv.width = Math.round(W * k); cv.height = Math.round(H * k);
+        const gg = cv.getContext('2d'); gg.fillStyle = bgColor || '#FFFFFF'; gg.fillRect(0, 0, cv.width, cv.height);
+        if (bgImage) { try { const bi = await cachedImg('bg:' + bgImage.length + bgImage.slice(-40), () => bgImage); gg.drawImage(bi, 0, 0, cv.width, cv.height); } catch (e) {} }
+        for (const o of ops) {
+          try {
+            if (o.line) { gg.save(); gg.globalAlpha = o.line.alpha == null ? 1 : o.line.alpha; gg.strokeStyle = o.line.color; gg.lineWidth = o.line.w * k; gg.beginPath(); gg.moveTo(o.line.x1 * k, o.line.y1 * k); gg.lineTo(o.line.x2 * k, o.line.y2 * k); gg.stroke(); gg.restore(); }
+            else if (o.spec) paintOn(gg, o.spec, k);
+          } catch (e) { console.warn('artwork skipped', e); }
+        }
+        art = [{ image: cv.toDataURL('image/jpeg', 0.86), width: W, height: H, absolutePosition: { x: 0, y: 0 } }];
+        cv.width = cv.height = 0;
+      }
+      pages.push({ items: art.concat(items), bg });
+      if (ctx.progress) ctx.progress(si + 1, slidePaths.length);
+      if (ctx.cancelled && ctx.cancelled()) throw Object.assign(new Error('cancelled'), { cancelled: true });
+      await new Promise(r => setTimeout(r, 0)); // let the page breathe between slides
       marks.push({ depth: 1, title: title || 'Slide ' + (si + 1), slide: si });
     }
     return { kind: 'pptx', slides: pages, slideW: W, slideH: H, marks };
@@ -2920,7 +2987,7 @@ const FONTS = {"CalB": "AAEAAAAOAIAAAwBgR0RFRg2VDe0AAIGYAAAAuEdQT1OVtZTJAACCUAAA
     const f = c === 'Original' ? 'Slab' : c;
     return { body: f, head: f + 'D' };
   };
-  const faithful = (it = doc) => !!(it.office && opts.officeStyle !== 'reading'); // Word/PowerPoint with their own formatting
+  const faithful = (it = doc) => !!(it.office && opts.officeStyle !== 'reading' && !it.lightOnly); // Word/PowerPoint with their own formatting (unless that one file had to go light)
   // Auto: files that have their own page size (Word, PowerPoint, PDF) keep their pages; Markdown and text run continuous.
   const pagedFor = it => opts.layout === 'pages' || (opts.layout === 'auto' && (faithful(it) || it.kind === 'pdf'));
   const convOpts = (it = doc, paged = pagedFor(it)) => { const fp = fontPair(it); return { widthPt: WIDTHS[wk()], margin: marginPt(), fontSize: +opts.size, font: fp.body, headFont: fp.head, theme: opts.theme,
@@ -3065,12 +3132,19 @@ const FONTS = {"CalB": "AAEAAAAOAIAAAwBgR0RFRg2VDe0AAIGYAAAAuEdQT1OVtZTJAACCUAAA
       node.parentNode.replaceChild(f, node);
     }
   }
+  let previewSeq = 0; // bumps whenever the exact (PDF) preview should stop drawing
   function renderPages() {
     const host = $('pages');
     if (!hasDoc()) { host.innerHTML = ''; return; }
     if (pdfPreview()) {
       if (result && resultKey === keyOf()) renderPdfPreview(result.bytes);
       else if (!host.querySelector('.pdfp')) { const ph = document.createElement('div'); ph.className = 'page pending'; ph.style.width = Math.min(760, $('canvas').clientWidth - 40) + 'px'; ph.style.height = '420px'; ph.textContent = 'Preparing preview…'; host.replaceChildren(ph); }
+      return;
+    }
+    previewSeq++; // stop drawing pages for the exact preview we're leaving
+    if (doc.office && doc.office.lazy) {
+      const ph = document.createElement('div'); ph.className = 'page pending'; ph.style.width = Math.min(760, $('canvas').clientWidth - 40) + 'px'; ph.style.height = '420px'; ph.textContent = 'Preparing the text…'; host.replaceChildren(ph);
+      const it = doc; ensureMd(it).then(() => { if (doc === it) { renderPages(); scheduleMeasure(); } }).catch(e => { console.error(e); meta('Couldn’t read the text in this file'); });
       return;
     }
     if (blocksFor !== doc.uid) { buildBlocks(); blocksFor = doc.uid; }
@@ -3097,7 +3171,6 @@ const FONTS = {"CalB": "AAEAAAAOAIAAAwBgR0RFRg2VDe0AAIGYAAAAuEdQT1OVtZTJAACCUAAA
   function restyle() { document.querySelectorAll('.page').forEach(pageVars); }
 
   // ---------- exact preview of Word/PowerPoint output (pdf.js draws the real PDF) ----------
-  let previewSeq = 0;
   async function renderPdfPreview(bytes) {
     const seq = ++previewSeq;
     try {
@@ -3118,18 +3191,23 @@ const FONTS = {"CalB": "AAEAAAAOAIAAAwBgR0RFRg2VDe0AAIGYAAAAuEdQT1OVtZTJAACCUAAA
         frag.appendChild(card); cards.push({ card, pg, k, h: vp1.height * k, w: vp1.width * k });
       }
       const y = window.scrollY; $('pages').replaceChildren(frag); window.scrollTo(0, y);
-      // Draw in tiles so very long pages stay within canvas limits; tiles near the screen first.
-      const tiles = [];
-      for (const c of cards) for (let t = 0; t < c.h; t += 1600) tiles.push({ c, t, th: Math.min(1600, c.h - t) });
-      for (const tile of tiles) {
-        if (seq !== previewSeq) return;
-        const { c, t, th } = tile;
-        const canvas = document.createElement('canvas');
-        canvas.width = Math.ceil(c.w * dpr); canvas.height = Math.ceil(th * dpr); canvas.style.height = th + 'px';
-        c.card.appendChild(canvas);
-        const vp = c.pg.getViewport({ scale: c.k * dpr });
-        await c.pg.render({ canvasContext: canvas.getContext('2d'), viewport: vp, transform: [1, 0, 0, 1, 0, -t * dpr] }).promise;
-      }
+      // Only pages near the screen are drawn (in tiles, so very long pages stay within canvas limits).
+      // A 150-page document no longer draws every page up front, and scrolling stays smooth.
+      let queue = Promise.resolve();
+      const draw = c => { if (c.drawn) return; c.drawn = true; queue = queue.then(async () => {
+        for (let t = 0; t < c.h; t += 1600) {
+          if (seq !== previewSeq) return;
+          const th = Math.min(1600, c.h - t), canvas = document.createElement('canvas');
+          canvas.width = Math.ceil(c.w * dpr); canvas.height = Math.ceil(th * dpr); canvas.style.height = th + 'px';
+          c.card.appendChild(canvas);
+          await c.pg.render({ canvasContext: canvas.getContext('2d'), viewport: c.pg.getViewport({ scale: c.k * dpr }), transform: [1, 0, 0, 1, 0, -t * dpr] }).promise;
+        }
+      }).catch(e => console.warn(e)); };
+      if ('IntersectionObserver' in window) {
+        const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { io.unobserve(e.target); draw(e.target.__pm); } }), { rootMargin: '1200px 0px' });
+        cards.forEach(c => { c.card.__pm = c; io.observe(c.card); });
+        const stop = setInterval(() => { if (seq !== previewSeq) { io.disconnect(); clearInterval(stop); } }, 1000);
+      } else cards.forEach(draw);
     } catch (e) { console.error(e); if (seq === previewSeq) meta('Preview unavailable — Export still works'); }
   }
   const toPng = src => new Promise(res => {
@@ -3139,14 +3217,58 @@ const FONTS = {"CalB": "AAEAAAAOAIAAAwBgR0RFRg2VDe0AAIGYAAAAuEdQT1OVtZTJAACCUAAA
   });
   async function officeSpec(it = doc) {
     if (it.spec) return it.spec;
-    const ctx = { metrics: (COVERAGE && COVERAGE.metrics) || {}, toPng };
-    it.spec = it.office.kind === 'docx' ? await PCOffice.buildDocx(it.office.zip, ctx) : await PCOffice.buildPptx(it.office.zip, ctx);
-    return it.spec;
+    if (it.specTask) return it.specTask;
+    const token = it.buildToken = (it.buildToken || 0) + 1;
+    const ctx = { metrics: (COVERAGE && COVERAGE.metrics) || {}, toPng, layerPx: it.retryFull ? 1920 : 1600,
+      progress: (i, n, unit) => { if (token !== it.buildToken) return; const lead = items.length > 1 ? baseName(it.name) + ': ' : ''; meta(lead + (unit === 'paragraph' ? 'Laying out ' + Math.round(i / n * 100) + '%…' : 'Preparing slide ' + i + ' of ' + n + '…'), true); },
+      cancelled: () => token !== it.buildToken };
+    it.specTask = (it.office.kind === 'docx' ? PCOffice.buildDocx(it.office.zip, ctx) : PCOffice.buildPptx(it.office.zip, ctx))
+      .then(sp => { if (token === it.buildToken) it.spec = sp; return sp; })
+      .finally(() => { if (token === it.buildToken) it.specTask = null; });
+    // A very heavy file shouldn't freeze the app: after the time limit, show a light, text-only preview instead.
+    const limit = it.retryFull ? 180000 : 45000;
+    let timer;
+    const slow = new Promise((_, rej) => { timer = setTimeout(() => rej(Object.assign(new Error('slow'), { slow: true })), limit); });
+    try { return await Promise.race([it.specTask, slow]); }
+    catch (e) { if (token === it.buildToken) { it.buildToken++; it.specTask = null; } throw e; }
+    finally { clearTimeout(timer); }
   }
+  // Light mode: the readable, text-only version of an Office file, with a way back to the full design.
+  function goLight(it, why) {
+    it.light = true; opts.officeStyle = 'reading'; persist(); syncControls();
+    const bar = $('lightBar'); if (!bar) return;
+    $('lightText').textContent = why === 'slow' ? 'This file is heavy, so here’s a light, text-only preview.' : 'The full design couldn’t be drawn, so here’s a light, text-only preview.';
+    bar.hidden = false; requestAnimationFrame(() => bar.classList.add('on'));
+  }
+  function lightNotice(it, why) {
+    const bar = $('lightBar'); if (!bar) return;
+    const n = items.filter(i => i.lightOnly).length;
+    $('lightText').textContent = n > 1 ? n + ' files were too heavy, so they’re included as text only.' : '“' + it.name + '” was ' + (why === 'slow' ? 'too heavy' : 'hard to draw') + ', so it’s included as text only.';
+    bar.hidden = false; requestAnimationFrame(() => bar.classList.add('on'));
+  }
+  function hideLight() { const bar = $('lightBar'); if (!bar) return; bar.classList.remove('on'); setTimeout(() => { if (!bar.classList.contains('on')) bar.hidden = true; }, 250); }
   const baseName = n => String(n || 'Untitled').replace(/\.[^.]+$/, '');
+  // The text version of a Word or PowerPoint file, made on first use. The light version leaves pictures out.
+  function ensureMd(it) {
+    if (!it.office || !it.office.lazy) return Promise.resolve();
+    const light = !!(it.light || it.lightOnly);
+    if (it.mdTask && it.mdTaskLight === light) return it.mdTask;
+    it.mdTaskLight = light;
+    it.mdTask = (async () => {
+      const md = it.office.kind === 'docx' ? await docxToMarkdown(it.office.buf || await it.office.zip.generateAsync({ type: 'arraybuffer' }), { noImages: light }) : await pptxToMarkdown(it.office.zip);
+      it.md = md; it.office.lazy = false; it.imagesReady = prepareImages(it); await it.imagesReady;
+      if (it === doc) blocksFor = null;
+    })();
+    return it.mdTask;
+  }
   async function buildItem(it, paged) {
     if (it.kind === 'pdf') return { bytes: it.pdf, pages: it.pageIn, paged: true, marks: [], segments: [{ firstBlock: 0 }], blockPages: [] };
-    if (faithful(it)) return C.renderOffice(await officeSpec(it), { paged, bookmarks: !!opts.bookmarks, title: baseName(it.name) }, env);
+    if (faithful(it)) {
+      if (items.length === 1) return C.renderOffice(await officeSpec(it), { paged, bookmarks: !!opts.bookmarks, title: baseName(it.name) }, env);
+      try { return C.renderOffice(await officeSpec(it), { paged, bookmarks: !!opts.bookmarks, title: baseName(it.name) }, env); }
+      catch (e) { console.warn(e); it.lightOnly = true; lightNotice(it, e && e.slow ? 'slow' : 'error'); }
+    }
+    await ensureMd(it);
     if (it.imagesReady) await it.imagesReady;
     return C.convert(it.md, convOpts(it, paged), env);
   }
@@ -3190,10 +3312,12 @@ const FONTS = {"CalB": "AAEAAAAOAIAAAwBgR0RFRg2VDe0AAIGYAAAAuEdQT1OVtZTJAACCUAAA
         const before = result ? (result.paged ? -1 : result.segments.length) : 1;
         result = r; resultKey = key; meta(describe(r));
         if (pdfPreview() || r.paged || r.segments.length !== before || r.segments.length > 1) renderPages();
-      }
+      } else pending = true; // something changed while laying out (a file's text version arrived, a setting moved): lay out again
     } catch (e) {
       console.error(e);
-      meta(e && e.message === 'empty' ? 'Nothing to show in this file' : 'Couldn’t lay out this file');
+      if (items.length === 1 && doc.office && faithful(doc) && (!e || e.message !== 'empty')) {
+        goLight(doc, e && e.slow ? 'slow' : 'error'); result = null; resultKey = ''; renderPages(); pending = true;
+      } else meta(e && e.message === 'empty' ? 'Nothing to show in this file' : 'Couldn’t lay out this file');
     } finally {
       running = false;
       if (pending) { pending = false; measure(); }
@@ -3438,13 +3562,26 @@ const FONTS = {"CalB": "AAEAAAAOAIAAAwBgR0RFRg2VDe0AAIGYAAAAuEdQT1OVtZTJAACCUAAA
     td.addRule('dataImages', { filter: n => n.nodeName === 'IMG', replacement: (c, n) => { const src = n.getAttribute('src') || ''; return src ? '\n\n![' + (n.getAttribute('alt') || '').replace(/[\[\]]/g, '') + '](' + src + ')\n\n' : ''; } });
     return td.turndown(dom.body.innerHTML).replace(/\n{3,}/g, '\n\n');
   }
-  async function docxToMarkdown(buf) {
+  async function docxToMarkdown(buf, opt) {
     await loadScript(LIBS.mammoth);
-    const r = await mammoth.convertToHtml({ arrayBuffer: buf }, { styleMap: [
+    // Pictures for the reading version are resized to what a page needs (camera photos are often 12 MP or more).
+    const shrink = mammoth.images.imgElement(async image => {
+      const type = image.contentType || 'image/png';
+      let raw = null; try { raw = await image.read(); } catch (e) {}
+      const size = raw ? (raw.byteLength || raw.length || 0) : 0;
+      if (!raw || size < 450000 || !/^image\/(jpe?g|png|webp|gif|bmp)$/i.test(type)) return { src: 'data:' + type + ';base64,' + await image.read('base64') };
+      try {
+        const bmp = await createImageBitmap(new Blob([raw], { type }));
+        const k = Math.min(1, 1600 / Math.max(bmp.width, bmp.height)), c = document.createElement('canvas'); c.width = Math.round(bmp.width * k); c.height = Math.round(bmp.height * k);
+        const g = c.getContext('2d'); g.fillStyle = '#fff'; g.fillRect(0, 0, c.width, c.height); g.drawImage(bmp, 0, 0, c.width, c.height); if (bmp.close) bmp.close();
+        const src = c.toDataURL('image/jpeg', 0.85); c.width = c.height = 0; return { src };
+      } catch (e) { return { src: 'data:' + type + ';base64,' + await image.read('base64') }; }
+    });
+    const r = await mammoth.convertToHtml({ arrayBuffer: buf }, { convertImage: shrink, styleMap: [
       "p[style-name='Title'] => h1:fresh", "p[style-name='Subtitle'] => h2:fresh",
       "p[style-name='Quote'] => blockquote > p:fresh", "p[style-name='Intense Quote'] => blockquote > p:fresh"
     ] });
-    return htmlToMarkdown(r.value);
+    return htmlToMarkdown(opt && opt.noImages ? r.value.replace(/<img\b[^>]*>/gi, '') : r.value);
   }
   const looksLikeMarkdown = t => [/^#{1,6}\s+\S/m, /^\s*[-*+]\s+\S/m, /^\s*\d+[.)]\s+\S/m, /\*\*[^*\n]+\*\*/, /^\s*\|.+\|\s*$/m, /^\s*(```|~~~)/m, /^>\s?\S/m, /\[[^\]\n]+\]\([^)\s]+\)/, /^\s*(---|\*\*\*)\s*$/m].some(r => r.test(t));
   // Plain text keeps its line breaks and characters exactly as written.
@@ -3459,8 +3596,8 @@ const FONTS = {"CalB": "AAEAAAAOAIAAAwBgR0RFRg2VDe0AAIGYAAAAuEdQT1OVtZTJAACCUAAA
     let bmp;
     try { bmp = await createImageBitmap(f, { imageOrientation: 'from-image' }); }
     catch (e) { throw Object.assign(new Error('img'), { heic: /\.(heic|heif)$/i.test(f.name) }); }
-    const c = document.createElement('canvas'); c.width = bmp.width; c.height = bmp.height;
-    const g = c.getContext('2d'); g.fillStyle = '#fff'; g.fillRect(0, 0, c.width, c.height); g.drawImage(bmp, 0, 0);
+    const sc = Math.min(1, 2400 / Math.max(bmp.width, bmp.height)), c = document.createElement('canvas'); c.width = Math.round(bmp.width * sc); c.height = Math.round(bmp.height * sc);
+    const g = c.getContext('2d'); g.fillStyle = '#fff'; g.fillRect(0, 0, c.width, c.height); g.drawImage(bmp, 0, 0, c.width, c.height);
     const blob = await new Promise(r => c.toBlob(r, 'image/jpeg', 0.9)); c.width = c.height = 0;
     if (!blob) throw new Error('img');
     const doc = await PDFLib.PDFDocument.create(), im = await doc.embedJpg(new Uint8Array(await blob.arrayBuffer()));
@@ -3487,8 +3624,8 @@ const FONTS = {"CalB": "AAEAAAAOAIAAAwBgR0RFRg2VDe0AAIGYAAAAuEdQT1OVtZTJAACCUAAA
         await loadScript(LIBS.jszip);
         const buf = await f.arrayBuffer();
         const z = await JSZip.loadAsync(buf);
-        if (z.file('word/document.xml')) { fonts = await docxFonts(z).catch(() => null); md = await docxToMarkdown(buf); office = { kind: 'docx', zip: z }; }
-        else if (z.file('ppt/presentation.xml')) { fonts = await pptxFonts(z).catch(() => null); md = await pptxToMarkdown(z); office = { kind: 'pptx', zip: z }; }
+        if (z.file('word/document.xml')) { fonts = await docxFonts(z).catch(() => null); md = ''; office = { kind: 'docx', zip: z, buf, lazy: true }; }
+        else if (z.file('ppt/presentation.xml')) { fonts = await pptxFonts(z).catch(() => null); md = ''; office = { kind: 'pptx', zip: z, lazy: true }; }
         else throw new Error('unsupported');
       } else {
         // Only real text goes down this path: binary files (audio, video, programs…) get a clear message instead of garbage pages.
@@ -3533,10 +3670,17 @@ const FONTS = {"CalB": "AAEAAAAOAIAAAwBgR0RFRg2VDe0AAIGYAAAAuEdQT1OVtZTJAACCUAAA
     }
     if (!got.length) { meta(result && resultKey === keyOf() ? describe(result) : ''); return; }
     if (!append) { opts.layout = 'auto'; opts.officeStyle = 'original'; persist(); }
+    hideLight();
     setItems(append ? items.concat(got) : got);
   }
   const readFile = f => openFiles([f]);
   window.__pmOpenFiles = openFiles;
+  $('lightRetry').addEventListener('click', () => {
+    if (!hasDoc() || !items.some(i => i.office)) return hideLight();
+    hideLight(); items.forEach(it => { if (it.office && (it.light || it.lightOnly || it === doc)) { it.light = false; it.lightOnly = false; it.retryFull = true; it.spec = null; } }); opts.officeStyle = 'original'; persist(); syncControls();
+    hud('Trying the full design again. Big files can take a minute.', true); result = null; resultKey = ''; renderPages(); scheduleMeasure();
+  });
+  $('lightX').addEventListener('click', hideLight);
   // ---------- Edit text in Word and PowerPoint files (the words only; everything else stays) ----------
   const W_NS = /wordprocessingml/, A_NS = /drawingml/;
   const inFallback = el => { for (let e = el.parentElement; e; e = e.parentElement) if (e.localName === 'Fallback') return true; return false; };
@@ -3621,7 +3765,7 @@ const FONTS = {"CalB": "AAEAAAAOAIAAAwBgR0RFRg2VDe0AAIGYAAAAuEdQT1OVtZTJAACCUAAA
     }
     if (n) {
       it.spec = null;
-      try { it.md = kind === 'docx' ? await docxToMarkdown(await z.generateAsync({ type: 'arraybuffer' })) : await pptxToMarkdown(z); } catch (e) { console.warn(e); }
+      try { it.md = kind === 'docx' ? await docxToMarkdown(await z.generateAsync({ type: 'arraybuffer' })) : await pptxToMarkdown(z); it.office.lazy = false; it.office.buf = null; } catch (e) { console.warn(e); it.office.lazy = true; it.office.buf = null; it.mdTask = null; }
       it.uid = ++uidSeq; blocksFor = null; result = null; resultKey = '';
       renderPages(); scheduleMeasure();
       list.forEach((x, k) => { const ta = document.querySelector('#editList .ed-ta[data-k="' + k + '"]'); if (ta) { x.text = ta.value; ta.classList.remove('changed'); } });

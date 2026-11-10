@@ -85,6 +85,7 @@ Everything runs in your browser. Your files are **never uploaded** to a server. 
 - **Older `.doc` and `.ppt` files aren't supported.** Save them as `.docx` / `.pptx` first.
 - **Very long continuous pages** open fine in Chrome, Edge, Safari and most phone PDF viewers. Adobe Reader can't open single pages longer than 200 in; use **Pages** layout for Adobe Reader.
 - **Maximum file size** is 40 MB per file.
+- **Heavy files:** slide artwork is drawn as one layer per slide, big photos are resized to what a page needs, the exact preview only draws pages near the screen, and Word/PowerPoint text versions are made only when needed. If a Word or PowerPoint file still takes too long (over 45 seconds), PDFmode shows a light, text-only version you can export right away, with **Try full design** to try again with more time. In a merge, only the heavy file goes text-only; the others keep their design.
 - **Offline:** files already open keep working. PDFmode shows a notice when the connection drops, since opening some kinds of files loads extra code.
 - **Password-protected or restricted PDFs** can't be opened. PDFmode says so; remove the protection first.
 - **Scanned PDFs** are pictures of pages, so their words can't be edited or copied. You can still sign, crop, number, split or merge them.
