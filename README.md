@@ -15,6 +15,8 @@ PDFmode turns Markdown, Word, PowerPoint, PDF and plain-text files into one clea
 
 - **Opens almost any class file:** Markdown (`.md`), Word (`.docx`), PowerPoint (`.pptx`), PDF, plain text (`.txt`) and web pages (`.html`). It detects the format from the file itself, so there's nothing to choose. Photos added next to documents become pages of their own; choosing only photos opens **Images to PDF**. Files PDFmode can't use (spreadsheets, ZIPs, audio…) get a clear message saying what to do instead.
 - **Keeps the original formatting** of Word and PowerPoint files: fonts, sizes, colors, alignment, spacing, lists, tables, pictures, headers, footers and page numbers. Slides keep their backgrounds, shapes and layout.
+- **Keeps the design of slides and documents:** background pictures, cropped and rotated photos, gradients, transparency, many shape types (stars, arrows, freeforms), lines, SmartArt and charts (drawn from the numbers saved in the file), plus cropped pictures and page colour in Word.
+- **Edit text in Word and PowerPoint files:** change the words paragraph by paragraph, then export the PDF or download the edited .docx / .pptx. Pictures, colours and layout stay as they are.
 - **Or switches to Reading style:** the text is reflowed in a reading typeface at your chosen size and page color, and speaker notes from slides are included.
 - **Merges files in order.** Open several at once and they're combined in the order shown. Drag, or use the arrows, to reorder.
 - **Three layouts:**
@@ -79,7 +81,7 @@ Everything runs in your browser. Your files are **never uploaded** to a server. 
 - **Office fonts are replaced by free fonts with the same letter widths,** so lines break where they do in Office. For example, Calibri uses Carlito, Cambria uses Caladea, and Arial and Times New Roman use the Liberation fonts. Microsoft's own fonts are licensed and can't be bundled.
 - **Some layouts are simplified:**
   - Word: columns, footnotes, SmartArt, and text wrapped around floating pictures.
-  - PowerPoint: charts, complex shapes, gradients, shadows and animations.
+  - PowerPoint: shadows, 3D effects, animations, and chart styling beyond basic column, bar, line, area and pie charts.
 - **Older `.doc` and `.ppt` files aren't supported.** Save them as `.docx` / `.pptx` first.
 - **Very long continuous pages** open fine in Chrome, Edge, Safari and most phone PDF viewers. Adobe Reader can't open single pages longer than 200 in; use **Pages** layout for Adobe Reader.
 - **Maximum file size** is 40 MB per file.
