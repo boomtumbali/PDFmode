@@ -49,15 +49,15 @@ Twelve free tools, with no limits and nothing uploaded:
 | Tool | What it does |
 | --- | --- |
 | Merge PDFs | Join PDFs, Word files and slides into one PDF, in your order |
+| Compress PDF | Make a PDF smaller (Light, Recommended or Strong); text stays sharp |
 | Split PDF | Cut a PDF into parts, or pull out the pages you need |
 | Organize pages | Rotate, delete and reorder pages by dragging |
 | Edit PDF | Change existing text, or add new text |
 | Sign PDF | Draw, type or upload a signature, then place it on the page |
 | Images to PDF | Turn photos and scans into one PDF |
-| PDF to images | Save pages as JPG or PNG |
+| Convert PDF | Save pages as JPG or PNG images, or copy out the text (plain or Markdown) |
 | Crop PDF | Trim the margins of one page or the whole PDF |
 | Resize PDF | Change a PDF or Word file to A4, Letter, Legal or another size |
-| PDF to text | Copy the words out as plain text or Markdown |
 | Page numbers | Number every page in the corner you choose |
 | Watermark | Stamp text like "DRAFT" on every page |
 
