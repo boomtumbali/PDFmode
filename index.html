@@ -990,6 +990,18 @@ body.landing .supBtn { display: inline-flex; }
   .tl-foot #tlGo .dl { width: 16px; height: 16px; }
 }
 @media (max-width: 340px) { .tl-foot #tlGo .dl { display: none; } .tl-foot #tlGo { font-size: 13.5px !important; } }
+
+/* ---- One workspace design (v28): main screen and every tool share header, switcher, actions and order ---- */
+body:not(.landing) #toolsBtn { display: none !important; }          /* tools are reached from the title switcher */
+.tb .title .m.quiet { display: none; }                               /* page counts live in Settings; only progress and problems show here */
+.tb .app-switch { margin: 0 auto; }
+.tb .app-switch .n { font-weight: 600; }
+.tl-bar .tl-r:has(#tlGo[hidden]) #tlHdFile, .tl-bar .tl-r:has(#tlGo[hidden]) #tlHdSet { display: none; }  /* no file yet: nothing to change or set */
+@media (min-width: 761px) {
+  .tools.nopanel .tl-side { display: none !important; }
+  .tools.nopanel .tl-work { grid-template-columns: minmax(0, 1fr) !important; }
+}
+@media (max-width: 760px) { #tlHdFile, #tlHdSet { display: none !important; } }  /* phones use the bottom bar */
 </style>
 <script>
   window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
@@ -1002,12 +1014,12 @@ body.landing .supBtn { display: inline-flex; }
 <noscript><style>#boot{display:none}</style></noscript>
 <header class="tb">
   <div class="wm"><a href="#" class="wm-name" id="homeLink" aria-label="PDFmode, back to the start">PDFmode</a><span class="wm-by">by <a href="https://www.linkedin.com/in/boomtumbali" target="_blank" rel="noopener noreferrer">@boomtumbali</a></span></div>
-  <div class="title"><div class="n" id="docName"></div><div class="m" id="docMeta"></div></div>
+  <div class="title"><button type="button" class="tl-switch app-switch" id="appSwitch" aria-label="All PDF tools"><span class="n" id="docName"></span><svg class="i chev" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button><div class="m" id="docMeta"></div></div>
   <div class="tb-r">
     <button class="pb topcta" id="topChoose" type="button">Choose files</button>
     <button class="ab" id="toolsBtn" type="button" title="PDF tools" aria-label="PDF tools"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg><span class="lb">Tools</span></button>
     <button class="ab" id="openBtn" type="button" title="Add files (⌘O)"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg><span class="lb">Add files</span></button>
-    <button class="ab" id="setBtn" type="button" aria-controls="insp" aria-pressed="true" title="Page settings"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 4h-7M10 4H3M21 12h-9M8 12H3M21 20h-5M12 20H3M14 2v4M8 10v4M16 18v4"/></svg><span class="lb">Settings</span></button>
+    <button class="ab" id="setBtn" type="button" aria-controls="insp" aria-pressed="true" title="Settings"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 4h-7M10 4H3M21 12h-9M8 12H3M21 20h-5M12 20H3M14 2v4M8 10v4M16 18v4"/></svg><span class="lb">Settings</span></button>
     <button class="pb" id="exportBtn" type="button" disabled title="Export PDF (⌘E)"><span class="spin" aria-hidden="true"></span><svg class="i ok" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg><span id="exportLbl">Export PDF</span></button>
     <button class="ib themeBtn" id="themeBtn" type="button" title="Switch to dark mode" aria-label="Switch to dark mode"><svg class="i moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg><svg class="i sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg></button>
   </div>
@@ -1136,7 +1148,7 @@ body.landing .supBtn { display: inline-flex; }
   </main>
 
   <aside class="insp" id="insp" aria-label="Page settings">
-    <div class="sheet-head"><strong>Page settings</strong><button type="button" id="sheetDone">Done</button></div>
+    <div class="sheet-head"><strong>Settings</strong><button type="button" id="sheetDone">Done</button></div>
     <div class="insp-in">
       <div class="grp" id="filesGrp" hidden><div class="lbl" id="l-files">Files</div>
         <ol class="files" id="fileList" aria-labelledby="l-files"></ol>
@@ -1279,6 +1291,8 @@ body.landing .supBtn { display: inline-flex; }
     </div>
     <div class="title tl-title"><button type="button" class="tl-switch" id="tlSwitch" aria-label="All PDF tools" disabled><span class="n tl-t" id="tlTitle">PDF tools</span><svg class="i chev" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button><div class="m" id="tlSub"></div></div>
     <div class="tl-r">
+      <button class="ab" id="tlHdFile" type="button"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M17 3l4 4-4 4"/><path d="M21 7H9a4 4 0 0 0-4 4"/><path d="M7 21l-4-4 4-4"/><path d="M3 17h12a4 4 0 0 0 4-4"/></svg><span class="lb" id="tlHdFileLbl">Change file</span></button>
+      <button class="ab" id="tlHdSet" type="button" aria-controls="tlSide" aria-pressed="true" title="Settings"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 4h-7M10 4H3M21 12h-9M8 12H3M21 20h-5M12 20H3M14 2v4M8 10v4M16 18v4"/></svg><span class="lb">Settings</span></button>
       <button class="ib themeBtn" id="tlTheme" type="button" title="Switch to dark mode" aria-label="Switch to dark mode"><svg class="i moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg><svg class="i sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg></button>
       <button class="pb" id="tlGo" type="button" hidden><span class="spin" aria-hidden="true"></span><svg class="i ok" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg><svg class="i dl" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12M7 10l5 5 5-5M5 21h14"/></svg><span id="tlGoLbl">Export PDF</span></button>
     </div>
@@ -3617,7 +3631,7 @@ const FONTS = {"CalB": "AAEAAAAOAIAAAwBgR0RFRg2VDe0AAIGYAAAAuEdQT1OVtZTJAACCUAAA
   // ---------- measure & build ----------
   let running = false, pending = false, timer = 0;
   const fmtIn = n => (n >= 100 ? n.toFixed(0) : n.toFixed(1)) + ' in';
-  function meta(text, busy) { const m = $('docMeta'); m.textContent = text; m.classList.toggle('busy', !!busy); }
+  function meta(text, busy, quiet) { const m = $('docMeta'); m.textContent = text; m.classList.toggle('busy', !!busy); m.classList.toggle('quiet', !!quiet); }
   function describe(r) {
     const pre = r.merged ? r.merged + ' files · ' : '';
     if (r.merged) return pre + (r.paged || r.pages.length > 1 ? r.pages.length + ' pages' : fmtIn(r.pages[0]) + ' long');
@@ -3635,7 +3649,7 @@ const FONTS = {"CalB": "AAEAAAAOAIAAAwBgR0RFRg2VDe0AAIGYAAAAuEdQT1OVtZTJAACCUAAA
       const r = await build();
       if (key === keyOf()) {
         const before = result ? (result.paged ? -1 : result.segments.length) : 1;
-        result = r; resultKey = key; meta(describe(r));
+        result = r; resultKey = key; meta(describe(r), false, true);
         if (pdfPreview() || r.paged || r.segments.length !== before || r.segments.length > 1) renderPages();
       } else pending = true; // something changed while laying out (a file's text version arrived, a setting moved): lay out again
     } catch (e) {
@@ -4205,7 +4219,7 @@ const FONTS = {"CalB": "AAEAAAAOAIAAAwBgR0RFRg2VDe0AAIGYAAAAuEdQT1OVtZTJAACCUAAA
     let state = '';
     try {
       let r = result;
-      if (!r || resultKey !== keyOf()) { r = await build(); result = r; resultKey = keyOf(); meta(describe(r)); renderPages(); }
+      if (!r || resultKey !== keyOf()) { r = await build(); result = r; resultKey = keyOf(); meta(describe(r), false, true); renderPages(); }
       const blob = new Blob([r.bytes], { type: 'application/pdf' }), name = fileName(items.length > 1 ? 'merge' : 'made', items[0] && items[0].name);
       const dl = await Promise.race([downloadsP, new Promise(res => setTimeout(() => res(null), 4000))]);
       if (dl) {
@@ -4390,7 +4404,7 @@ const FONTS = {"CalB": "AAEAAAAOAIAAAwBgR0RFRg2VDe0AAIGYAAAAuEdQT1OVtZTJAACCUAAA
     };
     const svg = n => '<svg class="i" viewBox="0 0 24 24" aria-hidden="true">' + IC[n] + '</svg>';
     const TOOLS = [
-      { id: 'merge', name: 'Merge PDFs', desc: 'Join PDFs, Word files and slides into one PDF, in your order.', external: true },
+      { id: 'merge', name: 'Merge PDFs', desc: 'Join 2 or more PDFs, Word files and slides into one PDF, in your order.', go: 'Export PDF', drop: ['Choose files', '2 or more PDFs, Word files, slides or photos. You can reorder them next.'], accept: '.pdf,application/pdf,.md,.markdown,.txt,.docx,.pptx,.html,.htm,image/*' },
       { id: 'compress', name: 'Compress PDF', desc: 'Make a PDF smaller to email or upload, with its text still sharp.', go: 'Export PDF', drop: ['Choose a PDF', 'to make it smaller.'] },
       { id: 'split', name: 'Split PDF', desc: 'Cut a PDF into several parts, or pull out just the pages you need.', go: 'Export PDF', drop: ['Choose a PDF', 'to split into parts or extract pages.'] },
       { id: 'organize', name: 'Organize pages', desc: 'Rotate, delete and reorder the pages of your PDF by dragging.', go: 'Export PDF', drop: ['Choose a PDF', 'to rotate, delete and reorder its pages.'] },
@@ -4512,10 +4526,14 @@ const FONTS = {"CalB": "AAEAAAAOAIAAAwBgR0RFRg2VDe0AAIGYAAAAuEdQT1OVtZTJAACCUAAA
     const isPdf = f => /\.pdf$/i.test(f.name) || f.type === 'application/pdf';
     const isImg = f => /^image\//.test(f.type) || /\.(jpe?g|png|webp|gif|bmp|avif|heic|heif)$/i.test(f.name);
     function chooseFile() {
-      if (!T.tool) return; const i = $('tlFile'); i.accept = T.tool.id === 'images' ? 'image/*' : (T.tool.accept || '.pdf,application/pdf'); i.multiple = T.tool.id === 'images'; i.value = ''; i.click();
+      if (!T.tool) return; const i = $('tlFile'); i.accept = T.tool.id === 'images' ? 'image/*' : (T.tool.accept || '.pdf,application/pdf'); i.multiple = T.tool.id === 'images' || T.tool.id === 'merge'; i.value = ''; i.click();
     }
     function handleFiles(files) {
       if (!T.tool || T.busy) return; const arr = Array.from(files || []);
+      if (T.tool.id === 'merge') { // merging needs at least two files; then the main screen takes over (reorder, settings, export)
+        if (arr.length < 2) return hud(arr.length ? 'Choose at least 2 files to merge. You picked 1.' : 'Choose at least 2 files to merge.', false);
+        closeTools(); if (window.__pmOpenFiles) window.__pmOpenFiles(arr, false); return;
+      }
       if (T.tool.id === 'images') { const imgs = arr.filter(isImg); if (!imgs.length) return hud(arr.some(isPdf) ? 'That’s a PDF. Images to PDF takes photos. Pick Organize pages or Merge PDFs to work with a PDF.' : 'Choose JPG, PNG, WebP or GIF images.', false); return addImages(imgs); }
       if (arr.length && !arr.some(isPdf) && arr.every(isImg) && !(T.tool.id === 'resize')) { pickTool('images'); hud('Switched to Images to PDF for your photos.', true); return addImages(arr); }
       const wrong = f => /\.(docx|pptx|md|markdown|txt|html?)$/i.test(f.name) ? f.name + ' isn’t a PDF yet. Open it with Choose files on the start page to make a PDF, then use this tool.' : f.name + ' isn’t a PDF.';
@@ -5305,6 +5323,7 @@ const FONTS = {"CalB": "AAEAAAAOAIAAAwBgR0RFRg2VDe0AAIGYAAAAuEdQT1OVtZTJAACCUAAA
       const r = parseRanges(s.text, total); return { parts: r.parts, error: r.error, one: s.out === 'one' };
     }
     function refresh() {
+      if (T.tool) { $('tlHdFileLbl').textContent = T.tool.id === 'images' ? 'Add images' : 'Change file'; }
       if (T.tool) { const k = T.sel ? T.sel.size : 0, bd = $('tlBadge'); if (bd) { bd.hidden = !(selectable() && k); bd.textContent = k; } $('tlBbFileLbl').textContent = T.tool.id === 'images' ? 'Add images' : 'Change file'; }
       if (!T.tool || !T.cards) return; const id = T.tool.id; let ok = T.L.length > 0, label = T.tool.go;
       if (selectable()) {
@@ -5485,10 +5504,10 @@ const FONTS = {"CalB": "AAEAAAAOAIAAAwBgR0RFRg2VDe0AAIGYAAAAuEdQT1OVtZTJAACCUAAA
     $('tlCards').innerHTML = TOOLS.filter(t => !t.hidden).map(cardHtml).join('');
     const strip = $('toolStrip'); if (strip) strip.innerHTML = TOOLS.filter(t => !t.hidden).map(cardHtml).join('');
     document.addEventListener('click', e => { const c = e.target.closest('.tcard'); if (c && (c.closest('#tlCards') || c.closest('#toolStrip'))) { e.preventDefault();
-      if (c.dataset.tool === 'merge') { closeTools(); const f = $('file'); if (f) f.click(); return; } // merging any mix is the main app's job
       if (T.open && !T.tool && c.closest('#tlCards')) pushHist(); // list -> tool is one step back
       openTools(c.dataset.tool); } });
     $('toolsBtn').addEventListener('click', () => openTools());
+    $('appSwitch').addEventListener('click', () => openTools());
     $('tlBack').addEventListener('click', uiBack);
     $('tlSwitch').addEventListener('click', uiBack);
     const phoneTools = () => window.matchMedia('(max-width: 760px)').matches;
@@ -5498,6 +5517,8 @@ const FONTS = {"CalB": "AAEAAAAOAIAAAwBgR0RFRg2VDe0AAIGYAAAAuEdQT1OVtZTJAACCUAAA
     $('tlSheetDone').addEventListener('click', () => tlSheet(false));
     $('tlScrim').addEventListener('click', () => tlSheet(false));
     $('tlBbFile').addEventListener('click', () => { if (T.tool && T.tool.id === 'images') act('add'); else chooseFile(); });
+    $('tlHdFile').addEventListener('click', () => $('tlBbFile').click());
+    $('tlHdSet').addEventListener('click', () => { const off = $('tools').classList.toggle('nopanel'); $('tlHdSet').setAttribute('aria-pressed', String(!off)); });
     window.matchMedia('(max-width: 760px)').addEventListener('change', () => tlSheet(false));
     window.addEventListener('keydown', e => { if (e.key === 'Escape' && $('tlSide').classList.contains('open') && phoneTools()) { e.stopImmediatePropagation(); tlSheet(false); } }, true);
     // drag the sheet's header down to put it away, like Settings in the main app
@@ -5507,7 +5528,7 @@ const FONTS = {"CalB": "AAEAAAAOAIAAAwBgR0RFRg2VDe0AAIGYAAAAuEdQT1OVtZTJAACCUAAA
       const end = () => { if (y0 == null) return; y0 = null; side.classList.remove('dragging'); side.style.transform = ''; if (dy > side.offsetHeight * 0.22) tlSheet(false); };
       head.addEventListener('pointerup', end); head.addEventListener('pointercancel', end); })();
     const placeGo = () => { const go = $('tlGo'), foot = $('tlFoot'), right = document.querySelector('.tl-bar .tl-r'); const phone = window.matchMedia('(max-width: 760px)').matches;
-      if (phone && go.parentElement !== foot) foot.appendChild(go); else if (!phone && go.parentElement !== right) right.appendChild(go); };
+      if (phone && go.parentElement !== foot) foot.appendChild(go); else if (!phone && go.nextElementSibling !== $('tlTheme')) right.insertBefore(go, $('tlTheme')); };
     placeGo(); window.matchMedia('(max-width: 760px)').addEventListener('change', placeGo);
     $('tlHome').addEventListener('click', () => closeTools());
     $('tlChoose').addEventListener('click', chooseFile);

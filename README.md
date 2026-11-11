@@ -48,7 +48,7 @@ Twelve free tools, with no limits and nothing uploaded:
 
 | Tool | What it does |
 | --- | --- |
-| Merge PDFs | Join PDFs, Word files and slides into one PDF, in your order |
+| Merge PDFs | Join 2 or more PDFs, Word files, slides or photos into one PDF, in your order |
 | Compress PDF | Make a PDF smaller (Light, Recommended or Strong); text stays sharp |
 | Split PDF | Cut a PDF into parts, or pull out the pages you need |
 | Organize pages | Rotate, delete and reorder pages by dragging |
