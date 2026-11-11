@@ -941,6 +941,42 @@ body.landing .supBtn { display: inline-flex; }
 .tl-title { display: flex !important; flex-direction: column; align-items: center; min-width: 0; }
 .tl-bar .tl-l { padding-left: 6px; }
 @media (max-width: 760px) { .tl-bar { padding-left: 10px; } .tl-bar .tl-l { padding-left: 0; } }
+
+/* ---- Tools on phones = the main app on phones (v25): bottom bar + Settings sheet with Done ---- */
+#tlSub { display: none !important; }
+.tl-sheet-head { display: none; }
+.tl-filebox:empty { display: none; }
+.tl-filebox { padding: 18px 20px 0; }
+.tl-filebox .grp { margin: 0; }
+.tl-side .tl-acts { border-top: 0.5px solid var(--hair); margin-top: 16px; border-bottom: 0.5px solid var(--hair); }
+.tl-filebox:empty + .tl-acts { border-top: 0; margin-top: 0; }
+.tl-scrim { display: none; }
+@media (max-width: 760px) {
+  .tl-work { grid-template-columns: minmax(0, 1fr) !important; grid-template-rows: minmax(0, 1fr) !important; }
+  .tl-grab { display: none !important; }
+  .tl-side { position: fixed !important; z-index: 46; left: 0; right: 0; bottom: 0; top: auto; width: auto !important; height: auto !important; max-height: 82vh !important;
+    overflow: hidden auto; border-radius: 16px 16px 0 0 !important; box-shadow: var(--sheet-shadow) !important; border: 0 !important;
+    transform: translateY(105%); transition: transform 0.45s var(--sheet-ease) !important; padding-bottom: env(safe-area-inset-bottom, 0px); }
+  .tl-side.open { transform: translateY(0); }
+  .tl-side.dragging { transition: none !important; }
+  .tl-sheet-head { display: flex; touch-action: none; cursor: grab; }
+  .tl-filebox { padding: 6px 18px 0; }
+  .tl-side .tl-acts { padding: 14px 18px 16px; margin-top: 14px; }
+  .tl-scrim { display: block; position: fixed; inset: 0; z-index: 45; background: var(--scrim); opacity: 0; pointer-events: none; transition: opacity 0.3s; }
+  .tl-scrim.on { opacity: 1; pointer-events: auto; }
+  .tl-foot { display: grid !important; grid-template-columns: 1fr 1fr 1.25fr; gap: 8px; padding: 8px 12px calc(8px + env(safe-area-inset-bottom, 0px)) !important;
+    background: var(--bar) !important; -webkit-backdrop-filter: saturate(180%) blur(20px); backdrop-filter: saturate(180%) blur(20px); border-top: 0.5px solid var(--hair) !important; }
+  .tl-foot:has(#tlGo[hidden]) { display: none !important; }
+  .tl-bb { position: relative; height: 48px; border-radius: 12px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; font-size: 11.5px; font-weight: 600; color: var(--text); background: var(--fill); }
+  .tl-bb svg { width: 20px; height: 20px; }
+  .tl-foot #tlGo { height: 48px !important; border-radius: 12px !important; font-size: 14px !important; min-width: 0; padding: 0 10px; }
+  .tl-foot #tlGo #tlGoLbl { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .tl-badge { position: absolute; top: 5px; right: calc(50% - 24px); min-width: 18px; height: 18px; padding: 0 5px; border-radius: 9px; background: var(--accent-fill); color: #fff; font-size: 11px; font-weight: 700; display: grid; place-items: center; }
+}
+@media (prefers-reduced-motion: reduce) { .tl-side { transition: none !important; } }
+
+/* phones: the main screen's title sits centred, like every tool's */
+@media (max-width: 760px) { body:not(.landing) .tb .title { text-align: center; } }
 </style>
 <script>
   window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
@@ -1255,10 +1291,11 @@ body.landing .supBtn { display: inline-flex; }
         </div>
         <ol class="tgrid" id="tlPages" hidden></ol>
       </div>
-      <aside class="tl-side" id="tlSide" hidden aria-label="Tool options"><div class="tl-grab" id="tlGrab" role="button" tabindex="0" aria-label="Resize the options panel. Drag down to see more of the page, up to see more options."><span></span></div><div class="tl-acts" id="tlActs" role="group" aria-label="Page actions" hidden></div><div class="tl-side-in" id="tlOpts"></div></aside>
+      <aside class="tl-side" id="tlSide" hidden aria-label="Tool settings"><div class="tl-grab" id="tlGrab" role="button" tabindex="0" aria-label="Resize the options panel. Drag down to see more of the page, up to see more options."><span></span></div><div class="sheet-head tl-sheet-head" id="tlSheetHead"><strong>Settings</strong><button type="button" id="tlSheetDone">Done</button></div><div class="tl-filebox" id="tlFileBox"></div><div class="tl-acts" id="tlActs" role="group" aria-label="Page actions" hidden></div><div class="tl-side-in" id="tlOpts"></div></aside>
     </div>
   </div>
-  <div class="tl-foot" id="tlFoot"></div>
+  <div class="tl-scrim" id="tlScrim"></div>
+  <div class="tl-foot" id="tlFoot"><button type="button" class="tl-bb" id="tlBbFile"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M17 3l4 4-4 4"/><path d="M21 7H9a4 4 0 0 0-4 4"/><path d="M7 21l-4-4 4-4"/><path d="M3 17h12a4 4 0 0 0 4-4"/></svg><span id="tlBbFileLbl">Change file</span></button><button type="button" class="tl-bb" id="tlBbSet"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 4h-7M10 4H3M21 12h-9M8 12H3M21 20h-5M12 20H3M14 2v4M8 10v4M16 18v4"/></svg><span>Settings</span><span class="tl-badge" id="tlBadge" hidden></span></button></div>
   <input type="file" id="tlFile" hidden>
 </div>
 <div class="modal" id="pasteDlg" role="dialog" aria-modal="true" aria-labelledby="pasteTitle">
@@ -3612,7 +3649,7 @@ const FONTS = {"CalB": "AAEAAAAOAIAAAwBgR0RFRg2VDe0AAIGYAAAAuEdQT1OVtZTJAACCUAAA
     $('empty').classList.toggle('on', !has);
     document.body.classList.toggle('landing', !has);
     $('exportBtn').disabled = !has; $('bbExport').disabled = !has;
-    $('docName').textContent = !has ? '' : items.length > 1 ? items.length + ' files merged' : doc.name;
+    $('docName').textContent = !has ? '' : items.length > 1 ? 'Merge PDFs' : 'Make PDF';
     if (!has) meta('');
   }
   let uidSeq = 0;
@@ -4421,6 +4458,7 @@ const FONTS = {"CalB": "AAEAAAAOAIAAAwBgR0RFRg2VDe0AAIGYAAAAuEdQT1OVtZTJAACCUAAA
     }
     function closeTools() {
       if (!T.open) return;
+      $('tlSide').classList.remove('open'); $('tlScrim').classList.remove('on');
       dropHist();
       resetFile(); T.open = false; T.tool = null;
       $('tools').classList.remove('on'); bg().forEach(e => { e.inert = false; });
@@ -4434,7 +4472,7 @@ const FONTS = {"CalB": "AAEAAAAOAIAAAwBgR0RFRg2VDe0AAIGYAAAAuEdQT1OVtZTJAACCUAAA
     window.addEventListener('popstate', () => { if (T.skipPop) { T.skipPop--; return; } if (!T.open) return; T.hdepth = Math.max(0, T.hdepth - 1); back(); });
     const dropHist = () => { if (T.hdepth > 0) { T.skipPop++; const n = T.hdepth; T.hdepth = 0; try { history.go(-n); } catch (e) { T.skipPop--; } } };
     function showPicker() {
-      resetFile(); T.tool = null;
+      resetFile(); T.tool = null; $('tlSide').classList.remove('open'); $('tlScrim').classList.remove('on');
       $('tlPick').hidden = false; $('tlWork').hidden = true; $('tlGo').hidden = true;
       $('tlTitle').textContent = 'PDF tools'; $('tlSub').textContent = ''; $('tlSwitch').disabled = true; $('tlIcBack').hidden = true; $('tlIcX').hidden = false; $('tlBack').setAttribute('aria-label', 'Close tools');
     }
@@ -4524,7 +4562,7 @@ const FONTS = {"CalB": "AAEAAAAOAIAAAwBgR0RFRg2VDe0AAIGYAAAAuEdQT1OVtZTJAACCUAAA
       $('tlDrop').hidden = true; $('tlPages').hidden = false; $('tlSide').hidden = false; $('tlGo').hidden = false;
       $('tlActs').hidden = !selectable(); if (selectable()) buildActs();
       $('tlPages').classList.toggle('sgv', id === 'sign' || id === 'edit'); $('tlPages').classList.toggle('edv', id === 'edit'); $('tlPages').classList.toggle('crv', id === 'crop');
-      if (id === 'sign') return buildSign(); if (id === 'edit') return buildEdit(); if (id === 'crop') return buildCrop();
+      if (id === 'sign') { buildSign(); if (window.matchMedia('(max-width: 760px)').matches && !(T.sg && T.sg.url)) setTimeout(() => { if (T.tool && T.tool.id === 'sign') $('tlBbSet').click(); }, 350); return; } // phones: make the signature first if (id === 'edit') return buildEdit(); if (id === 'crop') return buildCrop();
       T.io = new IntersectionObserver(es => es.forEach(en => { const c = en.target; c._vis = en.isIntersecting; if (c._vis && (!c._rendered || c._rot !== c._it.rot)) queueRender(c); }), { root: $('tlCanvas'), rootMargin: '500px 0px' });
       T.cards = new Map(); T.queue = []; T.running = 0; $('tlPages').replaceChildren();
       buildOpts(); syncGrid(); $('tlCanvas').scrollTop = 0;
@@ -4541,7 +4579,7 @@ const FONTS = {"CalB": "AAEAAAAOAIAAAwBgR0RFRg2VDe0AAIGYAAAAuEdQT1OVtZTJAACCUAAA
     function buildOpts() {
       const o = $('tlOpts'), id = T.tool.id; o.replaceChildren();
       const hint = (t, cls) => { const h = mk('div', 'tl-hint' + (cls ? ' ' + cls : ''), tesc(t)); return h; };
-      if (id !== 'images') o.append(fileRow());
+      $('tlFileBox').replaceChildren(...(id !== 'images' && T.name ? [fileRow()] : [])); // the file always comes first
       if (id === 'organize') {
         o.append(grp('Tip', hint('On a computer you can also drag pages into a new order.')));
       } else if (id === 'split') {
@@ -5239,7 +5277,7 @@ const FONTS = {"CalB": "AAEAAAAOAIAAAwBgR0RFRg2VDe0AAIGYAAAAuEdQT1OVtZTJAACCUAAA
       const r = parseRanges(s.text, total); return { parts: r.parts, error: r.error, one: s.out === 'one' };
     }
     function refresh() {
-      if (T.tool) $('tlSub').textContent = T.tool.id === 'images' ? (T.L && T.L.length ? plural(T.L.length, 'image') : '') : (T.name ? T.name + (T.total ? ' · ' + plural(T.total, 'page') : '') : '');
+      if (T.tool) { const k = T.sel ? T.sel.size : 0, bd = $('tlBadge'); if (bd) { bd.hidden = !(selectable() && k); bd.textContent = k; } $('tlBbFileLbl').textContent = T.tool.id === 'images' ? 'Add images' : 'Change file'; }
       if (!T.tool || !T.cards) return; const id = T.tool.id; let ok = T.L.length > 0, label = T.tool.go;
       if (selectable()) {
         const n = T.L.length, k = T.sel.size, cnt = $('tlCnt'); if (cnt) cnt.textContent = k ? k + ' of ' + n + ' selected' : plural(n, id === 'images' ? 'image' : 'page');
@@ -5384,6 +5422,21 @@ const FONTS = {"CalB": "AAEAAAAOAIAAAwBgR0RFRg2VDe0AAIGYAAAAuEdQT1OVtZTJAACCUAAA
     $('toolsBtn').addEventListener('click', () => openTools());
     $('tlBack').addEventListener('click', uiBack);
     $('tlSwitch').addEventListener('click', uiBack);
+    const phoneTools = () => window.matchMedia('(max-width: 760px)').matches;
+    const tlSheet = open => { const side = $('tlSide'); side.classList.toggle('open', !!open); $('tlScrim').classList.toggle('on', !!open); $('tlBbSet').setAttribute('aria-expanded', String(!!open));
+      if (open) setTimeout(() => { const d = $('tlSheetDone'); if (d) d.focus({ preventScroll: true }); }, 60); };
+    $('tlBbSet').addEventListener('click', () => tlSheet(!$('tlSide').classList.contains('open')));
+    $('tlSheetDone').addEventListener('click', () => tlSheet(false));
+    $('tlScrim').addEventListener('click', () => tlSheet(false));
+    $('tlBbFile').addEventListener('click', () => { if (T.tool && T.tool.id === 'images') act('add'); else chooseFile(); });
+    window.matchMedia('(max-width: 760px)').addEventListener('change', () => tlSheet(false));
+    window.addEventListener('keydown', e => { if (e.key === 'Escape' && $('tlSide').classList.contains('open') && phoneTools()) { e.stopImmediatePropagation(); tlSheet(false); } }, true);
+    // drag the sheet's header down to put it away, like Settings in the main app
+    (() => { const head = $('tlSheetHead'), side = $('tlSide'); let y0 = null, dy = 0;
+      head.addEventListener('pointerdown', e => { if (!phoneTools() || e.target.closest('button')) return; y0 = e.clientY; dy = 0; side.classList.add('dragging'); try { head.setPointerCapture(e.pointerId); } catch (x) {} });
+      head.addEventListener('pointermove', e => { if (y0 == null) return; dy = Math.max(0, e.clientY - y0); side.style.transform = 'translateY(' + dy + 'px)'; });
+      const end = () => { if (y0 == null) return; y0 = null; side.classList.remove('dragging'); side.style.transform = ''; if (dy > side.offsetHeight * 0.22) tlSheet(false); };
+      head.addEventListener('pointerup', end); head.addEventListener('pointercancel', end); })();
     const placeGo = () => { const go = $('tlGo'), foot = $('tlFoot'), right = document.querySelector('.tl-bar .tl-r'); const phone = window.matchMedia('(max-width: 760px)').matches;
       if (phone && go.parentElement !== foot) foot.appendChild(go); else if (!phone && go.parentElement !== right) right.appendChild(go); };
     placeGo(); window.matchMedia('(max-width: 760px)').addEventListener('change', placeGo);
