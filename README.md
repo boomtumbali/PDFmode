@@ -15,6 +15,8 @@ PDFmode turns Markdown, Word, PowerPoint, PDF and plain-text files into one clea
 
 - **Opens almost any class file:** Markdown (`.md`), Word (`.docx`), PowerPoint (`.pptx`), PDF, plain text (`.txt`) and web pages (`.html`). It detects the format from the file itself, so there's nothing to choose. Photos added next to documents become pages of their own; choosing only photos opens **Images to PDF**. Files PDFmode can't use (spreadsheets, ZIPs, audio…) get a clear message saying what to do instead.
 - **Keeps the original formatting** of Word and PowerPoint files: fonts, sizes, colors, alignment, spacing, lists, tables, pictures, headers, footers and page numbers. Slides keep their backgrounds, shapes and layout.
+- **Uses the real Google font when a file uses one** (Poppins, Montserrat, Roboto, Open Sans…), fetched once from the Fontsource mirror on jsDelivr; Microsoft fonts keep same-width stand-ins, and offline it falls back to the stand-ins.
+- **Word letterheads and layout:** pictures, logos and text boxes placed in headers, footers and the page itself appear where Word puts them on every page; tab stops line up columns (signature blocks); table borders follow each cell's own settings.
 - **Keeps the design of slides and documents:** background pictures, cropped and rotated photos, gradients, transparency, many shape types (stars, arrows, freeforms), lines, SmartArt and charts (drawn from the numbers saved in the file), plus cropped pictures and page colour in Word.
 - **Edit text in Word and PowerPoint files:** change the words paragraph by paragraph, then export the PDF or download the edited .docx / .pptx. Pictures, colours and layout stay as they are.
 - **Or switches to Reading style:** the text is reflowed in a reading typeface at your chosen size and page color, and speaker notes from slides are included.
@@ -60,6 +62,10 @@ Twelve free tools, with no limits and nothing uploaded:
 | Watermark | Stamp text like "DRAFT" on every page |
 
 After every save, PDFmode confirms the file and suggests a useful next step. Picking one passes your new PDF straight into that tool, so there's no re-uploading.
+
+## File names
+
+Exports are named after the first (or only) file, then what was done to it: `Reviewer-made-by-pdfmode.vercel.app.pdf`, `abcd-merged-by-pdfmode.vercel.app.pdf`, `report-split-by-pdfmode.vercel.app.zip`.
 
 ## Privacy
 
