@@ -869,6 +869,49 @@ body.landing .supBtn { display: inline-flex; }
 [hidden] { display: none !important; }
 
 #doneDlg:focus, #editDlg:focus { outline: none; }
+
+/* ---- Tools: one header style, actions in the options panel (v22) ---- */
+.tl-id { display: flex; align-items: center; min-width: 0; gap: 0; }
+.tl-wm { flex: none; padding: 4px 2px; border-radius: 6px; font-family: "PC Slab", Rockwell, "Roboto Slab", Georgia, serif; font-weight: 700; font-size: 17px; letter-spacing: -0.015em; color: var(--text); line-height: 1.1; }
+.tl-wm:hover { color: var(--accent); }
+.tl-id .tl-t { display: flex; align-items: center; min-width: 0; font-weight: 600; font-size: 15px; color: var(--text); }
+.tl-id .tl-t::before { content: ""; flex: none; width: 1px; height: 18px; margin: 0 12px; background: var(--hair-strong, var(--hair)); }
+@media (max-width: 760px) {
+  .tl-id { flex-direction: column; align-items: flex-start; justify-content: center; gap: 1px; }
+  .tl-wm { font-size: 15px; padding: 0; }
+  .tl-id .tl-t { font-size: 12.5px; font-weight: 500; color: var(--text2); display: block; max-width: 100%; }
+  .tl-id .tl-t::before { display: none; }
+}
+/* actions now live at the top of the options panel */
+.tl-side .tl-acts { position: static; display: grid; gap: 10px; padding: 18px 20px 20px; background: none; -webkit-backdrop-filter: none; backdrop-filter: none; border-bottom: 0.5px solid var(--hair); overflow: visible; }
+.tl-side .tl-acts[hidden] { display: none; }
+.acts-h { display: flex; align-items: center; gap: 8px; min-width: 0; }
+.acts-h .lbl { margin: 0; }
+.acts-h .cnt { flex: 1; min-width: 0; padding: 0; font-size: 12.5px; color: var(--text2); font-variant-numeric: tabular-nums; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.acts-g { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; }
+.tl-acts .act { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 5px; min-height: 58px; padding: 8px 4px; border-radius: 10px; background: var(--fill); color: var(--text); font-size: 11.5px; font-weight: 500; line-height: 1.2; text-align: center; transition: background-color 0.15s, transform 0.1s, opacity 0.15s; }
+.tl-acts .act svg { width: 18px; height: 18px; }
+.tl-acts .act:hover:not(:disabled) { background: var(--fill2, rgba(127, 127, 127, 0.24)); }
+.tl-acts .act:active:not(:disabled) { transform: scale(0.97); }
+.tl-acts .act:disabled { opacity: 0.38; cursor: default; }
+.tl-acts .act[data-act=del]:not(:disabled) { color: #FF453A; }
+.tl-acts .act.wide { flex-direction: row; min-height: 40px; gap: 8px; font-size: 13.5px; font-weight: 600; color: var(--accent); }
+.tl-acts .act.link { flex: none; flex-direction: row; min-height: 0; padding: 4px 8px; gap: 5px; background: none; color: var(--accent); font-size: 12.5px; font-weight: 600; }
+.tl-acts .act.link svg { width: 15px; height: 15px; }
+.tl-acts .act.link:hover { background: var(--fill); }
+.acts-tip { margin: 0; font-size: 12.5px; color: var(--text3); }
+.acts-tip[hidden] { display: none; }
+@media (max-width: 760px) {
+  .tl-side .tl-acts { padding: 8px 18px 16px; }
+  .acts-g { gap: 6px; }
+  .tl-acts .act { min-height: 54px; font-size: 11.5px; padding: 6px 4px; }
+  .tl-acts .act .lb { display: block; max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+}
+
+/* Crop's page pager sits under the page, like a viewer, not as a bar above it */
+.tgrid.crv > li { display: flex; flex-direction: column; align-items: center; }
+.tgrid.crv .cr-nav { order: 2; margin: 14px 0 4px; padding: 4px; border-radius: 999px; background: var(--panel); box-shadow: 0 0 0 0.5px var(--panel-hair); }
+.tgrid.crv .cr-nav span { min-width: 92px; text-align: center; }
 </style>
 <script>
   window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
@@ -1154,7 +1197,7 @@ body.landing .supBtn { display: inline-flex; }
         <svg class="i" id="tlIcBack" viewBox="0 0 24 24" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg>
         <svg class="i" id="tlIcX" viewBox="0 0 24 24" aria-hidden="true" hidden><path d="M18 6 6 18M6 6l12 12"/></svg>
       </button>
-      <div class="tl-t" id="tlTitle">PDF tools</div>
+      <div class="tl-id"><button type="button" class="tl-wm" id="tlHome" aria-label="PDFmode, back to the start">PDFmode</button><div class="tl-t" id="tlTitle">PDF tools</div></div>
     </div>
     <div class="tl-r">
       <button class="ib themeBtn" id="tlTheme" type="button" title="Switch to dark mode" aria-label="Switch to dark mode"><svg class="i moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg><svg class="i sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg></button>
@@ -1180,10 +1223,9 @@ body.landing .supBtn { display: inline-flex; }
           <button class="pb big" id="tlChoose" type="button">Choose PDF</button>
           <p class="trust"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>Your file stays on this device.</p>
         </div>
-        <div class="tl-acts" id="tlActs" hidden></div>
         <ol class="tgrid" id="tlPages" hidden></ol>
       </div>
-      <aside class="tl-side" id="tlSide" hidden aria-label="Tool options"><div class="tl-grab" id="tlGrab" role="button" tabindex="0" aria-label="Resize the options panel. Drag down to see more of the page, up to see more options."><span></span></div><div class="tl-side-in" id="tlOpts"></div></aside>
+      <aside class="tl-side" id="tlSide" hidden aria-label="Tool options"><div class="tl-grab" id="tlGrab" role="button" tabindex="0" aria-label="Resize the options panel. Drag down to see more of the page, up to see more options."><span></span></div><div class="tl-acts" id="tlActs" role="group" aria-label="Page actions" hidden></div><div class="tl-side-in" id="tlOpts"></div></aside>
     </div>
   </div>
   <input type="file" id="tlFile" hidden>
@@ -4452,16 +4494,18 @@ const FONTS = {"CalB": "AAEAAAAOAIAAAwBgR0RFRg2VDe0AAIGYAAAAuEdQT1OVtZTJAACCUAAA
     }
     function buildActs() {
       const a = $('tlActs'), img = T.tool.id === 'images';
-      const b = (act, ic, lb, t) => '<button class="ab" type="button" data-act="' + act + '" title="' + (t || lb) + '">' + svg(ic) + '<span class="lb">' + lb + '</span></button>';
-      a.innerHTML = (img ? b('add', 'plus', 'Add images') + '<span class="vs"></span>' : '') + b('rl', 'rl', 'Rotate left') + b('rr', 'rr', 'Rotate right') + '<span class="vs"></span>' + b('ml', 'left', 'Earlier', 'Move earlier') + b('mr', 'right', 'Later', 'Move later') +
-        '<span class="vs"></span>' + b('del', 'trash', 'Delete', 'Delete (Del)') + b('undo', 'undo', 'Undo', 'Undo (Ctrl/⌘+Z)') + '<span class="gap"></span>' + b('all', 'check', 'Select all', 'Select all (Ctrl/⌘+A)') + '<span class="cnt" id="tlCnt"></span>';
+      const b = (act, ic, lb, t) => '<button class="act" type="button" data-act="' + act + '" title="' + (t || lb) + '">' + svg(ic) + '<span class="lb">' + lb + '</span></button>';
+      a.innerHTML = '<div class="acts-h"><span class="lbl">' + (img ? 'Images' : 'Pages') + '</span><span class="cnt" id="tlCnt"></span>' + b('all', 'check', 'Select all', 'Select all (Ctrl/⌘+A)').replace('class="act"', 'class="act link"') + '</div>' +
+        (img ? b('add', 'plus', 'Add images').replace('class="act"', 'class="act wide"') : '') +
+        '<div class="acts-g">' + b('rl', 'rl', 'Rotate left') + b('rr', 'rr', 'Rotate right') + b('ml', 'left', 'Move earlier') + b('mr', 'right', 'Move later') + b('del', 'trash', 'Delete', 'Delete (Del)') + b('undo', 'undo', 'Undo', 'Undo (Ctrl/⌘+Z)') + '</div>' +
+        '<p class="acts-tip">' + (img ? 'Select images to rotate, move or remove them.' : 'Select pages to rotate, move or delete them.') + '</p>';
     }
     function buildOpts() {
       const o = $('tlOpts'), id = T.tool.id; o.replaceChildren();
       const hint = (t, cls) => { const h = mk('div', 'tl-hint' + (cls ? ' ' + cls : ''), tesc(t)); return h; };
       if (id !== 'images') o.append(fileRow());
       if (id === 'organize') {
-        o.append(grp('How it works', hint('Click pages to select them, then rotate, move or delete. On a computer you can also drag pages into a new order.')));
+        o.append(grp('Tip', hint('On a computer you can also drag pages into a new order.')));
       } else if (id === 'split') {
         const s = T.sp, box = mk('div', 'grp'), sub = mk('div', 'grp');
         if (!s.text && !s.edited && T.total > 1) { const h = Math.ceil(T.total / 2); s.text = '1-' + h + ', ' + (h + 1) + (h + 1 < T.total ? '-' + T.total : ''); }
@@ -5159,7 +5203,8 @@ const FONTS = {"CalB": "AAEAAAAOAIAAAwBgR0RFRg2VDe0AAIGYAAAAuEdQT1OVtZTJAACCUAAA
     function refresh() {
       if (!T.tool || !T.cards) return; const id = T.tool.id; let ok = T.L.length > 0, label = T.tool.go;
       if (selectable()) {
-        const n = T.L.length, k = T.sel.size, cnt = $('tlCnt'); if (cnt) cnt.textContent = (id === 'images' ? plural(n, 'image') : plural(n, 'page')) + (k ? ' · ' + k + ' selected' : '');
+        const n = T.L.length, k = T.sel.size, cnt = $('tlCnt'); if (cnt) cnt.textContent = k ? k + ' of ' + n + ' selected' : plural(n, id === 'images' ? 'image' : 'page');
+        const tip = $('tlActs').querySelector('.acts-tip'); if (tip) tip.hidden = k > 0;
         const a = $('tlActs'); a.querySelectorAll('[data-act]').forEach(b => { const x = b.dataset.act; b.disabled = (['rl', 'rr', 'ml', 'mr', 'del'].includes(x) && !k) || (x === 'undo' && !T.hist.length); });
         const all = a.querySelector('[data-act=all] .lb'); if (all) all.textContent = k === n ? 'Clear' : 'Select all';
         const ic = $('tlImgCount'); if (ic) ic.textContent = plural(n, 'image');
@@ -5298,6 +5343,7 @@ const FONTS = {"CalB": "AAEAAAAOAIAAAwBgR0RFRg2VDe0AAIGYAAAAuEdQT1OVtZTJAACCUAAA
       openTools(c.dataset.tool); } });
     $('toolsBtn').addEventListener('click', () => openTools());
     $('tlBack').addEventListener('click', back);
+    $('tlHome').addEventListener('click', () => closeTools());
     $('tlChoose').addEventListener('click', chooseFile);
     $('tlGo').addEventListener('click', go);
     // ---- Done: confirm the save, then suggest a useful next step (passing the file along when it's a PDF) ----
