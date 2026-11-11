@@ -1020,6 +1020,24 @@ body.landing .supBtn { display: inline-flex; }
 .tl-bar { padding-left: 18px !important; padding-right: 14px !important; }
 .tl-bar .tl-l { padding-left: 0 !important; gap: 0 !important; }
 @media (max-width: 760px) { .tl-bar { padding-left: 14px !important; padding-right: 8px !important; } }
+
+/* tall pages (continuous PDFs) in Sign and Edit: stacked tiles */
+.sg-tile { position: absolute; left: 0; width: 100%; pointer-events: none; }
+.sg-tile > canvas { display: block; width: 100%; height: 100%; }
+
+/* long (continuous) pages in page grids: the top of the page with a fade and a label */
+.tp-box { position: relative; }
+.tp-long { position: absolute; left: 0; right: 0; bottom: 0; padding: 18px 4px 5px; text-align: center; font-size: 10.5px; font-weight: 600; color: #1d1d1f;
+  background: linear-gradient(to bottom, rgba(255,255,255,0), rgba(255,255,255,0.96) 55%); pointer-events: none; border-radius: 0 0 2px 2px; }
+
+/* phones: the title sits in the true centre of the screen on every work screen (Make, Merge and all tools).
+   Both side columns are the same width (at least the wordmark's), so the title isn't pushed right by the wider wordmark. */
+@media (max-width: 760px) {
+  body:not(.landing) .tb, .tl-bar { grid-template-columns: minmax(104px, 1fr) minmax(0, auto) minmax(104px, 1fr) !important; }
+  .tb, .tl-bar { padding-left: 12px !important; padding-right: 12px !important; } /* equal sides, so the centre is the screen's centre */
+  body:not(.landing) .tb .tb-r, .tl-bar .tl-r { justify-self: end; }
+  body:not(.landing) .tb .title, .tl-bar .tl-title { justify-self: center; min-width: 0; max-width: 100%; }
+}
 </style>
 <script>
   window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
@@ -4388,6 +4406,11 @@ const FONTS = {"CalB": "AAEAAAAOAIAAAwBgR0RFRg2VDe0AAIGYAAAAuEdQT1OVtZTJAACCUAAA
       doc.getPages().forEach(pg => {
         const rot = ((pg.getRotation().angle % 360) + 360) % 360, cb = pg.getCropBox(), W = cb.width, H = cb.height;
         const vw = rot % 180 ? H : W, vh = rot % 180 ? W : H;
+        if (rot === 0 && vh / vw > 2.2) { // a continuous page: one stamp for every page-length, like on printed pages
+          const seg = vw * 1.414, L = wmLayout(vw, seg, tw100, o);
+          for (let top = 0; top < vh - seg * 0.35; top += seg) pg.drawText(o.text, { x: cb.x + L.ox, y: cb.y + (vh - top - seg) + L.oy, size: L.size, font, color: rgb(c[0], c[1], c[2]), opacity: o.opacity, rotate: degrees(o.angle) });
+          return;
+        }
         const L = wmLayout(vw, vh, tw100, o);
         const [x, y] = toPage(rot, W, H, L.ox, L.oy);
         pg.drawText(o.text, { x: cb.x + x, y: cb.y + y, size: L.size, font, color: rgb(c[0], c[1], c[2]), opacity: o.opacity, rotate: degrees((o.angle + rot) % 360) });
@@ -4641,6 +4664,10 @@ const FONTS = {"CalB": "AAEAAAAOAIAAAwBgR0RFRg2VDe0AAIGYAAAAuEdQT1OVtZTJAACCUAAA
       $('tlFileBox').replaceChildren(...(id !== 'images' && T.name ? [fileRow()] : [])); // the file always comes first
       if (id === 'organize') {
         o.append(grp('Tip', hint('On a computer you can also drag pages into a new order.')));
+      } else if (id === 'split' && T.total === 1) {
+        const go = mk('button', 'tl-link', 'Use Resize PDF instead'); go.type = 'button';
+        go.addEventListener('click', () => { const f = new File([T.bytes], T.name, { type: 'application/pdf' }); pickTool('resize'); setTimeout(() => handleFiles([f]), 30); });
+        o.append(grp('Only one page', mk('div', 'tl-hint', 'There’s nothing to split in a one-page PDF. If it’s one long page (a continuous PDF), Resize PDF can cut it into A4 or Letter pages.'), go));
       } else if (id === 'split') {
         const s = T.sp, box = mk('div', 'grp'), sub = mk('div', 'grp');
         if (!s.text && !s.edited && T.total > 1) { const h = Math.ceil(T.total / 2); s.text = '1-' + h + ', ' + (h + 1) + (h + 1 < T.total ? '-' + T.total : ''); }
@@ -4798,17 +4825,22 @@ const FONTS = {"CalB": "AAEAAAAOAIAAAwBgR0RFRg2VDe0AAIGYAAAAuEdQT1OVtZTJAACCUAAA
         g.translate(cv.width / 2, cv.height / 2); g.rotate(rot0 * Math.PI / 180); g.drawImage(it.th, -it.w * s / 2, -it.h * s / 2, it.w * s, it.h * s);
       } else {
         const pg = await T.pdf.getPage(it.n + 1); if (seq !== T.seq) return;
-        const rotation = (pg.rotate + rot0) % 360, vp1 = pg.getViewport({ scale: 1, rotation }); vw = vp1.width; vh = vp1.height; k = Math.min(fw / vw, fh / vh);
-        const vp = pg.getViewport({ scale: k * dpr, rotation }); cv = document.createElement('canvas'); cv.width = Math.ceil(vp.width); cv.height = Math.ceil(vp.height);
+        const rotation = (pg.rotate + rot0) % 360, vp1 = pg.getViewport({ scale: 1, rotation }); vw = vp1.width; vh = vp1.height;
+        const tall = vh / vw > 2.2, showH = tall ? vw * 1.414 : vh; // a long (continuous) page: show its top like a page, not a thin strip
+        k = Math.min(fw / vw, fh / showH);
+        const vp = pg.getViewport({ scale: k * dpr, rotation }); cv = document.createElement('canvas'); cv.width = Math.ceil(vp.width); cv.height = Math.ceil(showH * k * dpr);
         await pg.render({ canvasContext: cv.getContext('2d'), viewport: vp }).promise;
+        if (tall) { c._tallH = vh; vh = showH; }
       }
       if (seq !== T.seq || T.cards.get(it.id) !== c) return;
       const box = c.querySelector('.tp-box'); box.classList.remove('ld'); box.style.width = (vw * k / fw * 100) + '%'; box.style.aspectRatio = vw + ' / ' + vh;
-      box.replaceChildren(cv); c._rendered = true; c._rot = rot0; c._meta = { vw, vh }; paintOverlay(c);
+      box.replaceChildren(cv); c._rendered = true; c._rot = rot0; c._meta = { vw, vh, tall: !!c._tallH }; paintOverlay(c);
+      if (c._tallH) { const tag = mk('span', 'tp-long', 'Long page · ' + Math.round(c._tallH / 72) + ' in'); box.append(tag); }
     }
     function paintOverlay(c) {
       const box = c.querySelector('.tp-box'), old = box.querySelector('.tp-ov'); if (old) old.remove();
       if (!c._meta || !T.meas || !T.tool) return; const { vw, vh } = c._meta, id = T.tool.id; let s;
+      if (c._meta.tall && id === 'numbers') return; // a long page gets its single number at the very end, not in this preview of its top
       if (id === 'numbers') {
         const o = T.nm, i = T.L.indexOf(c._it), lab = numLabel(o, i, T.L.length); if (lab == null) return;
         const L = numLayout(vw, vh, T.meas(lab, o.size), o); s = mk('span', null, tesc(lab));
@@ -5005,14 +5037,26 @@ const FONTS = {"CalB": "AAEAAAAOAIAAAwBgR0RFRg2VDe0AAIGYAAAAuEdQT1OVtZTJAACCUAAA
         const pg = await T.pdf.getPage(li._n + 1); if (seq !== T.seq) return;
         const box = li.firstChild, v1 = pg.getViewport({ scale: 1 }); box.style.aspectRatio = v1.width + ' / ' + v1.height;
         const dpr = Math.min(2, window.devicePixelRatio || 1), sc = Math.min((box.clientWidth || 600) * dpr, 1700) / v1.width, vp = pg.getViewport({ scale: sc });
-        const cv = document.createElement('canvas'); cv.width = Math.ceil(vp.width); cv.height = Math.ceil(vp.height);
+        const W = Math.ceil(vp.width), H = Math.ceil(vp.height), TILE = 2048;
+        if (H > 4096) { // a continuous PDF can be one page several metres long: one canvas that size would fail on phones
+          box.querySelectorAll(':scope > canvas, :scope > .sg-tile').forEach(c => { if (c.tagName === 'CANVAS') c.width = c.height = 0; c.remove(); });
+          const first = box.firstChild, tiles = [];
+          for (let t = 0; t < H; t += TILE) { const h = Math.min(TILE, H - t), d = mk('div', 'sg-tile'); d.dataset.top = t; d.dataset.h = h; d.style.top = (t / H * 100) + '%'; d.style.height = (h / H * 100) + '%'; box.insertBefore(d, first); tiles.push(d); }
+          const draw = d => { if (d._drawn) return; d._drawn = true; const c = document.createElement('canvas'); c.width = W; c.height = +d.dataset.h; d.append(c);
+            T.sgq = T.sgq.then(() => seq === T.seq ? pg.render({ canvasContext: c.getContext('2d'), viewport: vp, transform: [1, 0, 0, 1, 0, -(+d.dataset.top)] }).promise : null).catch(e => console.error(e)); };
+          const io = new IntersectionObserver(es => es.forEach(en => { if (en.isIntersecting) draw(en.target); }), { root: $('tlCanvas'), rootMargin: '1500px 0px' });
+          tiles.forEach(d => io.observe(d)); li._tileIO = io; li._done = true;
+          if (T.tool && T.tool.id === 'edit') edPrep(pg, li._n, li, seq).catch(e => console.error(e));
+          return;
+        }
+        const cv = document.createElement('canvas'); cv.width = W; cv.height = H;
         await pg.render({ canvasContext: cv.getContext('2d'), viewport: vp }).promise;
         if (seq !== T.seq || !li._want) { cv.width = cv.height = 0; return; }
         const old = box.querySelector(':scope > canvas'); if (old) old.remove(); box.prepend(cv); li._done = true;
         if (T.tool && T.tool.id === 'edit') edPrep(pg, li._n, li, seq).catch(e => console.error(e));
       } catch (e) { console.error(e); } finally { li._busy = false; }
     }
-    function sgRelease(li) { const c = li.firstChild.querySelector(':scope > canvas'); if (c) { c.width = c.height = 0; c.remove(); } li._done = false; }
+    function sgRelease(li) { if (li._tileIO) { li._tileIO.disconnect(); li._tileIO = null; } li.firstChild.querySelectorAll(':scope > .sg-tile canvas').forEach(c => { c.width = c.height = 0; }); li.firstChild.querySelectorAll(':scope > .sg-tile').forEach(d => d.remove()); const c = li.firstChild.querySelector(':scope > canvas'); if (c) { c.width = c.height = 0; c.remove(); } li._done = false; }
     const sgPos = (el, p) => { el.style.left = p.fx * 100 + '%'; el.style.top = p.fy * 100 + '%'; el.style.width = p.fw * 100 + '%'; };
     function sgSelect(id) { T.plSel = id; $('tlPages').querySelectorAll('.sg-pl').forEach(el => el.classList.toggle('sel', +el.dataset.id === id)); }
     function sgAdd(n, cx, cy) {
@@ -5098,7 +5142,7 @@ const FONTS = {"CalB": "AAEAAAAOAIAAAwBgR0RFRg2VDe0AAIGYAAAAuEdQT1OVtZTJAACCUAAA
     async function edPrep(pg, n, li, seq) {
       const s = T.ed; if (!s.runs[n]) {
         s.runs[n] = []; const vp = pg.getViewport({ scale: 1 }), tc = await pg.getTextContent(); if (seq !== T.seq) return; const v = vp.transform, its = [];
-        if (tc.items.length > 6000) return;
+        if (tc.items.length > 60000) return; // only absurdly large pages are skipped
         for (const it of tc.items) {
           if (!it.str || !it.str.trim()) continue; const t = it.transform;
           const m = [v[0] * t[0] + v[2] * t[1], v[1] * t[0] + v[3] * t[1], v[0] * t[2] + v[2] * t[3], v[1] * t[2] + v[3] * t[3], v[0] * t[4] + v[2] * t[5] + v[4], v[1] * t[4] + v[3] * t[5] + v[5]];
@@ -5124,9 +5168,13 @@ const FONTS = {"CalB": "AAEAAAAOAIAAAwBgR0RFRg2VDe0AAIGYAAAAuEdQT1OVtZTJAACCUAAA
     }
     // the paper colour behind a line, and the ink colour of its letters, read from the picture of the page
     function edSample(box, r) {
-      const out = { bg: '#FFFFFF', fg: '#000000' }, cv = box.querySelector(':scope > canvas'); if (!cv || !cv.width) return out;
+      const out = { bg: '#FFFFFF', fg: '#000000' }; let cv = box.querySelector(':scope > canvas'), off = 0;
+      if (!cv) { const tiles = [...box.querySelectorAll(':scope > .sg-tile')], tc = tiles.length && tiles[0].querySelector('canvas') || [...box.querySelectorAll(':scope > .sg-tile canvas')][0];
+        if (tc) { const k0 = tc.width / r.vw, y = (r.base - 0.5 * r.size) * k0, tile = tiles.find(d => y >= +d.dataset.top && y < +d.dataset.top + +d.dataset.h);
+          if (tile && tile.querySelector('canvas')) { cv = tile.querySelector('canvas'); off = +tile.dataset.top; } } }
+      if (!cv || !cv.width) return out;
       try {
-        const k = cv.width / r.vw, g = cv.getContext('2d', { willReadFrequently: true }), X0 = Math.max(0, Math.floor((r.x - 3) * k)), X1 = Math.min(cv.width, Math.ceil((r.x + r.w + 3) * k)), Y0 = Math.max(0, Math.floor((r.base - 0.88 * r.size) * k)), Y1 = Math.min(cv.height, Math.ceil((r.base + 0.26 * r.size) * k));
+        const k = cv.width / r.vw, g = cv.getContext('2d', { willReadFrequently: true }), X0 = Math.max(0, Math.floor((r.x - 3) * k)), X1 = Math.min(cv.width, Math.ceil((r.x + r.w + 3) * k)), Y0 = Math.max(0, Math.floor((r.base - 0.88 * r.size) * k) - off), Y1 = Math.min(cv.height, Math.ceil((r.base + 0.26 * r.size) * k) - off); // off: where this tile starts on a tall page
         const W = X1 - X0, H = Y1 - Y0; if (W < 2 || H < 2) return out; const d = g.getImageData(X0, Y0, W, H).data, buck = new Map();
         const at = (x, y) => { const j = (y * W + x) * 4, key = (d[j] >> 4) << 8 | (d[j + 1] >> 4) << 4 | (d[j + 2] >> 4), b = buck.get(key) || [0, 0, 0, 0]; b[0]++; b[1] += d[j]; b[2] += d[j + 1]; b[3] += d[j + 2]; buck.set(key, b); };
         for (let x = 0; x < W; x++) { at(x, 0); at(x, H - 1); } for (let y = 1; y < H - 1; y++) { at(0, y); at(W - 1, y); }
@@ -5256,10 +5304,33 @@ const FONTS = {"CalB": "AAEAAAAOAIAAAwBgR0RFRg2VDe0AAIGYAAAAuEdQT1OVtZTJAACCUAAA
       box.style.width = (tw * k / fw * 100) + '%'; box.style.aspectRatio = tw + ' / ' + th; box.style.padding = (r.fit === 'fit' ? r.margin / tw * 100 : 0) + '%'; box.style.boxSizing = 'border-box';
       cv.style.objectFit = r.fit === 'fill' ? 'cover' : r.fit === 'stretch' ? 'fill' : 'contain';
     }
-    async function buildResized(PL, bytes, o) {
+    // Cut points down a long page (a continuous PDF), moved up to the nearest gap between lines of text.
+    async function tallCuts(n, sliceH) {
+      const pg = await T.pdf.getPage(n + 1), vp = pg.getViewport({ scale: 1 }), H = vp.height, v = vp.transform, bands = [];
+      try { const tc = await pg.getTextContent(); for (const it of tc.items) { if (!it.str || !it.str.trim()) continue; const t = it.transform, y = v[1] * t[4] + v[3] * t[5] + v[5], size = Math.hypot(v[0] * t[2] + v[2] * t[3], v[1] * t[2] + v[3] * t[3]) || 10; bands.push([y - size * 0.8, y + size * 0.22]); } } catch (e) {} // letters only (cap height to descenders), so the gaps between lines show
+      bands.sort((a, b) => a[0] - b[0]);
+      const busy = y => { for (const b of bands) { if (b[0] - 0.6 > y) break; if (y < b[1] + 0.6) return true; } return false; };
+      const cuts = [0]; let pos = 0;
+      while (H - pos > sliceH + 1) { const target = pos + sliceH; let c = target; for (let yy = target; yy > target - sliceH * 0.25; yy -= 0.5) if (!busy(yy)) { c = yy; break; } if (c <= pos + 10) c = target; cuts.push(c); pos = c; }
+      cuts.push(H); return { cuts, W: vp.width, H };
+    }
+    const isTall = (w, h) => h / w > 2.2; // much longer than any paper size: a continuous page
+    async function buildResized(PL, bytes, o, tall) {
       const { PDFDocument, degrees } = PL, src = await PDFDocument.load(bytes, { ignoreEncryption: true }), out = await PDFDocument.create(), sp = src.getPages(), [bw, bh] = rsPt(o);
-      for (const pg of sp) {
+      for (let pi = 0; pi < sp.length; pi++) {
+        const pg = sp[pi];
         const rot = ((pg.getRotation().angle % 360) + 360) % 360, cb = pg.getCropBox(), W = cb.width, H = cb.height, vw = rot % 180 ? H : W, vh = rot % 180 ? W : H;
+        if (tall && tall[pi] && rot === 0 && o.fit !== 'stretch') {
+          const tw = Math.min(bw, bh), th = Math.max(bw, bh), m = o.fit === 'fit' ? o.margin : 0, k = (tw - 2 * m) / vw, cuts = tall[pi].cuts;
+          const emb = await out.embedPage(pg); // embedded once and shown through a window on each new page, so the file stays small
+          for (let c = 0; c + 1 < cuts.length; c++) {
+            const y0 = cuts[c], y1 = cuts[c + 1], np = out.addPage([tw, th]), hh = (y1 - y0) * k;
+            np.pushOperators(PL.pushGraphicsState(), PL.rectangle(m, th - m - hh, vw * k, hh), PL.clip(), PL.endPath());
+            np.drawPage(emb, { x: m, y: th - m - (H - y0) * k, xScale: k, yScale: k });
+            np.pushOperators(PL.popGraphicsState());
+          }
+          continue;
+        }
         const land = o.orient === 'l' || (o.orient === 'auto' && vw > vh), tw = land ? Math.max(bw, bh) : Math.min(bw, bh), th = land ? Math.min(bw, bh) : Math.max(bw, bh);
         let kx, ky;
         if (o.fit === 'stretch') { kx = tw / vw; ky = th / vh; } else { const m = o.fit === 'fit' ? o.margin : 0; kx = ky = o.fit === 'fill' ? Math.max(tw / vw, th / vh) : Math.min((tw - 2 * m) / vw, (th - 2 * m) / vh); }
@@ -5297,7 +5368,10 @@ const FONTS = {"CalB": "AAEAAAAOAIAAAwBgR0RFRg2VDe0AAIGYAAAAuEdQT1OVtZTJAACCUAAA
       const ol = $('tlPages'); ol.replaceChildren(); const li = mk('li', 'cr-li');
       li.innerHTML = '<div class="cr-nav" id="crNav"><button type="button" id="crPrev" aria-label="Previous page">' + svg('left') + '</button><span id="crNo"></span><button type="button" id="crNext" aria-label="Next page">' + svg('right') + '</button></div>' +
         '<div class="cr-stage" id="crStage"><div class="cr-box" tabindex="-1">' + ['nw', 'n', 'ne', 'e', 'se', 's', 'sw', 'w'].map(h => '<span class="cr-h" data-h="' + h + '"></span>').join('') + '</div></div>';
-      ol.append(li); buildOpts(); $('tlCanvas').scrollTop = 0; crShow(0); refresh();
+      ol.append(li);
+      // the starting box is about 1.3 cm in from every edge; on a long (continuous) page, 6% of its height would cut away real content
+      T.pdf.getPage(1).then(pg => { const v = pg.getViewport({ scale: 1 }); if (v.height / v.width > 2.2) { const f = 36 / v.height; T.cr.all.t = T.cr.all.b = f; if (T.tool && T.tool.id === 'crop') { crSync(); refresh(); } } }).catch(() => {});
+      buildOpts(); $('tlCanvas').scrollTop = 0; crShow(0); refresh();
     }
     function buildCropOpts(o) {
       const s = T.cr, hint = mk('div', 'tl-hint', ''), ins = mk('div', 'cr-ins'); hint.id = 'tlHint';
@@ -5345,7 +5419,7 @@ const FONTS = {"CalB": "AAEAAAAOAIAAAwBgR0RFRg2VDe0AAIGYAAAAuEdQT1OVtZTJAACCUAAA
     }
     function refresh() {
       if (T.tool) { $('tlHdFileLbl').textContent = T.tool.id === 'images' ? 'Add images' : 'Change file'; $('tlHdFile').title = $('tlHdFileLbl').textContent;
-        $('tlSub').textContent = T.tool.id === 'images' ? (T.L && T.L.length ? plural(T.L.length, 'image') : '') : (T.total ? plural(T.total, 'page') : ''); }
+        $('tlSub').textContent = T.tool.id === 'images' ? (T.L && T.L.length ? plural(T.L.length, 'image') : '') : T.tool.id === 'organize' && T.L && T.L.length ? plural(T.L.length, 'page') : (T.total ? plural(T.total, 'page') : ''); } // Organize counts the pages you're keeping
       if (T.tool) { const k = T.sel ? T.sel.size : 0, bd = $('tlBadge'); if (bd) { bd.hidden = !(selectable() && k); bd.textContent = k; } $('tlBbFileLbl').textContent = T.tool.id === 'images' ? 'Add images' : 'Change file'; }
       if (!T.tool || !T.cards) return; const id = T.tool.id; let ok = T.L.length > 0, label = T.tool.go;
       if (selectable()) {
@@ -5470,6 +5544,17 @@ const FONTS = {"CalB": "AAEAAAAOAIAAAwBgR0RFRg2VDe0AAIGYAAAAuEdQT1OVtZTJAACCUAAA
           for (let k = 0; k < list.length; k++) {
             $('tlGoLbl').textContent = 'Saving ' + (k + 1) + ' of ' + list.length;
             const pg = await T.pdf.getPage(list[k] + 1), vp1 = pg.getViewport({ scale: 1 });
+            if (isTall(vp1.width, vp1.height)) {
+              const { cuts } = await tallCuts(list[k], vp1.width * 1.414), sc = Math.min(T.ti.dpi / 72, 3000 / vp1.width), vp = pg.getViewport({ scale: sc }), dg = String(cuts.length - 1).length;
+              for (let c = 0; c + 1 < cuts.length; c++) {
+                const cv = document.createElement('canvas'); cv.width = Math.round(vp.width); cv.height = Math.max(1, Math.round((cuts[c + 1] - cuts[c]) * sc));
+                const g = cv.getContext('2d'); g.fillStyle = '#fff'; g.fillRect(0, 0, cv.width, cv.height);
+                await pg.render({ canvasContext: g, viewport: vp, transform: [1, 0, 0, 1, 0, -cuts[c] * sc] }).promise;
+                const b = await new Promise(res => cv.toBlob(res, mime, 0.9)); if (!b) throw new Error('encode failed');
+                outs.push([base + '-page-' + String(list[k] + 1).padStart(w, '0') + '-part-' + String(c + 1).padStart(dg, '0') + '.' + ext, b]); cv.width = cv.height = 0;
+              }
+              continue;
+            }
             const sc = Math.min(T.ti.dpi / 72, 6000 / Math.max(vp1.width, vp1.height)), vp = pg.getViewport({ scale: sc }); // keep huge pages within canvas limits
             const cv = document.createElement('canvas'); cv.width = Math.round(vp.width); cv.height = Math.round(vp.height);
             const g = cv.getContext('2d'); g.fillStyle = '#fff'; g.fillRect(0, 0, cv.width, cv.height);
@@ -5491,7 +5576,11 @@ const FONTS = {"CalB": "AAEAAAAOAIAAAwBgR0RFRg2VDe0AAIGYAAAAuEdQT1OVtZTJAACCUAAA
         }
         else if (id === 'sign') blob = pdfBlob(await buildSigned(PL, T.bytes, T.pl));
         else if (id === 'edit') blob = pdfBlob(await buildEdited(PL, T.bytes, T.ed.items.filter(edLive)));
-        else if (id === 'resize') blob = pdfBlob(await buildResized(PL, T.bytes, T.rs));
+        else if (id === 'resize') {
+          const tall = {}, [bw, bh] = rsPt(T.rs), tw = Math.min(bw, bh), th = Math.max(bw, bh), m = T.rs.fit === 'fit' ? T.rs.margin : 0;
+          for (let i = 0; i < T.total; i++) { const v = (await T.pdf.getPage(i + 1)).getViewport({ scale: 1 }); if (isTall(v.width, v.height)) tall[i] = await tallCuts(i, (th - 2 * m) / ((tw - 2 * m) / v.width)); }
+          blob = pdfBlob(await buildResized(PL, T.bytes, T.rs, tall));
+        }
         else if (id === 'crop') blob = pdfBlob(await buildCropped(PL, T.bytes, T.cr));
         else if (id === 'totext') {
           const md = T.tt.fmt === 'md', pages = await readLines(T.pdf, T.ttPages, (k, n) => { $('tlGoLbl').textContent = 'Reading ' + k + ' of ' + n; });
