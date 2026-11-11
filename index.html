@@ -943,7 +943,6 @@ body.landing .supBtn { display: inline-flex; }
 @media (max-width: 760px) { .tl-bar { padding-left: 10px; } .tl-bar .tl-l { padding-left: 0; } }
 
 /* ---- Tools on phones = the main app on phones (v25): bottom bar + Settings sheet with Done ---- */
-#tlSub { display: none !important; }
 .tl-sheet-head { display: none; }
 .tl-filebox:empty { display: none; }
 .tl-filebox { padding: 18px 20px 0; }
@@ -992,8 +991,6 @@ body.landing .supBtn { display: inline-flex; }
 @media (max-width: 340px) { .tl-foot #tlGo .dl { display: none; } .tl-foot #tlGo { font-size: 13.5px !important; } }
 
 /* ---- One workspace design (v28): main screen and every tool share header, switcher, actions and order ---- */
-body:not(.landing) #toolsBtn { display: none !important; }          /* tools are reached from the title switcher */
-.tb .title .m.quiet { display: none; }                               /* page counts live in Settings; only progress and problems show here */
 .tb .app-switch { margin: 0 auto; }
 .tb .app-switch .n { font-weight: 600; }
 .tl-bar .tl-r:has(#tlGo[hidden]) #tlHdFile, .tl-bar .tl-r:has(#tlGo[hidden]) #tlHdSet { display: none; }  /* no file yet: nothing to change or set */
@@ -1002,6 +999,27 @@ body:not(.landing) #toolsBtn { display: none !important; }          /* tools are
   .tools.nopanel .tl-work { grid-template-columns: minmax(0, 1fr) !important; }
 }
 @media (max-width: 760px) { #tlHdFile, #tlHdSet { display: none !important; } }  /* phones use the bottom bar */
+
+/* ---- One header (v29): stacked wordmark everywhere · title with its metric · Tools · file · Settings · Export · theme ---- */
+.tb .wm, .tl-bar .wm, .tl-bar .tl-brand { display: flex !important; flex-direction: column; align-items: flex-start; gap: 1px; line-height: 1.15; white-space: nowrap; }
+.tb .wm-name, .tl-bar .tl-wm { font-size: 19px !important; padding: 0 !important; }
+.tb .wm-by, .tl-bar .wm-by { display: block !important; font-size: 12.5px !important; }
+.tl-title { display: flex !important; flex-direction: column; align-items: center; min-width: 0; text-align: center; }
+.tl-title .n, .tb .title .n { font-weight: 600; font-size: 14.5px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 100%; }
+.tl-title .m:empty { display: none; }
+#tlHdTools.on { background: var(--fill); color: var(--text); }
+@media (max-width: 760px) {
+  .tb .wm-name, .tl-bar .tl-wm { font-size: 15.5px !important; }
+  .tb .wm-by, .tl-bar .wm-by { font-size: 11.5px !important; }
+  .tl-title .n, .tb .title .n { font-size: 13.5px; }
+  #tlHdTools .lb, body:not(.landing) #toolsBtn .lb { display: none; }   /* phones: icon only */
+  body:not(.landing) #toolsBtn { display: inline-flex !important; }
+}
+
+/* the tools' header lines up with the main header to the pixel (same side padding, no extra inner offset) */
+.tl-bar { padding-left: 18px !important; padding-right: 14px !important; }
+.tl-bar .tl-l { padding-left: 0 !important; gap: 0 !important; }
+@media (max-width: 760px) { .tl-bar { padding-left: 14px !important; padding-right: 8px !important; } }
 </style>
 <script>
   window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
@@ -1014,7 +1032,7 @@ body:not(.landing) #toolsBtn { display: none !important; }          /* tools are
 <noscript><style>#boot{display:none}</style></noscript>
 <header class="tb">
   <div class="wm"><a href="#" class="wm-name" id="homeLink" aria-label="PDFmode, back to the start">PDFmode</a><span class="wm-by">by <a href="https://www.linkedin.com/in/boomtumbali" target="_blank" rel="noopener noreferrer">@boomtumbali</a></span></div>
-  <div class="title"><button type="button" class="tl-switch app-switch" id="appSwitch" aria-label="All PDF tools"><span class="n" id="docName"></span><svg class="i chev" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button><div class="m" id="docMeta"></div></div>
+  <div class="title"><div class="n" id="docName"></div><div class="m" id="docMeta"></div></div>
   <div class="tb-r">
     <button class="pb topcta" id="topChoose" type="button">Choose files</button>
     <button class="ab" id="toolsBtn" type="button" title="PDF tools" aria-label="PDF tools"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg><span class="lb">Tools</span></button>
@@ -1289,8 +1307,9 @@ body:not(.landing) #toolsBtn { display: none !important; }          /* tools are
       </button>
       <div class="wm tl-brand"><button type="button" class="wm-name tl-wm" id="tlHome" aria-label="PDFmode, back to the start">PDFmode</button><span class="wm-by">by <a href="https://www.linkedin.com/in/boomtumbali" target="_blank" rel="noopener noreferrer">@boomtumbali</a></span></div>
     </div>
-    <div class="title tl-title"><button type="button" class="tl-switch" id="tlSwitch" aria-label="All PDF tools" disabled><span class="n tl-t" id="tlTitle">PDF tools</span><svg class="i chev" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button><div class="m" id="tlSub"></div></div>
+    <div class="title tl-title"><div class="n tl-t" id="tlTitle">PDF tools</div><div class="m" id="tlSub"></div></div>
     <div class="tl-r">
+      <button class="ab" id="tlHdTools" type="button" aria-pressed="false" title="PDF tools" aria-label="PDF tools"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg><span class="lb">Tools</span></button>
       <button class="ab" id="tlHdFile" type="button"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M17 3l4 4-4 4"/><path d="M21 7H9a4 4 0 0 0-4 4"/><path d="M7 21l-4-4 4-4"/><path d="M3 17h12a4 4 0 0 0 4-4"/></svg><span class="lb" id="tlHdFileLbl">Change file</span></button>
       <button class="ab" id="tlHdSet" type="button" aria-controls="tlSide" aria-pressed="true" title="Settings"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 4h-7M10 4H3M21 12h-9M8 12H3M21 20h-5M12 20H3M14 2v4M8 10v4M16 18v4"/></svg><span class="lb">Settings</span></button>
       <button class="ib themeBtn" id="tlTheme" type="button" title="Switch to dark mode" aria-label="Switch to dark mode"><svg class="i moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg><svg class="i sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg></button>
@@ -4504,12 +4523,12 @@ const FONTS = {"CalB": "AAEAAAAOAIAAAwBgR0RFRg2VDe0AAIGYAAAAuEdQT1OVtZTJAACCUAAA
     function showPicker() {
       resetFile(); T.tool = null; $('tlSide').classList.remove('open'); $('tlScrim').classList.remove('on');
       $('tlPick').hidden = false; $('tlWork').hidden = true; $('tlGo').hidden = true;
-      $('tlTitle').textContent = 'PDF tools'; $('tlSub').textContent = ''; $('tlSwitch').disabled = true; $('tlIcBack').hidden = true; $('tlIcX').hidden = false; $('tlBack').setAttribute('aria-label', 'Close tools');
+      $('tlTitle').textContent = 'PDF tools'; $('tlSub').textContent = TOOLS.filter(t => !t.hidden).length + ' tools'; $('tlHdTools').classList.add('on'); $('tlHdTools').setAttribute('aria-pressed', 'true'); $('tlIcBack').hidden = true; $('tlIcX').hidden = false; $('tlBack').setAttribute('aria-label', 'Close tools');
     }
     function pickTool(id) {
       resetFile(); T.tool = TOOLS.find(t => t.id === id); if (!T.tool) return showPicker();
       T.sp = DEF.sp(); T.cp = DEF.cp(); T.nm = DEF.nm(); T.wm = DEF.wm(); T.im = DEF.im(); T.ti = DEF.ti(); T.tt = DEF.tt(); T.sg = DEF.sg(); T.ed = DEF.ed(); T.rs = DEF.rs(); T.cr = DEF.cr(); T.dim = [];
-      $('tlPick').hidden = true; $('tlWork').hidden = false; $('tlTitle').textContent = T.tool.name; $('tlSub').textContent = ''; $('tlSwitch').disabled = false; $('tlSwitch').setAttribute('aria-label', T.tool.name + '. Show all PDF tools');
+      $('tlPick').hidden = true; $('tlWork').hidden = false; $('tlTitle').textContent = T.tool.name; $('tlSub').textContent = ''; $('tlHdTools').classList.remove('on'); $('tlHdTools').setAttribute('aria-pressed', 'false');
       $('tlIcBack').hidden = false; $('tlIcX').hidden = true; $('tlBack').setAttribute('aria-label', 'Back to all tools');
       $('tlDrop').hidden = false; $('tlDrop').classList.remove('busy'); $('tlActs').hidden = true; $('tlPages').hidden = true; $('tlSide').hidden = true; $('tlGo').hidden = true;
       $('tlDropIc').innerHTML = IC[id]; $('tlDropT').textContent = T.tool.drop[0]; $('tlDropP').textContent = T.tool.drop[1]; $('tlChoose').textContent = T.tool.drop[0];
@@ -4638,8 +4657,8 @@ const FONTS = {"CalB": "AAEAAAAOAIAAAwBgR0RFRg2VDe0AAIGYAAAAuEdQT1OVtZTJAACCUAAA
         box.append(sub); o.append(box, mk('div', 'tl-hint', '')); o.lastChild.id = 'tlHint'; paint();
       } else if (id === 'compress') {
         const c = T.cp, hh = mk('div', 'tl-hint', ''); hh.id = 'tlHint';
-        const say = () => { hh.textContent = { light: 'Barely visible change. Good when quality matters most.', balanced: 'Good for email, school portals and most uploads.', strong: 'Smallest file. Photos look softer; text stays sharp.' }[c.level]; };
-        o.append(grp('Compression', segEl('Compression', [['light', 'Light'], ['balanced', 'Recommended'], ['strong', 'Strong']], c.level, v => { c.level = v; say(); refresh(); }), hh),
+        const say = () => { hh.textContent = { light: 'Barely visible change. Good when quality matters most.', balanced: 'Recommended. Good for email, school portals and most uploads.', strong: 'Smallest file. Photos look softer; text stays sharp.' }[c.level]; };
+        o.append(grp('Compression', segEl('Compression', [['light', 'Light'], ['balanced', 'Balanced'], ['strong', 'Strong']], c.level, v => { c.level = v; say(); refresh(); }), hh),
           grp('Size now', mk('div', 'tl-hint', fmtBytes(T.bytes ? T.bytes.length : 0) + '. Text, links and bookmarks are kept; pictures are made lighter.')));
         say();
       } else if (id === 'numbers') {
@@ -5323,7 +5342,8 @@ const FONTS = {"CalB": "AAEAAAAOAIAAAwBgR0RFRg2VDe0AAIGYAAAAuEdQT1OVtZTJAACCUAAA
       const r = parseRanges(s.text, total); return { parts: r.parts, error: r.error, one: s.out === 'one' };
     }
     function refresh() {
-      if (T.tool) { $('tlHdFileLbl').textContent = T.tool.id === 'images' ? 'Add images' : 'Change file'; }
+      if (T.tool) { $('tlHdFileLbl').textContent = T.tool.id === 'images' ? 'Add images' : 'Change file'; $('tlHdFile').title = $('tlHdFileLbl').textContent;
+        $('tlSub').textContent = T.tool.id === 'images' ? (T.L && T.L.length ? plural(T.L.length, 'image') : '') : (T.total ? plural(T.total, 'page') : ''); }
       if (T.tool) { const k = T.sel ? T.sel.size : 0, bd = $('tlBadge'); if (bd) { bd.hidden = !(selectable() && k); bd.textContent = k; } $('tlBbFileLbl').textContent = T.tool.id === 'images' ? 'Add images' : 'Change file'; }
       if (!T.tool || !T.cards) return; const id = T.tool.id; let ok = T.L.length > 0, label = T.tool.go;
       if (selectable()) {
@@ -5507,9 +5527,8 @@ const FONTS = {"CalB": "AAEAAAAOAIAAAwBgR0RFRg2VDe0AAIGYAAAAuEdQT1OVtZTJAACCUAAA
       if (T.open && !T.tool && c.closest('#tlCards')) pushHist(); // list -> tool is one step back
       openTools(c.dataset.tool); } });
     $('toolsBtn').addEventListener('click', () => openTools());
-    $('appSwitch').addEventListener('click', () => openTools());
     $('tlBack').addEventListener('click', uiBack);
-    $('tlSwitch').addEventListener('click', uiBack);
+    $('tlHdTools').addEventListener('click', uiBack); // a tool -> the tools list; the tools list -> back where you were
     const phoneTools = () => window.matchMedia('(max-width: 760px)').matches;
     const tlSheet = open => { const side = $('tlSide'); side.classList.toggle('open', !!open); $('tlScrim').classList.toggle('on', !!open); $('tlBbSet').setAttribute('aria-expanded', String(!!open));
       if (open) setTimeout(() => { const d = $('tlSheetDone'); if (d) d.focus({ preventScroll: true }); }, 60); };
