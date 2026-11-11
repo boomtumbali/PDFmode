@@ -4615,7 +4615,9 @@ const FONTS = {"CalB": "AAEAAAAOAIAAAwBgR0RFRg2VDe0AAIGYAAAAuEdQT1OVtZTJAACCUAAA
       $('tlDrop').hidden = true; $('tlPages').hidden = false; $('tlSide').hidden = false; $('tlGo').hidden = false;
       $('tlActs').hidden = !selectable(); if (selectable()) buildActs();
       $('tlPages').classList.toggle('sgv', id === 'sign' || id === 'edit'); $('tlPages').classList.toggle('edv', id === 'edit'); $('tlPages').classList.toggle('crv', id === 'crop');
-      if (id === 'sign') { buildSign(); if (window.matchMedia('(max-width: 760px)').matches && !(T.sg && T.sg.url)) setTimeout(() => { if (T.tool && T.tool.id === 'sign') $('tlBbSet').click(); }, 350); return; } // phones: make the signature first if (id === 'edit') return buildEdit(); if (id === 'crop') return buildCrop();
+      if (id === 'sign') { buildSign(); if (window.matchMedia('(max-width: 760px)').matches && !(T.sg && T.sg.url)) setTimeout(() => { if (T.tool && T.tool.id === 'sign') $('tlBbSet').click(); }, 350); return; } // phones: make the signature first
+      if (id === 'edit') return buildEdit();
+      if (id === 'crop') return buildCrop();
       T.io = new IntersectionObserver(es => es.forEach(en => { const c = en.target; c._vis = en.isIntersecting; if (c._vis && (!c._rendered || c._rot !== c._it.rot)) queueRender(c); }), { root: $('tlCanvas'), rootMargin: '500px 0px' });
       T.cards = new Map(); T.queue = []; T.running = 0; $('tlPages').replaceChildren();
       buildOpts(); syncGrid(); $('tlCanvas').scrollTop = 0;
