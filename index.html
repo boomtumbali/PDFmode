@@ -3658,7 +3658,7 @@ const FONTS = {"CalB": "AAEAAAAOAIAAAwBgR0RFRg2VDe0AAIGYAAAAuEdQT1OVtZTJAACCUAAA
     const mctx = document.createElement('canvas').getContext('2d');
     const measure = (t, fam, size, b, i) => { mctx.font = (i ? 'italic ' : '') + (b ? '700 ' : '400 ') + size + 'px "PC ' + (fam || 'Carlito') + '", "PC Carlito", sans-serif'; return mctx.measureText(t).width; };
     const ctx = { measure, metrics: (COVERAGE && COVERAGE.metrics) || {}, toPng, layerPx: it.retryFull ? 1920 : 1600,
-      progress: (i, n, unit) => { if (token !== it.buildToken) return; const lead = items.length > 1 ? baseName(it.name) + ': ' : ''; meta(lead + (unit === 'paragraph' ? 'Laying out ' + Math.round(i / n * 100) + '%…' : 'Preparing slide ' + i + ' of ' + n + '…'), true); },
+      progress: (i, n, unit) => { if (token !== it.buildToken) return; const lead = ''; meta(lead + (unit === 'paragraph' ? 'Laying out ' + Math.round(i / n * 100) + '%…' : 'Preparing slide ' + i + ' of ' + n + '…'), true); },
       cancelled: () => token !== it.buildToken };
     it.specTask = loadOfficeFonts(it).then(m => { PCOffice.setGoogleFonts(m); return it.office.kind === 'docx' ? PCOffice.buildDocx(it.office.zip, ctx) : PCOffice.buildPptx(it.office.zip, ctx); })
       .then(sp => { if (token === it.buildToken) it.spec = sp; return sp; })
@@ -3731,12 +3731,8 @@ const FONTS = {"CalB": "AAEAAAAOAIAAAwBgR0RFRg2VDe0AAIGYAAAAuEdQT1OVtZTJAACCUAAA
   let running = false, pending = false, timer = 0;
   const fmtIn = n => (n >= 100 ? n.toFixed(0) : n.toFixed(1)) + ' in';
   function meta(text, busy, quiet) { const m = $('docMeta'); m.textContent = text; m.classList.toggle('busy', !!busy); m.classList.toggle('quiet', !!quiet); }
-  function describe(r) {
-    const pre = r.merged ? r.merged + ' files · ' : '';
-    if (r.merged) return pre + (r.paged || r.pages.length > 1 ? r.pages.length + ' pages' : fmtIn(r.pages[0]) + ' long');
-    if (r.paged) return r.pages.length + (r.pages.length === 1 ? ' page' : ' pages');
-    if (r.office) return fmtIn(r.pages[0]) + ' long';
-    return r.pages.length === 1 ? fmtIn(r.pages[0]) + ' long' : r.pages.map(fmtIn).join(' + ') + ' · ' + r.pages.length + ' pages';
+  function describe(r) { // the header shows just how many files: short, so it never crowds the name beside it
+    const n = r.merged || 1; return n + (n === 1 ? ' file' : ' files');
   }
   async function measure() {
     if (!hasDoc()) return;
@@ -5481,7 +5477,7 @@ const FONTS = {"CalB": "AAEAAAAOAIAAAwBgR0RFRg2VDe0AAIGYAAAAuEdQT1OVtZTJAACCUAAA
     }
     function refresh() {
       if (T.tool) { $('tlHdFileLbl').textContent = T.tool.id === 'images' ? 'Add images' : 'Change file'; $('tlHdFile').title = $('tlHdFileLbl').textContent;
-        $('tlSub').textContent = T.tool.id === 'images' ? (T.L && T.L.length ? plural(T.L.length, 'image') : '') : T.tool.id === 'organize' && T.L && T.L.length ? plural(T.L.length, 'page') : (T.total ? plural(T.total, 'page') : ''); } // Organize counts the pages you're keeping
+        $('tlSub').textContent = T.tool.id === 'images' ? (T.L && T.L.length ? plural(T.L.length, 'image') : '') : (T.total ? '1 file' : ''); } // just how many files, never sizes or lengths
       if (T.tool) { const k = T.sel ? T.sel.size : 0, bd = $('tlBadge'); if (bd) { bd.hidden = !(selectable() && k); bd.textContent = k; } $('tlBbFileLbl').textContent = T.tool.id === 'images' ? 'Add images' : 'Change file'; }
       if (!T.tool || !T.cards) return; const id = T.tool.id; let ok = T.L.length > 0, label = T.tool.go;
       if (selectable()) {
