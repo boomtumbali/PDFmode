@@ -9,6 +9,8 @@ PDFmode turns Markdown, Word, PowerPoint, PDF and plain-text files into one clea
 
 ![PDFmode](og-image.png)
 
+The start page shows a short how-it-works film made in code: no video to download, it follows light and dark mode, scales to any screen, pauses when scrolled away, and stays still for people who turn off motion.
+
 ---
 
 ## What it does
@@ -104,7 +106,7 @@ PDFmode is a single self-contained `index.html` with no build step.
 **Run locally:** open `index.html` in a browser.
 
 **Host on Vercel:**
-1. Put `index.html`, `og-image.png`, `pdfmode-promo-1080p.mp4`, `pdfmode-promo-1080p.webm`, `pdfmode-poster.jpg` and this `README.md` in a GitHub repository.
+1. Put `index.html`, `og-image.png` and this `README.md` in a GitHub repository.
 2. On [vercel.com](https://vercel.com), choose **Add New → Project**, import the repository, leave the **Framework Preset** as **Other**, and click **Deploy**.
 3. Every commit to the repository redeploys the site automatically.
 
@@ -116,9 +118,6 @@ PDFmode is a single self-contained `index.html` with no build step.
 | --- | --- |
 | `index.html` | The whole app: interface, conversion engine, PDF tools, embedded fonts and the GCash QR code (shown only when someone chooses to support) |
 | `og-image.png` | Link-preview image for Messenger, Facebook, X and others |
-| `pdfmode-poster.jpg` | Still frame shown while the video loads |
-| `pdfmode-promo-1080p.mp4` | The 19-second how-it-works film on the start page (1080p, MP4) |
-| `pdfmode-promo-1080p.webm` | The same film as WebM, for browsers without MP4 support |
 | `README.md` | This file |
 
 ## Support
