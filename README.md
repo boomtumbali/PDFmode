@@ -4,12 +4,10 @@
 
 PDFmode turns Markdown, Word, PowerPoint, PDF and plain-text files into one clean PDF. It can keep each file's own formatting and pages, merge several files in the order you choose, or flow everything into one continuous page you can scroll without a single page break. It's built for students reading reviewers, lecture slides and handouts on a phone, tablet or laptop.
 
-🔗 **Live:** [pdfmode.vercel.app](https://pdfmode.vercel.app)
-👤 **By:** [@boomtumbali](https://www.linkedin.com/in/boomtumbali)
+🔗 **Live:** [pdfmode.vercel.app](https://pdfmode.vercel.app): nothing to install, no sign-up. Works on phones, tablets and computers in Safari, Chrome, Edge and Firefox.
+👤 **By:** [@boomtumbali](https://www.linkedin.com/in/boomtumbali) · one of the MODE apps, with [VISmode](https://vismode.vercel.app) for photos
 
 ![PDFmode](og-image.png)
-
-The start page shows a short how-it-works film made in code: no video to download, it follows light and dark mode, scales to any screen, pauses when scrolled away, and stays still for people who turn off motion.
 
 ---
 
@@ -44,7 +42,7 @@ The start page shows a short how-it-works film made in code: no video to downloa
 - **Searchable output.** Text in the PDF is real, selectable text, and every file and heading becomes a bookmark.
 - **Exact preview.** For Word, PowerPoint and merged files, the preview *is* the exported PDF.
 
-## PDF tools
+## Tools
 
 Twelve free tools, with no limits and nothing uploaded:
 
@@ -98,6 +96,7 @@ Everything runs in your browser. Your files are **never uploaded** to a server. 
 - **Password-protected or restricted PDFs** can't be opened. PDFmode says so; remove the protection first.
 - **Scanned PDFs** are pictures of pages, so their words can't be edited or copied. You can still sign, crop, number, split or merge them.
 - **Sign PDF** places a picture of your signature. It isn't a certified digital signature.
+- **The start-page film** is made in code: no video to download, it follows light and dark mode, scales to any screen, pauses when scrolled away, and stays still for people who turn off motion.
 
 ## Run or host it yourself
 
@@ -108,7 +107,8 @@ PDFmode is a single self-contained `index.html` with no build step.
 **Host on Vercel:**
 1. Put `index.html`, `og-image.png` and this `README.md` in a GitHub repository.
 2. On [vercel.com](https://vercel.com), choose **Add New → Project**, import the repository, leave the **Framework Preset** as **Other**, and click **Deploy**.
-3. Every commit to the repository redeploys the site automatically.
+3. Every commit to the repository redeploys the site automatically, usually within a minute.
+4. After changing `og-image.png`, Messenger and Facebook may keep the old picture until you press **Scrape Again** at [developers.facebook.com/tools/debug](https://developers.facebook.com/tools/debug).
 
 > If your site address isn't `pdfmode.vercel.app`, update the `og:url`, `og:image`, `twitter:image` and `canonical` tags in `index.html` so link previews work.
 
@@ -122,7 +122,7 @@ PDFmode is a single self-contained `index.html` with no build step.
 
 ## Support
 
-PDFmode is free for everyone, with no ads, no limits and no sign-up. If it saved you time, you can chip in any amount through GCash (or any InstaPay bank app) from the small **Support** link that appears after you save a file (or in the FAQ). It shows a short note first, and the GCash QR code only if you choose to chip in.
+PDFmode is free for everyone, with no ads, no limits and no sign-up. If it saved you time, you can chip in any amount through GCash (or any InstaPay bank app) from the support card: tap **@boomtumbali** in the header, or the small **Support** link after you save a file (also in the FAQ). It shows a short note first, and the GCash QR code only if you choose to chip in.
 
 Follow the maker: [LinkedIn](https://www.linkedin.com/in/boomtumbali/) · [X](https://x.com/boomtumbali) · [GitHub](https://github.com/boomtumbali)
 
