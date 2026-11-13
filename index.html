@@ -17,7 +17,7 @@
 <meta property="og:title" content="PDFmode — one PDF, made for reading">
 <meta property="og:description" content="Merge notes, slides and handouts into one PDF, or one continuous page for reading. Free and private: it runs in your browser. By @boomtumbali.">
 <meta property="og:url" content="https://pdfmode.vercel.app/">
-<meta property="og:image" content="https://pdfmode.vercel.app/og-image.png?v=9">
+<meta property="og:image" content="https://pdfmode.vercel.app/og-image.png?v=12">
 <meta property="og:image:type" content="image/png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
@@ -25,7 +25,7 @@
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="PDFmode — one PDF, made for reading">
 <meta name="twitter:description" content="Merge notes, slides and handouts into one PDF, or one continuous page for reading. Free and private: it runs in your browser. By @boomtumbali.">
-<meta name="twitter:image" content="https://pdfmode.vercel.app/og-image.png?v=9">
+<meta name="twitter:image" content="https://pdfmode.vercel.app/og-image.png?v=12">
 <script>try { const o = JSON.parse(localStorage.getItem('pdfcraft.v1') || 'null'); let ui = o && o.ui; if (!o || (o.v !== 4 && o.v !== 5 && o.v !== 6)) ui = (!ui || ui === 'system') ? 'dark' : ui; if (ui === 'light' || ui === 'dark') document.documentElement.dataset.theme = ui; } catch (e) { document.documentElement.dataset.theme = 'dark'; }</script>
 <script>
 (function () {
@@ -403,7 +403,7 @@ input[type="number"].tl-in::-webkit-outer-spin-button, input[type="number"].tl-i
 .hero-art.has-video .art { display: none; }
 .hero-art:not(.has-video) .hero-video, .hero-art:not(.has-video) .vcap { display: none; }
 .hero-art:not(.has-video) .art { display: block; max-width: 520px; margin: 0 auto; }
-.hero-video { position: relative; aspect-ratio: 16 / 9; border-radius: 22px; overflow: hidden; background: #0E0E10; cursor: zoom-in; isolation: isolate;
+.hero-video { position: relative; aspect-ratio: 16 / 9; border-radius: 22px; overflow: hidden; background: #0E0E10; cursor: default; isolation: isolate;
   box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.07), 0 40px 90px -30px rgba(10, 132, 255, 0.35), 0 30px 60px -30px rgba(0, 0, 0, 0.6); }
 :root[data-theme="light"] .hero-video { box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.06), 0 40px 90px -36px rgba(10, 132, 255, 0.45), 0 24px 50px -28px rgba(0, 0, 0, 0.35); }
 .hero-video video { display: block; width: 100%; height: 100%; object-fit: cover; }
@@ -1064,67 +1064,67 @@ a.mode-app:hover { background: var(--fill-strong); text-decoration: none; }
 .wm-name { align-self: end; } .wm-by { align-self: start; }
 @media (max-width: 760px) { .wm, .tb .wm, .tl-bar .wm, .tl-bar .tl-brand { column-gap: 6px; } .wm-logo { width: 24px; height: 24px; } }
 
-/* ---- start-page film, made in code: one fixed 1600 x 900 design, scaled as a whole to any screen ---- */
-.fm { position: absolute; inset: 0; overflow: hidden; color: #F5F5F7; font-family: var(--ui); background: radial-gradient(120% 90% at 50% 0%, #10233f 0%, #0E0E10 60%); }
+/* ---- start-page showcase, made in code: one fixed 1600 x 900 design, scaled as a whole to any screen ---- */
+.fm { position: absolute; inset: 0; overflow: hidden; color: #F5F5F7; font-family: var(--ui); background: radial-gradient(110% 80% at 50% 0%, #10233f 0%, #0E0E10 62%); cursor: default; }
 .fm-s { position: absolute; left: 0; top: 0; width: 1600px; height: 900px; transform-origin: 0 0; transform: scale(var(--k, .5)); }
-.fm * { animation-duration: 12s; animation-iteration-count: infinite; animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1); }
-.fm.paused * { animation-play-state: paused; }
-.fm-cap { position: absolute; top: 62px; left: 0; right: 0; text-align: center; }
-.fm-cap .c { position: absolute; left: 0; right: 0; opacity: 0; }
-.fm-cap p { margin: 0; font-size: 24px; font-weight: 600; color: #409CFF; }
-.fm-cap h3 { margin: 8px 0 0; font-family: "PC Slab", Rockwell, Georgia, serif; font-weight: 700; font-size: 62px; letter-spacing: -0.015em; }
-.fm-cap .c1 { animation-name: fmc1; } .fm-cap .c2 { animation-name: fmc2; } .fm-cap .c3 { animation-name: fmc3; }
-@keyframes fmc1 { 0%, 3% { opacity: 0; transform: translateY(8px); } 6%, 30% { opacity: 1; transform: none; } 34%, 100% { opacity: 0; transform: translateY(-6px); } }
-@keyframes fmc2 { 0%, 34% { opacity: 0; transform: translateY(8px); } 38%, 63% { opacity: 1; transform: none; } 67%, 100% { opacity: 0; transform: translateY(-6px); } }
-@keyframes fmc3 { 0%, 67% { opacity: 0; transform: translateY(8px); } 71%, 95% { opacity: 1; transform: none; } 99%, 100% { opacity: 0; } }
-.fm-win { position: absolute; left: 128px; top: 262px; width: 1344px; height: 584px; border-radius: 18px; background: #1C1C1E; box-shadow: 0 0 0 1px rgba(255,255,255,.07), 0 30px 60px -20px rgba(0,0,0,.7); overflow: hidden; }
-.fm-bar { height: 74px; display: flex; align-items: center; justify-content: space-between; padding: 0 32px; border-bottom: 1px solid rgba(255,255,255,.08); font-size: 19px; }
-.fm-bar b { font-family: "PC Slab", Rockwell, Georgia, serif; font-size: 24px; }
-.fm-bar span { color: #A1A1A6; }
-.fm-btn { padding: 8px 20px; border-radius: 999px; background: #0A84FF; color: #fff; font-weight: 600; animation-name: fmbtn; }
-@keyframes fmbtn { 0%, 62% { transform: scale(1); box-shadow: none; } 65% { transform: scale(.93); box-shadow: 0 0 0 10px rgba(64,156,255,.3); } 69%, 100% { transform: scale(1); box-shadow: none; } }
-.fm-chip { position: absolute; left: 70px; width: 360px; height: 84px; display: flex; align-items: center; gap: 18px; padding: 0 20px; border-radius: 14px; background: #2C2C2E; opacity: 0; }
-.fm-chip .t { width: 46px; height: 32px; border-radius: 7px; display: grid; place-items: center; font-size: 14px; font-weight: 700; color: #fff; flex: none; }
-.fm-chip b { display: block; font-size: 21px; } .fm-chip small { display: block; font-size: 16px; color: #8E8E93; }
-.fm-chip:nth-of-type(1) { top: 116px; animation-name: fmd1; } .fm-chip:nth-of-type(2) { top: 220px; animation-name: fmd2; }
-.fm-chip:nth-of-type(3) { top: 324px; animation-name: fmd3; } .fm-chip:nth-of-type(4) { top: 428px; animation-name: fmd4; }
-@keyframes fmd1 { 0%, 4% { opacity: 0; transform: translateX(-40px); } 9%, 92% { opacity: 1; transform: none; } 97%, 100% { opacity: 0; } }
-@keyframes fmd2 { 0%, 7% { opacity: 0; transform: translateX(-40px); } 12%, 92% { opacity: 1; transform: none; } 97%, 100% { opacity: 0; } }
-@keyframes fmd3 { 0%, 10% { opacity: 0; transform: translateX(-40px); } 15%, 92% { opacity: 1; transform: none; } 97%, 100% { opacity: 0; } }
-@keyframes fmd4 { 0%, 13% { opacity: 0; transform: translateX(-40px); } 18%, 92% { opacity: 1; transform: none; } 97%, 100% { opacity: 0; } }
-.fm-lines { position: absolute; left: 0; top: 0; width: 1344px; height: 584px; }
-.fm-lines path { fill: none; stroke: #6E6E73; stroke-width: 3.4; stroke-dasharray: 8 9; opacity: 0; animation-name: fmline; }
-@keyframes fmline { 0%, 34% { opacity: 0; } 40%, 92% { opacity: 1; } 97%, 100% { opacity: 0; } }
-.fm-dot { position: absolute; left: 628px; top: 352px; width: 18px; height: 18px; border-radius: 50%; background: #0A84FF; box-shadow: 0 0 20px #0A84FF; opacity: 0; animation-name: fmline; }
-.fm-page { position: absolute; left: 680px; top: 108px; width: 330px; height: 446px; border-radius: 12px; background: #2C2C2E; overflow: hidden; opacity: 0; animation-name: fmpage; }
-@keyframes fmpage { 0%, 36% { opacity: 0; transform: translateY(16px); } 42%, 92% { opacity: 1; transform: none; } 97%, 100% { opacity: 0; } }
-.fm-flow { position: absolute; left: 26px; right: 26px; top: 24px; animation-name: fmflow; }
-@keyframes fmflow { 0%, 70% { transform: none; } 86%, 100% { transform: translateY(-330px); } }
-.fm-flow i { display: block; height: 8px; border-radius: 4px; background: #48484A; margin-bottom: 12px; }
-.fm-flow i.h { height: 14px; background: #E5E5EA; width: 62%; margin-bottom: 18px; }
-.fm-flow i.s { height: 10px; background: #8E8E93; width: 44%; margin: 22px 0 14px; }
-.fm-tbl { height: 92px; border-radius: 6px; box-shadow: inset 0 0 0 2px #48484A; background: linear-gradient(#0A84FF 0 20px, transparent 20px); margin: 18px 0; position: relative; }
-.fm-tbl::before, .fm-tbl::after { content: ""; position: absolute; top: 0; bottom: 0; border-left: 2px solid #48484A; } .fm-tbl::before { left: 33%; } .fm-tbl::after { left: 66%; }
-.fm-slide { height: 140px; border-radius: 8px; background: #16365F; margin: 22px 0; position: relative; }
-.fm-slide::before { content: ""; position: absolute; left: 22px; top: 30px; width: 150px; height: 12px; border-radius: 6px; background: #F5F5F7; }
-.fm-slide::after { content: ""; position: absolute; right: 22px; bottom: 22px; width: 52px; height: 34px; border-radius: 7px; background: #FFD866; }
-.fm-thumb { position: absolute; right: 8px; top: 16px; width: 5px; height: 90px; border-radius: 3px; background: #636366; animation-name: fmthumb; }
-@keyframes fmthumb { 0%, 70% { transform: none; } 86%, 100% { transform: translateY(300px); } }
-.fm-badge { position: absolute; left: 1044px; top: 128px; white-space: nowrap; display: flex; align-items: center; gap: 16px; padding: 18px 26px 18px 18px; border-radius: 18px; background: #3A3A3C; box-shadow: 0 0 0 1px rgba(255,255,255,.08), 0 20px 40px -12px rgba(0,0,0,.7); opacity: 0; animation-name: fmbadge; }
-.fm-badge svg { width: 56px; height: 56px; }
-.fm-badge b { display: block; font-size: 21px; } .fm-badge small { display: block; font-size: 16px; color: #A1A1A6; }
-@keyframes fmbadge { 0%, 70% { opacity: 0; transform: translateY(12px); } 75%, 92% { opacity: 1; transform: none; } 97%, 100% { opacity: 0; } }
-.fm-save { position: absolute; left: 1044px; top: 270px; white-space: nowrap; padding: 16px 22px; border-radius: 14px; background: #2C2C2E; box-shadow: 0 16px 40px -10px rgba(0,0,0,.7); display: flex; align-items: center; gap: 14px; font-size: 18px; opacity: 0; animation-name: fmsave; }
-.fm-save .ok { width: 34px; height: 34px; border-radius: 50%; background: rgba(48,209,88,.18); color: #30D158; display: grid; place-items: center; font-weight: 700; }
-.fm-save small { display: block; color: #A1A1A6; font-size: 15px; }
-@keyframes fmsave { 0%, 80% { opacity: 0; transform: translateY(12px); } 84%, 92% { opacity: 1; transform: none; } 97%, 100% { opacity: 0; } }
-@media (prefers-reduced-motion: reduce) { .fm * { animation: none !important; } .fm-chip, .fm-page, .fm-lines path, .fm-dot, .fm-badge { opacity: 1; } .fm-cap .c3 { opacity: 1; } }
+.fm.paused * { animation-play-state: paused !important; }
+.fm-head { position: absolute; top: 56px; left: 0; right: 0; text-align: center; }
+.fm-head p { margin: 0; font-size: 24px; font-weight: 600; color: #409CFF; }
+.fm-head h3 { margin: 8px 0 0; font-family: "PC Slab", Rockwell, Georgia, serif; font-weight: 700; font-size: 64px; letter-spacing: -0.015em; color: #F5F5F7; }
+.fm-head small { display: block; margin-top: 10px; font-size: 25px; color: #A1A1A6; }
+.fm-col { position: absolute; top: 262px; width: 330px; text-align: center; }
+.fm-col.l { left: 420px; } .fm-col.r { left: 850px; }
+.fm-tag { display: inline-flex; align-items: center; gap: 8px; height: 40px; padding: 0 18px; border-radius: 999px; font-size: 19px; font-weight: 600; margin-bottom: 16px; background: #2C2C2E; color: #C7C7CC; }
+.fm-col.r .fm-tag { background: #0A84FF; color: #FFFFFF; }
+.fm-phone { width: 330px; height: 540px; border-radius: 48px; padding: 13px; background: #1C1C1E; box-shadow: 0 0 0 2px #3A3A3C, 0 40px 80px -30px rgba(0,0,0,.85); text-align: left; }
+.fm-col.r .fm-phone { box-shadow: 0 0 0 2px #0A84FF, 0 40px 90px -30px rgba(10,132,255,.55); }
+.fm-screen { position: relative; width: 100%; height: 100%; border-radius: 36px; overflow: hidden; background: #0B0B0D; }
+.fm-roll { position: absolute; left: 0; right: 0; top: 0; animation: fmroll 16s linear infinite; }
+@keyframes fmroll { from { transform: translateY(0); } to { transform: translateY(-50%); } }
+.fm-pg { margin: 0 12px 22px; padding: 22px 20px; height: 420px; overflow: hidden; background: #F5F5F7; border-radius: 4px; position: relative; }
+.fm-pg::after { content: attr(data-n); position: absolute; right: 12px; bottom: 8px; font-size: 12px; color: #8E8E93; }
+.fm-cont { margin: 0 12px; padding: 22px 20px 0; background: #F5F5F7; }
+.fm-h { height: 16px; width: 72%; border-radius: 4px; background: #1D1D1F; margin: 4px 0 16px; }
+.fm-h2 { height: 12px; width: 46%; border-radius: 4px; background: #48484A; margin: 20px 0 12px; }
+.fm-ln { height: 8px; border-radius: 4px; background: #C7C7CC; margin-bottom: 10px; }
+.fm-tbl { height: 128px; border-radius: 5px; margin: 14px 0; box-shadow: inset 0 0 0 2px #C7C7CC; background: linear-gradient(#0A84FF 0 26px, transparent 26px); position: relative; }
+.fm-tbl::before, .fm-tbl::after { content: ""; position: absolute; top: 0; bottom: 0; border-left: 2px solid #C7C7CC; } .fm-tbl::before { left: 33%; } .fm-tbl::after { left: 66%; }
+.fm-tbl.top { height: 74px; border-bottom-left-radius: 0; border-bottom-right-radius: 0; }
+.fm-tbl.bot { height: 54px; background: none; border-top-left-radius: 0; border-top-right-radius: 0; margin-top: 0; }
+.fm-sl { height: 150px; border-radius: 8px; background: #16365F; margin: 16px 0; position: relative; }
+.fm-sl::before { content: ""; position: absolute; left: 18px; top: 26px; width: 160px; height: 13px; border-radius: 7px; background: #F5F5F7; }
+.fm-sl::after { content: ""; position: absolute; right: 18px; bottom: 18px; width: 56px; height: 36px; border-radius: 7px; background: #FFD866; }
+.fm-sl.top { height: 90px; border-bottom-left-radius: 0; border-bottom-right-radius: 0; margin-bottom: 0; }
+.fm-sl.top::after { display: none; }
+.fm-sl.bot { height: 60px; border-top-left-radius: 0; border-top-right-radius: 0; margin-top: 0; }
+.fm-sl.bot::before { display: none; } .fm-sl.bot::after { bottom: 12px; }
+.fm-note { position: absolute; display: flex; align-items: center; gap: 14px; padding: 16px 22px 16px 16px; border-radius: 18px; background: #2C2C2E; box-shadow: 0 0 0 1px rgba(255,255,255,.08), 0 20px 40px -12px rgba(0,0,0,.7); white-space: nowrap; }
+.fm-note b { display: block; font-size: 21px; color: #F5F5F7; } .fm-note small { display: block; font-size: 16px; color: #A1A1A6; }
+.fm-note .x { width: 40px; height: 40px; border-radius: 50%; display: grid; place-items: center; background: rgba(255,69,58,.18); color: #FF6961; font-size: 22px; font-weight: 700; }
+.fm-note svg { width: 52px; height: 52px; }
+.fm-note.l { right: 1220px; top: 520px; } .fm-note.r { left: 1214px; top: 520px; }
+@media (prefers-reduced-motion: reduce) { .fm-roll { animation: none; } }
 
 /* phones: the header's left and right columns match the icon + name + byline, so the title stays centred and clear */
 @media (max-width: 760px) { body:not(.landing) .tb, .tl-bar { grid-template-columns: minmax(118px, 1fr) minmax(0, auto) minmax(118px, 1fr) !important; column-gap: 8px !important; }
   .tb .wm-by, .tl-bar .wm-by { font-size: 10.5px !important; } .title .n, .tl-title .n { font-size: 13px !important; } }
 @media (max-width: 380px) { body:not(.landing) .tb, .tl-bar { grid-template-columns: minmax(110px, 1fr) minmax(0, auto) minmax(110px, 1fr) !important; column-gap: 6px !important; }
   .wm-logo { width: 22px !important; height: 22px !important; } .tb .wm-name, .tl-bar .tl-wm { font-size: 14.5px !important; } .tb .wm-by, .tl-bar .wm-by { font-size: 10px !important; } .title .n, .tl-title .n { font-size: 12.5px !important; letter-spacing: -0.01em; } }
+
+/* support card order: who I am, the mode apps, follow, then chipping in last; a hairline between each section */
+.sup-s1 .sup-msg { margin-bottom: 16px; }
+.sup-s1 .mode-apps { margin: 0 !important; padding: 16px 0; border-top: 0.5px solid var(--hair); }
+.sup-s1 .sup-follow { margin: 0 !important; padding: 16px 0 !important; border-top: 0.5px solid var(--hair); border-bottom: 0.5px solid var(--hair); }
+.sup-s1 .sup-choice { margin-top: 16px; }
+.mode-apps .sec-l i, #supSub i { font-style: italic; }
+
+/* the header icon is a way home too */
+.wm-logo { cursor: pointer; }
+#supSub:empty, #supS:empty { display: none; }
+
+/* support card: one-line title sits centred beside the heart */
+#supDlg .sh-head { align-items: center; }
+#supDlg .sh-t h2 { margin: 0; }
 </style>
 <script>
   window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
@@ -1178,7 +1178,7 @@ a.mode-app:hover { background: var(--fill-strong); text-decoration: none; }
           <p class="trust"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>Converted in your browser. Your files are never uploaded.</p>
         </div>
         <figure class="hero-art has-video">
-          <div class="hero-video" id="heroStage"><div class='fm' id='fm' role='img' aria-label='How PDFmode works: add notes, slides and handouts, merge them in your order, and read them as one long page'><div class='fm-s'><div class='fm-cap'><div class='c c1'><p>Step 1</p><h3>Drop in notes, slides and handouts.</h3></div><div class='c c2'><p>Step 2</p><h3>Merged in your order, formatting kept.</h3></div><div class='c c3'><p>Step 3</p><h3>One long page, made for reading.</h3></div></div><div class='fm-win'><div class='fm-bar'><b>PDFmode</b><span>Make PDF · 4 files</span><span class='fm-btn'>Export PDF</span></div><div style='position:absolute;inset:0'><div class='fm-chip'><span class='t' style='background:#8E8E93'>MD</span><span><b>Notes.md</b><small>Markdown</small></span></div><div class='fm-chip'><span class='t' style='background:#2B579A'>W</span><span><b>Report.docx</b><small>Word</small></span></div><div class='fm-chip'><span class='t' style='background:#C43E1C'>P</span><span><b>Lecture.pptx</b><small>PowerPoint</small></span></div><div class='fm-chip'><span class='t' style='background:#D93025'>PDF</span><span><b>Handout.pdf</b><small>PDF</small></span></div></div><svg class='fm-lines' viewBox='0 0 1344 584'><path d='M430 158 C 540 158, 560 361, 636 361'/><path d='M430 262 C 540 262, 560 361, 636 361'/><path d='M430 366 C 540 366, 560 361, 636 361'/><path d='M430 470 C 540 470, 560 361, 636 361'/></svg><div class='fm-dot'></div><div class='fm-page'><div class='fm-flow'><i class='h'></i><i></i><i style='width:92%'></i><i style='width:80%'></i><i class='s'></i><i></i><i style='width:86%'></i><div class='fm-tbl'></div><i style='width:90%'></i><i style='width:70%'></i><div class='fm-slide'></div><i class='s'></i><i></i><i style='width:88%'></i><i style='width:76%'></i><i class='s'></i><i></i><i style='width:84%'></i><div class='fm-tbl'></div><i style='width:90%'></i><i style='width:60%'></i></div><div class='fm-thumb'></div></div><div class='fm-badge'><svg aria-hidden='true' focusable='false' xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><defs><linearGradient id='pmi5-a' x1='0' y1='0' x2='0' y2='1'><stop offset='0' stop-color='#4B9DFF'/><stop offset='1' stop-color='#2B7BF4'/></linearGradient><radialGradient id='pmi5-b' cx='.22' cy='.96' r='.75'><stop offset='0' stop-color='#B3A9FF'/><stop offset='.55' stop-color='#B3A9FF' stop-opacity='.35'/><stop offset='1' stop-color='#B3A9FF' stop-opacity='0'/></radialGradient></defs><path d='M19 4h19.5L54 19.5V53a7 7 0 0 1-7 7H19a7 7 0 0 1-7-7V11a7 7 0 0 1 7-7z' fill='url(#pmi5-a)'/><path d='M19 4h19.5L54 19.5V53a7 7 0 0 1-7 7H19a7 7 0 0 1-7-7V11a7 7 0 0 1 7-7z' fill='url(#pmi5-b)'/><path d='M38.5 4L54 19.5H44a5.5 5.5 0 0 1-5.5-5.5z' fill='#8FC4FF'/><rect x='20' y='29.5' width='17' height='5' rx='2.5' fill='#fff'/><rect x='20' y='39' width='26' height='13' rx='6.5' fill='#fff'/><circle cx='39.5' cy='45.5' r='4.3' fill='#3D8BF8'/></svg><span><b>One long page</b><small>268 in · no page breaks</small></span></div><div class='fm-save'><span class='ok'>✓</span><span>Your PDF is ready<small>Saved to your Downloads</small></span></div></div></div></div></div>
+          <div class="hero-video" id="heroStage"><div class='fm' id='fm' role='img' aria-label='PDFmode turns notes, slides and handouts into one long page you can scroll without page breaks'><div class='fm-s'><div class='fm-head'><p>Continuous reading</p><h3>One long page. No page breaks.</h3><small>Notes, slides and handouts scroll like one smooth document.</small></div><div class='fm-col l'><span class='fm-tag'>Regular PDF</span><div class='fm-phone'><div class='fm-screen'><div class='fm-roll'><div class='fm-pg' data-n='Page 1'><i class='fm-h' style='display:block'></i><i class='fm-ln' style='display:block;width:96%'></i><i class='fm-ln' style='display:block;width:88%'></i><i class='fm-ln' style='display:block;width:92%'></i><i class='fm-ln' style='display:block;width:70%'></i><i class='fm-h2' style='display:block'></i><i class='fm-ln' style='display:block;width:94%'></i><i class='fm-ln' style='display:block;width:84%'></i><div class='fm-tbl top'></div></div><div class='fm-pg' data-n='Page 2'><div class='fm-tbl bot'></div><i class='fm-ln' style='display:block;width:90%'></i><i class='fm-ln' style='display:block;width:80%'></i><i class='fm-ln' style='display:block;width:94%'></i><div class='fm-sl top'></div></div><div class='fm-pg' data-n='Page 3'><div class='fm-sl bot'></div><i class='fm-ln' style='display:block;width:92%'></i><i class='fm-ln' style='display:block;width:86%'></i><i class='fm-h2' style='display:block'></i><i class='fm-ln' style='display:block;width:96%'></i><i class='fm-ln' style='display:block;width:80%'></i><i class='fm-ln' style='display:block;width:90%'></i><i class='fm-ln' style='display:block;width:64%'></i></div><div class='fm-pg' data-n='Page 1'><i class='fm-h' style='display:block'></i><i class='fm-ln' style='display:block;width:96%'></i><i class='fm-ln' style='display:block;width:88%'></i><i class='fm-ln' style='display:block;width:92%'></i><i class='fm-ln' style='display:block;width:70%'></i><i class='fm-h2' style='display:block'></i><i class='fm-ln' style='display:block;width:94%'></i><i class='fm-ln' style='display:block;width:84%'></i><div class='fm-tbl top'></div></div><div class='fm-pg' data-n='Page 2'><div class='fm-tbl bot'></div><i class='fm-ln' style='display:block;width:90%'></i><i class='fm-ln' style='display:block;width:80%'></i><i class='fm-ln' style='display:block;width:94%'></i><div class='fm-sl top'></div></div><div class='fm-pg' data-n='Page 3'><div class='fm-sl bot'></div><i class='fm-ln' style='display:block;width:92%'></i><i class='fm-ln' style='display:block;width:86%'></i><i class='fm-h2' style='display:block'></i><i class='fm-ln' style='display:block;width:96%'></i><i class='fm-ln' style='display:block;width:80%'></i><i class='fm-ln' style='display:block;width:90%'></i><i class='fm-ln' style='display:block;width:64%'></i></div></div></div></div></div><div class='fm-col r'><span class='fm-tag'>PDFmode</span><div class='fm-phone'><div class='fm-screen'><div class='fm-roll'><div class='fm-cont'><i class='fm-h' style='display:block'></i><i class='fm-ln' style='display:block;width:96%'></i><i class='fm-ln' style='display:block;width:88%'></i><i class='fm-ln' style='display:block;width:92%'></i><i class='fm-ln' style='display:block;width:70%'></i><i class='fm-h2' style='display:block'></i><i class='fm-ln' style='display:block;width:94%'></i><i class='fm-ln' style='display:block;width:84%'></i><div class='fm-tbl'></div><i class='fm-ln' style='display:block;width:90%'></i><i class='fm-ln' style='display:block;width:80%'></i><i class='fm-ln' style='display:block;width:94%'></i><div class='fm-sl'></div><i class='fm-ln' style='display:block;width:92%'></i><i class='fm-ln' style='display:block;width:86%'></i><i class='fm-h2' style='display:block'></i><i class='fm-ln' style='display:block;width:96%'></i><i class='fm-ln' style='display:block;width:80%'></i><i class='fm-ln' style='display:block;width:90%'></i><i class='fm-ln' style='display:block;width:64%'></i><div style='height:22px'></div></div><div class='fm-cont'><i class='fm-h' style='display:block'></i><i class='fm-ln' style='display:block;width:96%'></i><i class='fm-ln' style='display:block;width:88%'></i><i class='fm-ln' style='display:block;width:92%'></i><i class='fm-ln' style='display:block;width:70%'></i><i class='fm-h2' style='display:block'></i><i class='fm-ln' style='display:block;width:94%'></i><i class='fm-ln' style='display:block;width:84%'></i><div class='fm-tbl'></div><i class='fm-ln' style='display:block;width:90%'></i><i class='fm-ln' style='display:block;width:80%'></i><i class='fm-ln' style='display:block;width:94%'></i><div class='fm-sl'></div><i class='fm-ln' style='display:block;width:92%'></i><i class='fm-ln' style='display:block;width:86%'></i><i class='fm-h2' style='display:block'></i><i class='fm-ln' style='display:block;width:96%'></i><i class='fm-ln' style='display:block;width:80%'></i><i class='fm-ln' style='display:block;width:90%'></i><i class='fm-ln' style='display:block;width:64%'></i><div style='height:22px'></div></div></div></div></div></div><div class='fm-note l'><span class='x'>✕</span><span><b>Page breaks</b><small>cut tables and slides</small></span></div><div class='fm-note r'><svg aria-hidden='true' focusable='false' xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><defs><linearGradient id='pmi301-a' x1='0' y1='0' x2='0' y2='1'><stop offset='0' stop-color='#4B9DFF'/><stop offset='1' stop-color='#2B7BF4'/></linearGradient><radialGradient id='pmi301-b' cx='.22' cy='.96' r='.75'><stop offset='0' stop-color='#B3A9FF'/><stop offset='.55' stop-color='#B3A9FF' stop-opacity='.35'/><stop offset='1' stop-color='#B3A9FF' stop-opacity='0'/></radialGradient></defs><path d='M19 4h19.5L54 19.5V53a7 7 0 0 1-7 7H19a7 7 0 0 1-7-7V11a7 7 0 0 1 7-7z' fill='url(#pmi301-a)'/><path d='M19 4h19.5L54 19.5V53a7 7 0 0 1-7 7H19a7 7 0 0 1-7-7V11a7 7 0 0 1 7-7z' fill='url(#pmi301-b)'/><path d='M38.5 4L54 19.5H44a5.5 5.5 0 0 1-5.5-5.5z' fill='#8FC4FF'/><rect x='20' y='29.5' width='17' height='5' rx='2.5' fill='#fff'/><rect x='20' y='39' width='26' height='13' rx='6.5' fill='#fff'/><circle cx='39.5' cy='45.5' r='4.3' fill='#3D8BF8'/></svg><span><b>One long page</b><small>268 in · no breaks</small></span></div></div></div></div>
         </figure>
       </div>
 
@@ -1315,25 +1315,25 @@ a.mode-app:hover { background: var(--fill-strong); text-decoration: none; }
 <div class="sheet supsheet" id="supDlg" role="dialog" aria-modal="true" aria-labelledby="supDlgTitle" tabindex="-1" hidden>
   <div class="sh-head">
     <span class="done-ok heart" aria-hidden="true"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg></span>
-    <div class="sh-t"><h2 id="supDlgTitle">@boomtumbali</h2><p id="supSub">Maker of the MODE apps. Free, private tools for everyone.</p></div>
+    <div class="sh-t"><h2 id="supDlgTitle">Support @boomtumbali</h2><p id="supSub"></p></div>
     <button class="ib" type="button" id="supX" aria-label="Close"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg></button>
   </div>
   <div class="sup-s1" id="supS1">
     <p class="sup-msg">I make free tools that respect your privacy: no ads, no limits, no sign-up, and your files never leave your device. If one saved you time, you can chip in any amount, or simply follow along.</p>
-    <button type="button" class="sup-choice" id="supShowQr">
-      <span class="sc-ic" aria-hidden="true">₱</span>
-      <span class="sc-t"><strong>Chip in with GCash</strong><span>Any amount, with GCash or any InstaPay bank app</span></span>
-      <svg class="i sc-go" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
-    </button>
-    <div class="mode-apps"><span class="sec-l">The MODE apps</span>
+    <div class="mode-apps"><span class="sec-l">The <i>mode</i> apps</span>
       <div class="mode-app here"><svg aria-hidden='true' focusable='false' xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><defs><linearGradient id='pmi2-a' x1='0' y1='0' x2='0' y2='1'><stop offset='0' stop-color='#4B9DFF'/><stop offset='1' stop-color='#2B7BF4'/></linearGradient><radialGradient id='pmi2-b' cx='.22' cy='.96' r='.75'><stop offset='0' stop-color='#B3A9FF'/><stop offset='.55' stop-color='#B3A9FF' stop-opacity='.35'/><stop offset='1' stop-color='#B3A9FF' stop-opacity='0'/></radialGradient></defs><path d='M19 4h19.5L54 19.5V53a7 7 0 0 1-7 7H19a7 7 0 0 1-7-7V11a7 7 0 0 1 7-7z' fill='url(#pmi2-a)'/><path d='M19 4h19.5L54 19.5V53a7 7 0 0 1-7 7H19a7 7 0 0 1-7-7V11a7 7 0 0 1 7-7z' fill='url(#pmi2-b)'/><path d='M38.5 4L54 19.5H44a5.5 5.5 0 0 1-5.5-5.5z' fill='#8FC4FF'/><rect x='20' y='29.5' width='17' height='5' rx='2.5' fill='#fff'/><rect x='20' y='39' width='26' height='13' rx='6.5' fill='#fff'/><circle cx='39.5' cy='45.5' r='4.3' fill='#3D8BF8'/></svg><span><strong>PDFmode<em>You’re here</em></strong><span>PDFs, made for reading</span></span></div>
-      <a class="mode-app" href="https://vismode.vercel.app" target="_blank" rel="noopener"><svg aria-hidden='true' focusable='false' xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><defs><linearGradient id='vmi3-a' x1='0' y1='0' x2='0' y2='1'><stop offset='0' stop-color='#B77EF7'/><stop offset='1' stop-color='#8B42DA'/></linearGradient><radialGradient id='vmi3-b' cx='.2' cy='.98' r='.8'><stop offset='0' stop-color='#FFA6DA'/><stop offset='.55' stop-color='#FFA6DA' stop-opacity='.32'/><stop offset='1' stop-color='#FFA6DA' stop-opacity='0'/></radialGradient><clipPath id='vmi3-c'><rect x='5' y='9' width='54' height='46' rx='10'/></clipPath></defs><rect x='5' y='9' width='54' height='46' rx='10' fill='url(#vmi3-a)'/><rect x='5' y='9' width='54' height='46' rx='10' fill='url(#vmi3-b)'/><g clip-path='url(#vmi3-c)'><path d='M30 55l10-12 6 6 5-5 9 9v2z' fill='#D9B6FF' opacity='.75'/></g><circle cx='47' cy='21' r='5.2' fill='#EAD5FF'/><rect x='13' y='37' width='26' height='13' rx='6.5' fill='#fff'/><circle cx='32.5' cy='43.5' r='4.3' fill='#9B55E3'/></svg><span><strong>VISmode</strong><span>iPhone photos, any format</span></span></a>
+      <a class="mode-app" href="https://vismode.vercel.app" target="_blank" rel="noopener"><svg aria-hidden='true' focusable='false' xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><defs><linearGradient id='vmi501-a' x1='0' y1='0' x2='0' y2='1'><stop offset='0' stop-color='#B77EF7'/><stop offset='1' stop-color='#8B42DA'/></linearGradient><radialGradient id='vmi501-b' cx='.22' cy='.96' r='.75'><stop offset='0' stop-color='#FFA6DA'/><stop offset='.55' stop-color='#FFA6DA' stop-opacity='.32'/><stop offset='1' stop-color='#FFA6DA' stop-opacity='0'/></radialGradient></defs><path d='M19 4h28a7 7 0 0 1 7 7v42a7 7 0 0 1-7 7H19a7 7 0 0 1-7-7V11a7 7 0 0 1 7-7z' fill='url(#vmi501-a)'/><path d='M19 4h28a7 7 0 0 1 7 7v42a7 7 0 0 1-7 7H19a7 7 0 0 1-7-7V11a7 7 0 0 1 7-7z' fill='url(#vmi501-b)'/><path d='M20.9 33.7L28.6 21.9L36.3 33.7Z' fill='#fff' stroke='#fff' stroke-width='1.6' stroke-linejoin='round'/><circle cx='41.2' cy='25.4' r='3.6' fill='#fff'/><rect x='20' y='39' width='26' height='13' rx='6.5' fill='#fff'/><circle cx='39.5' cy='45.5' r='4.3' fill='#9B55E3'/></svg><span><strong>VISmode</strong><span>iPhone photos, any format</span></span></a>
     </div>
     <div class="sup-follow"><span>Follow the maker</span><div class="soc" aria-label="Follow the maker">
             <a href="https://www.linkedin.com/in/boomtumbali/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.45 20.45h-3.56v-5.57c0-1.33-.02-3.04-1.85-3.04-1.86 0-2.14 1.45-2.14 2.94v5.67H9.35V9h3.41v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28zM5.34 7.43a2.06 2.06 0 1 1 0-4.13 2.06 2.06 0 0 1 0 4.13zM7.12 20.45H3.56V9h3.56v11.45zM22.22 0H1.77C.79 0 0 .77 0 1.73v20.54C0 23.23.79 24 1.77 24h20.45c.98 0 1.78-.77 1.78-1.73V1.73C24 .77 23.2 0 22.22 0z"/></svg><span>LinkedIn</span></a>
             <a href="https://x.com/boomtumbali" target="_blank" rel="noopener noreferrer" aria-label="X"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18.24 2.25h3.31l-7.23 8.26 8.5 11.24h-6.65l-5.22-6.82-5.97 6.82H1.68l7.73-8.84L1.25 2.25h6.83l4.71 6.23zm-1.16 17.52h1.83L7.08 4.13H5.12z"/></svg><span>X</span></a>
             <a href="https://github.com/boomtumbali" target="_blank" rel="noopener noreferrer" aria-label="GitHub"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 .3a12 12 0 0 0-3.8 23.38c.6.12.83-.26.83-.57L9 21.07c-3.34.72-4.04-1.61-4.04-1.61-.55-1.39-1.34-1.76-1.34-1.76-1.08-.74.09-.73.09-.73 1.2.09 1.83 1.24 1.83 1.24 1.07 1.83 2.81 1.3 3.5 1 .1-.78.42-1.31.76-1.61-2.67-.3-5.47-1.33-5.47-5.93 0-1.31.47-2.38 1.24-3.22-.14-.3-.54-1.52.1-3.18 0 0 1-.32 3.3 1.23a11.5 11.5 0 0 1 6 0c2.28-1.55 3.29-1.23 3.29-1.23.64 1.66.24 2.88.12 3.18a4.65 4.65 0 0 1 1.23 3.22c0 4.61-2.8 5.63-5.48 5.92.42.36.81 1.1.81 2.22l-.01 3.29c0 .31.2.69.82.57A12 12 0 0 0 12 .3z"/></svg><span>GitHub</span></a>
           </div></div>
+    <button type="button" class="sup-choice" id="supShowQr">
+      <span class="sc-ic" aria-hidden="true">₱</span>
+      <span class="sc-t"><strong>Chip in with GCash</strong><span>Any amount, with GCash or any InstaPay bank app</span></span>
+      <svg class="i sc-go" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
+    </button>
   </div>
   <div class="sup-s2" id="supS2" tabindex="-1" hidden>
     <div class="sup-body">
@@ -5749,7 +5749,7 @@ const FONTS = {"CalB": "AAEAAAAOAIAAAwBgR0RFRg2VDe0AAIGYAAAAuEdQT1OVtZTJAACCUAAA
     window.addEventListener('keydown', e => { if (e.key === 'Escape' && document.querySelector('.sheet.on')) { e.stopImmediatePropagation(); e.preventDefault(); closeSheets(); } }, true); // before any other Escape handling
     const supStep = n => {
       $('supS1').hidden = n !== 1; $('supS2').hidden = n !== 2; $('supDlg').classList.toggle('wide', n === 2);
-      $('supSub').textContent = n === 2 ? 'Scan with GCash or any InstaPay bank app.' : 'Maker of the MODE apps. Free, private tools for everyone.';
+      $('supSub').textContent = n === 2 ? 'Scan with GCash or any InstaPay bank app.' : '';
       setTimeout(() => { const f = n === 2 ? $('supS2') : $('supDlg'); if (f && $('supDlg').classList.contains('on')) f.focus({ preventScroll: true }); }, 30);
     };
     $('supShowQr').addEventListener('click', () => supStep(2));
@@ -5757,6 +5757,8 @@ const FONTS = {"CalB": "AAEAAAAOAIAAAwBgR0RFRg2VDe0AAIGYAAAAuEdQT1OVtZTJAACCUAAA
     $('supDone').addEventListener('click', closeSheets);
     window.__pmSupport = () => { supStep(1); openSheet('supDlg'); };
     document.querySelectorAll('.by-link').forEach(a => a.addEventListener('click', e => { e.preventDefault(); window.__pmSupport(); }));
+    // the icon before the name goes home, like the name does
+    document.querySelectorAll('.wm-logo').forEach(l => l.addEventListener('click', () => { const n = l.parentNode.querySelector('.wm-name'); if (n) n.click(); }));
     window.__pmSheets = { open: openSheet, close: closeSheets };
     window.__pmToolsOpen = (id, files, auto) => { openTools(id); setTimeout(() => { handleFiles(files); if (auto) hud('Opened Images to PDF for your photos.', true); }, 60); };
     document.addEventListener('click', e => { const b = e.target.closest('[data-support]'); if (b) { e.preventDefault(); window.__pmSupport(); } });
@@ -6044,7 +6046,12 @@ const FONTS = {"CalB": "AAEAAAAOAIAAAwBgR0RFRg2VDe0AAIGYAAAAuEdQT1OVtZTJAACCUAAA
   var st = document.getElementById('heroStage'), fm = document.getElementById('fm'); if (!st || !fm) return;
   var fit = function () { st.style.setProperty('--k', st.clientWidth / 1600); }; fit();
   if ('ResizeObserver' in window) new ResizeObserver(fit).observe(st); else window.addEventListener('resize', fit);
-  if ('IntersectionObserver' in window) new IntersectionObserver(function (es) { es.forEach(function (e) { fm.classList.toggle('paused', !e.isIntersecting); }); }).observe(fm);
+  // play only while the start page is what you're looking at: not off screen, not under the tools or a document
+  var seen = true, tools = document.getElementById('tools');
+  var sync = function () { fm.classList.toggle('paused', !(seen && document.body.classList.contains('landing') && !(tools && tools.classList.contains('on')) && !document.hidden)); };
+  if ('IntersectionObserver' in window) new IntersectionObserver(function (es) { es.forEach(function (e) { seen = e.isIntersecting; }); sync(); }).observe(fm);
+  var mo = new MutationObserver(sync); mo.observe(document.body, { attributes: true, attributeFilter: ['class'] }); if (tools) mo.observe(tools, { attributes: true, attributeFilter: ['class'] });
+  document.addEventListener('visibilitychange', sync); sync();
 })();
 </script>
 </body>

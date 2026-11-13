@@ -5,7 +5,7 @@
 PDFmode turns Markdown, Word, PowerPoint, PDF and plain-text files into one clean PDF. It can keep each file's own formatting and pages, merge several files in the order you choose, or flow everything into one continuous page you can scroll without a single page break. It's built for students reading reviewers, lecture slides and handouts on a phone, tablet or laptop.
 
 🔗 **Live:** [pdfmode.vercel.app](https://pdfmode.vercel.app): nothing to install, no sign-up. Works on phones, tablets and computers in Safari, Chrome, Edge and Firefox.
-👤 **By:** [@boomtumbali](https://www.linkedin.com/in/boomtumbali) · one of the MODE apps, with [VISmode](https://vismode.vercel.app) for photos
+👤 **By:** [@boomtumbali](https://www.linkedin.com/in/boomtumbali) · one of the *mode* apps, with [VISmode](https://vismode.vercel.app) for photos
 
 ![PDFmode](og-image.png)
 
