@@ -798,12 +798,10 @@ body.landing .supBtn { display: inline-flex; }
   .tl-side.peek .tl-side-in { opacity: 0.35; pointer-events: none; }
   .sheet-head { touch-action: none; cursor: grab; }
   .insp.dragging { transition: none !important; }
+  .sheet .sh-head { touch-action: none; }
   .sheet { padding-top: 26px; }
-  /* The handle lives inside the sticky header, so grabbing it really drags the sheet (it used to be a decoration on the sheet itself) */
-  .sheet .sh-head { position: sticky; top: -26px; z-index: 3; margin: -26px -18px 0; padding: 26px 18px 0; background: var(--panel); touch-action: none; cursor: grab; }
-  .sheet .sh-head::before { content: ""; position: absolute; top: 8px; left: 50%; width: 40px; height: 5px; margin-left: -20px; border-radius: 3px; background: var(--fill-strong); transition: width 0.15s, background-color 0.15s; }
+  .sheet::before { content: ""; position: absolute; top: 8px; left: 50%; width: 40px; height: 5px; margin-left: -20px; border-radius: 3px; background: var(--fill-strong); }
   .sheet.dragging { transition: none !important; }
-  .sheet.dragging .sh-head::before { width: 48px; background: var(--text3); }
 }
 .statusbar { position: fixed; z-index: 95; left: 50%; bottom: calc(18px + env(safe-area-inset-bottom, 0px)); transform: translate(-50%, 20px); opacity: 0; max-width: calc(100% - 24px);
   display: flex; align-items: center; gap: 10px; padding: 9px 9px 9px 14px; border-radius: 14px; background: var(--panel); color: var(--text); font-size: 13.5px;
@@ -1151,6 +1149,26 @@ a.mode-app:hover { background: var(--fill-strong); text-decoration: none; }
   .wm-name, .tb .wm-name, .tl-bar .tl-wm { line-height: 17px !important; }
   .wm-by, .tb .wm-by, .tl-bar .wm-by { line-height: 11px !important; }
 }
+
+/* phones: the whole handle strip at the top of a sheet can be dragged down to close it */
+.sh-grab { display: none; }
+@media (max-width: 760px) { .sh-grab { display: block; position: absolute; top: 0; left: 0; right: 0; height: 30px; z-index: 3; touch-action: none; cursor: grab; } }
+
+/* ---- bottom sheets on phones: one handle everywhere, with the same subtle pressed state in the app colour ---- */
+html { touch-action: manipulation; } /* no double-tap zoom, so a tap right after a swipe always counts */
+.md-grab { display: none; }
+@media (max-width: 760px) {
+  .md-grab { display: block; position: absolute; top: 0; left: 0; right: 0; height: 30px; z-index: 3; touch-action: none; cursor: grab; }
+  .modal::before { content: ""; position: absolute; top: 8px; left: 50%; width: 40px; height: 5px; margin-left: -20px; border-radius: 3px; background: var(--fill-strong); }
+  .modal .modal-h { padding-top: 28px; touch-action: none; }
+  .modal.dragging { transition: none !important; }
+  .sheet-head::before { top: 8px; width: 40px; margin-left: -20px; }
+  .sheet::before, .sheet-head::before, .modal::before { transition: width 0.22s var(--ease), margin-left 0.22s var(--ease), background-color 0.22s ease; }
+  .tl-grab span { transition: width 0.22s var(--ease), background-color 0.22s ease; }
+  .sheet.grabbing::before, .sheet.dragging::before, #insp.grabbing .sheet-head::before, #insp.dragging .sheet-head::before, #tlSide.grabbing .sheet-head::before, #tlSide.dragging .sheet-head::before, .modal.grabbing::before, .modal.dragging::before,
+  .tl-grab:active span, .tl-side.dragging .tl-grab span, .tl-side.grabbing .tl-grab span { width: 56px; margin-left: -28px; background: color-mix(in srgb, var(--accent) 80%, transparent); }
+  .tl-grab:active span, .tl-side.dragging .tl-grab span, .tl-side.grabbing .tl-grab span { margin-left: 0; }
+}
 </style>
 <script>
   window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
@@ -1182,6 +1200,7 @@ a.mode-app:hover { background: var(--fill-strong); text-decoration: none; }
   <button type="button" id="bbExport" class="go"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12M7 10l5 5 5-5M5 21h14"/></svg><span>Export PDF</span></button>
 </nav>
 <div class="modal" id="homeDlg" role="alertdialog" aria-modal="true" aria-labelledby="homeTitle" aria-describedby="homeText">
+  <div class="md-grab" aria-hidden="true"></div>
   <div class="modal-h"><strong id="homeTitle">Close these files?</strong></div>
   <p class="mtxt" id="homeText">You’ll go back to the start page. Export first if you want to keep the PDF.</p>
   <div class="modal-f"><button class="gb" type="button" id="homeCancel">Keep working</button><button class="pb" type="button" id="homeOk">Close files</button></div>
@@ -1318,7 +1337,7 @@ a.mode-app:hover { background: var(--fill-strong); text-decoration: none; }
 
 <div class="scrim" id="scrim"></div>
 <div class="sheet-scrim" id="sheetScrim" hidden></div>
-<div class="sheet done" id="doneDlg" role="dialog" aria-modal="true" aria-labelledby="doneTitle" tabindex="-1" hidden>
+<div class="sheet done" id="doneDlg" role="dialog" aria-modal="true" aria-labelledby="doneTitle" tabindex="-1" hidden><div class="sh-grab" aria-hidden="true"></div>
   <div class="sh-head">
     <span class="done-ok" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg></span>
     <div class="sh-t"><h2 id="doneTitle">Your PDF is ready</h2><p id="doneFile"></p></div>
@@ -1328,7 +1347,7 @@ a.mode-app:hover { background: var(--fill-strong); text-decoration: none; }
   <div class="done-next" id="doneNext"><div class="lbl" id="doneNextLbl">Keep going with this PDF</div><div class="done-list" id="doneList"></div></div>
   <div class="sh-foot"><button type="button" class="sup-link" id="doneSupport"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg>Enjoying PDFmode? Support it</button><button class="pb" type="button" id="doneOk">Done</button></div>
 </div>
-<div class="sheet editsheet" id="editDlg" role="dialog" aria-modal="true" aria-labelledby="editTitle" tabindex="-1" hidden>
+<div class="sheet editsheet" id="editDlg" role="dialog" aria-modal="true" aria-labelledby="editTitle" tabindex="-1" hidden><div class="sh-grab" aria-hidden="true"></div>
   <div class="sh-head">
     <span class="done-ok pen" aria-hidden="true"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg></span>
     <div class="sh-t"><h2 id="editTitle">Edit text</h2><p id="editSub">Change the words. Pictures, colours and layout stay as they are.</p></div>
@@ -1338,7 +1357,7 @@ a.mode-app:hover { background: var(--fill-strong); text-decoration: none; }
   <p class="ed-note">Each paragraph keeps the style of its first word.</p>
   <div class="sh-foot"><button type="button" class="tl-link" id="editSaveOffice">Download edited file</button><button class="pb" type="button" id="editApply">Apply changes</button></div>
 </div>
-<div class="sheet supsheet" id="supDlg" role="dialog" aria-modal="true" aria-labelledby="supDlgTitle" tabindex="-1" hidden>
+<div class="sheet supsheet" id="supDlg" role="dialog" aria-modal="true" aria-labelledby="supDlgTitle" tabindex="-1" hidden><div class="sh-grab" aria-hidden="true"></div>
   <div class="sh-head">
     <span class="done-ok heart" aria-hidden="true"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg></span>
     <div class="sh-t"><h2 id="supDlgTitle">Support @boomtumbali</h2><p id="supSub"></p></div>
@@ -1427,6 +1446,7 @@ a.mode-app:hover { background: var(--fill-strong); text-decoration: none; }
   <input type="file" id="tlFile" hidden>
 </div>
 <div class="modal" id="pasteDlg" role="dialog" aria-modal="true" aria-labelledby="pasteTitle">
+  <div class="md-grab" aria-hidden="true"></div>
   <div class="modal-h"><strong id="pasteTitle">Paste Markdown</strong></div>
   <label class="vh" for="pasteBox">Markdown text</label>
   <textarea id="pasteBox" spellcheck="false" placeholder="# Title&#10;&#10;Paste or type Markdown here."></textarea>
@@ -6002,21 +6022,43 @@ const FONTS = {"CalB": "AAEAAAAOAIAAAwBgR0RFRg2VDe0AAIGYAAAAuEdQT1OVtZTJAACCUAAA
   });
   // 2. Done and Support sheets: same gesture closes them.
   document.querySelectorAll('.sheet').forEach(function (sh) {
-    var hd = sh.querySelector('.sh-head'); if (!hd) return;
+    [sh.querySelector('.sh-grab'), sh.querySelector('.sh-head')].forEach(function (hd) { if (!hd) return; // the handle strip and the title row both pull the sheet down
     drag(hd, {
       start: function () { sh.classList.add('dragging'); },
       move: function (dy) { sh.style.transform = 'translateY(' + Math.max(0, dy) + 'px)'; },
       end: function (dy, v, moved) {
         sh.classList.remove('dragging');
-        var x = sh.querySelector('.sh-head .ib[aria-label="Close"]'); // Done, Support and Edit text each have one
-        if (moved && x && (dy > sh.offsetHeight * 0.22 || v > 0.55)) {
-          sh.style.transform = 'translateY(' + sh.offsetHeight + 'px)'; // keep sliding down instead of springing back up
-          x.click();
-          setTimeout(function () { sh.style.transform = ''; }, 420);
-        } else requestAnimationFrame(function () { sh.style.transform = ''; });
+        if (moved && (dy > Math.max(80, sh.offsetHeight * 0.22) || v > 0.55)) { var x = sh.querySelector('#doneX, #supX, #editX'); if (x) x.click(); }
+        requestAnimationFrame(function () { sh.style.transform = ''; });
       }
     });
+    });
   });
+  // 2b. Phone modals (Paste text, Close these files?): pull down by the handle or title to cancel.
+  document.querySelectorAll('.modal').forEach(function (md) {
+    [md.querySelector('.md-grab'), md.querySelector('.modal-h')].forEach(function (hd) { if (!hd) return;
+      drag(hd, {
+        start: function () { md.classList.add('dragging'); },
+        move: function (dy) { md.style.transform = 'translateY(' + Math.max(0, dy) + 'px)'; },
+        end: function (dy, v, moved) {
+          md.classList.remove('dragging');
+          if (moved && (dy > Math.max(80, md.offsetHeight * 0.22) || v > 0.55)) { var c = md.querySelector('#homeCancel, #pasteCancel'); if (c) c.click(); }
+          requestAnimationFrame(function () { md.style.transform = ''; });
+        }
+      });
+    });
+  });
+  // 2c. Every bottom-sheet handle answers a touch the same way: it widens and takes on the app colour while held.
+  (function () {
+    var Z = [['#insp .sheet-head', '#insp'], ['#tlGrab', '#tlSide'], ['#tlSheetHead', '#tlSide'], ['.sheet .sh-grab', '.sheet'], ['.sheet .sh-head', '.sheet'], ['.modal .md-grab', '.modal'], ['.modal .modal-h', '.modal']];
+    var held = null, off = function () { if (held) { held.classList.remove('grabbing'); held = null; } };
+    document.addEventListener('pointerdown', function (e) {
+      if (!phone() || (e.pointerType === 'mouse' && e.button !== 0) || !e.target.closest) return;
+      if (e.target.closest('button:not(.tl-grab), a, input, textarea, select')) return;
+      for (var i = 0; i < Z.length; i++) { var h = e.target.closest(Z[i][0]); if (h) { off(); held = h.closest(Z[i][1]); if (held) held.classList.add('grabbing'); return; } }
+    }, true);
+    document.addEventListener('pointerup', off, true); document.addEventListener('pointercancel', off, true); window.addEventListener('blur', off);
+  })();
   // 3. Tool options panel: drag to resize. Snaps to peek (see the whole page), normal, or tall (more options).
   var side = $('tlSide'), grab = $('tlGrab');
   if (side && grab) {
